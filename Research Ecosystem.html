@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSW Research Ecosystem — Integrated Scientific Tools</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0f14; --bg-card: #111620; --border: #2a3448;
+            --text-main: #f8fafc; --text-muted: #8fa3c0;
+            --blue: #38bdf8; --purple: #a855f7; --emerald: #10b981;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* HEADER / HERO SECTION */
+        header {
+            text-align: center;
+            padding: 80px 20px 50px;
+            background: radial-gradient(circle at top, #162032 0%, var(--bg) 70%);
+            border-bottom: 1px solid var(--border);
+        }
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            background: linear-gradient(90deg, #f8fafc, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+        
+        /* Tombol Profil Author */
+        .author-badge {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .author-badge:hover {
+            color: var(--text-main);
+            border-color: var(--blue);
+            background: rgba(56, 189, 248, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.15);
+        }
+
+        /* MAIN CONTENT & GRID */
+        main {
+            flex: 1;
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* APP CARDS */
+        .app-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: transparent;
+            transition: 0.3s ease;
+        }
+
+        .app-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border-color: #3a4a68;
+        }
+
+        /* Card 1: AquaLab (Blue) */
+        .app-card.aqualab:hover::before { background: var(--blue); }
+        .app-card.aqualab .app-icon { color: var(--blue); background: rgba(56, 189, 248, 0.1); }
+        
+        /* Card 2: StatWise (Purple) */
+        .app-card.statwise:hover::before { background: var(--purple); }
+        .app-card.statwise .app-icon { color: var(--purple); background: rgba(168, 85, 247, 0.1); }
+        
+        /* Card 3: BioTools (Emerald) */
+        .app-card.biotools:hover::before { background: var(--emerald); }
+        .app-card.biotools .app-icon { color: var(--emerald); background: rgba(16, 185, 129, 0.1); }
+
+        .app-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .app-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .app-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+        .app-link-text {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .app-card.aqualab .app-link-text { color: var(--blue); }
+        .app-card.statwise .app-link-text { color: var(--purple); }
+        .app-card.biotools .app-link-text { color: var(--emerald); }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="hero-title">DSW Research Ecosystem</h1>
+        <p class="hero-subtitle">Platform komputasi terintegrasi berbasis client-side untuk menunjang analisis statistika, bioinformatika, dan manajemen laboratorium sains.</p>
+        
+        <a href="https://dandisw.github.io/Profil-Dandi/" class="author-badge" target="_blank" title="Lihat Profil Dandi Setio Wibowo">
+            Developed by Dandi Setio Wibowo
+        </a>
+    </header>
+
+    <main>
+        <div class="app-grid">
+            
+            <a href="https://dandisw.github.io/AquaLab-Workspace/" class="app-card aqualab" target="_blank">
+                <div class="app-icon">🔬</div>
+                <h2 class="app-title">AquaLab Workspace</h2>
+                <p class="app-desc">Buku catatan laboratorium digital komprehensif. Dilengkapi EWS Kualitas Air, kalkulator performa In Vivo, biokinetika mikrobiologi, dan dokumentasi molekuler.</p>
+                <div class="app-link-text">Buka Aplikasi &rarr;</div>
+            </a>
+
+            <a href="https://dandisw.github.io/StatWise/" class="app-card statwise" target="_blank">
+                <div class="app-icon">📊</div>
+                <h2 class="app-title">StatWise</h2>
+                <p class="app-desc">Mesin komputasi statistik murni JavaScript. Mendukung uji Normalitas, ANOVA, Korelasi, hingga visualisasi Scatter Plot tanpa memerlukan server backend.</p>
+                <div class="app-link-text">Buka Aplikasi &rarr;</div>
+            </a>
+
+            <a href="https://dandisw.github.io/BioTools/" class="app-card biotools" target="_blank">
+                <div class="app-icon">🧬</div>
+                <h2 class="app-title">BioTools Suite</h2>
+                <p class="app-desc">Perangkat bioinformatika untuk manipulasi sekuens. Menyediakan fitur Reverse Complement, persentase GC, translasi kodon, dan validasi sekuens genetik.</p>
+                <div class="app-link-text">Buka Aplikasi &rarr;</div>
+            </a>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 DSW Research Ecosystem. All tools execute locally in your browser for absolute privacy.</p>
+    </footer>
+
+</body>
+</html>
