@@ -9,7 +9,8 @@
         :root {
             --bg: #0b0f14; --bg-card: #111620; --border: #2a3448;
             --text-main: #f8fafc; --text-muted: #8fa3c0;
-            --blue: #38bdf8; --purple: #a855f7; --emerald: #10b981;
+            --blue: #38bdf8; --purple: #a855f7; --emerald: #10b981; 
+            --red: #f43f5e; /* Warna khusus untuk Mendeley */
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -129,6 +130,11 @@
         .app-card.biotools:hover::before { background: var(--emerald); }
         .app-card.biotools .app-icon { color: var(--emerald); background: rgba(16, 185, 129, 0.1); }
 
+        /* Card 4: Mendeley Portal (Red/Rose) */
+        .app-card.mendeley:hover::before { background: var(--red); }
+        .app-card.mendeley .app-icon { color: var(--red); background: rgba(244, 63, 94, 0.1); }
+        .app-card.mendeley .app-link-text { color: var(--red); }
+
         .app-icon {
             width: 60px;
             height: 60px;
@@ -161,10 +167,6 @@
             align-items: center;
             gap: 5px;
         }
-        
-        .app-card.aqualab .app-link-text { color: var(--blue); }
-        .app-card.statwise .app-link-text { color: var(--purple); }
-        .app-card.biotools .app-link-text { color: var(--emerald); }
 
         /* FOOTER */
         footer {
@@ -185,7 +187,7 @@
 
     <header>
         <h1 class="hero-title">DSW Research Ecosystem</h1>
-        <p class="hero-subtitle">Platform komputasi terintegrasi berbasis client-side untuk menunjang analisis statistika, bioinformatika, dan manajemen laboratorium sains.</p>
+        <p class="hero-subtitle">Platform komputasi terintegrasi berbasis *client-side* untuk menunjang analisis statistika, bioinformatika, dan manajemen laboratorium sains.</p>
         
         <a href="https://dandisw.github.io/Profil-Dandi/" class="author-badge" target="_blank" title="Lihat Profil Dandi Setio Wibowo">
             Developed by Dandi Setio Wibowo
@@ -212,8 +214,15 @@
             <a href="https://dandisw.github.io/BioTools/" class="app-card biotools" target="_blank">
                 <div class="app-icon">🧬</div>
                 <h2 class="app-title">BioTools Suite</h2>
-                <p class="app-desc">Perangkat bioinformatika untuk manipulasi sekuens. Menyediakan fitur Reverse Complement, persentase GC, translasi kodon, dan validasi sekuens genetik.</p>
+                <p class="app-desc">Perangkat bioinformatika untuk manipulasi sekuens. Menyediakan fitur *Reverse Complement*, persentase GC, translasi kodon, dan validasi sekuens genetik.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
+            </a>
+
+            <a href="https://dandisw.github.io/Mendeley-Citation-Portal-FPIK-Unsoed-2018/" class="app-card mendeley" target="_blank">
+                <div class="app-icon">📚</div>
+                <h2 class="app-title">Mendeley FPIK Portal</h2>
+                <p class="app-desc">Repositori distribusi digital CSL Style Tugas Akhir FPIK 2018 Resmi Universitas Jenderal Soedirman untuk instalasi Mendeley Cite secara instan.</p>
+                <div class="app-link-text">Buka Portal &rarr;</div>
             </a>
 
         </div>
