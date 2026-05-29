@@ -10,6 +10,7 @@
             --bg: #0b0f14; --bg-card: #111620; --border: #2a3448;
             --text-main: #f8fafc; --text-muted: #8fa3c0;
             --blue: #38bdf8; --purple: #a855f7; --emerald: #10b981; 
+            --amber: #f59e0b; /* Warna khusus untuk EcoMetrics */
             --red: #f43f5e; /* Warna khusus untuk Mendeley */
         }
         
@@ -130,7 +131,11 @@
         .app-card.biotools:hover::before { background: var(--emerald); }
         .app-card.biotools .app-icon { color: var(--emerald); background: rgba(16, 185, 129, 0.1); }
 
-        /* Card 4: Mendeley Portal (Red/Rose) */
+        /* Card 4: EcoMetrics (Amber) */
+        .app-card.ecometrics:hover::before { background: var(--amber); }
+        .app-card.ecometrics .app-icon { color: var(--amber); background: rgba(245, 158, 11, 0.1); }
+
+        /* Card 5: Mendeley Portal (Red/Rose) */
         .app-card.mendeley:hover::before { background: var(--red); }
         .app-card.mendeley .app-icon { color: var(--red); background: rgba(244, 63, 94, 0.1); }
         .app-card.mendeley .app-link-text { color: var(--red); }
@@ -215,6 +220,13 @@
                 <div class="app-icon">🧬</div>
                 <h2 class="app-title">BioTools Suite</h2>
                 <p class="app-desc">Perangkat bioinformatika untuk manipulasi sekuens. Menyediakan fitur *Reverse Complement*, persentase GC, translasi kodon, dan validasi sekuens genetik.</p>
+                <div class="app-link-text">Buka Aplikasi &rarr;</div>
+            </a>
+
+            <a href="https://dandisw.github.io/EcoMetrics-Multivariat/" class="app-card ecometrics" target="_blank">
+                <div class="app-icon">🌿</div>
+                <h2 class="app-title">EcoMetrics Multivariat</h2>
+                <p class="app-desc">Pusat eksplorasi data multivariat. Mendukung kalkulasi Rapfish (MDS Keberlanjutan), Principal Component Analysis (PCA), K-Means, ANOSIM, dan LDA.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
