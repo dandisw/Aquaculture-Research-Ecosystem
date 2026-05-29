@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aquaculture Research Ecosystem — Integrated Scientific Tools</title>
     
-    <link rel="icon" href="ARE%20Logo.png" type="image/png">
+    <link rel="icon" href="AREs%20Logo.png" type="image/png">
+    
     <meta property="og:title" content="Aquaculture Research Ecosystem">
     <meta property="og:description" content="Platform komputasi terintegrasi berbasis client-side untuk analisis statistika, bioinformatika, dan manajemen akuakultur.">
-    <meta property="og:image" content="https://dandisw.github.io/Aquaculture-Research-Ecosystem/ARE%20Logo.png">
+    <meta property="og:image" content="https://dandisw.github.io/Aquaculture-Research-Ecosystem/AREs%20Logo.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,7 +18,7 @@
             /* Tema Gelap Premium - Nuansa Deep Sea Blue & High Contrast Border */
             --bg: #030914; 
             --bg-card: rgba(10, 20, 38, 0.7); 
-            --border: rgba(56, 189, 248, 0.3); 
+            --border: rgba(56, 189, 248, 0.45); 
             --border-hover: rgba(56, 189, 248, 0.85);
             --text-main: #f8fafc; 
             --text-muted: #8fa3c0;
@@ -57,12 +58,12 @@
             background: rgba(3, 9, 20, 0.5);
         }
 
-        .dsw-top-tag {
+        /* Penanda Tag Atas Logo (S kecil dan jarak direkatkan) */
+        .ares-top-tag {
             font-family: 'Syne', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 5px;
+            letter-spacing: 2px; /* Jarak dirapatkan */
             color: var(--blue);
             margin-bottom: 14px;
             opacity: 0.9;
@@ -88,22 +89,29 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Logo Desain Baru: Simpel, Elegan, Tanpa Animasi Bergerak */
+        /* Wrapper Tautan Logo */
+        .logo-link {
+            display: inline-block;
+            line-height: 0;
+            border-radius: 50%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .logo-link:hover {
+            transform: scale(1.03);
+        }
+
         .main-logo-img {
             display: block;
             border-radius: 50%;
             width: 125px;
             height: 125px;
             object-fit: cover;
-            /* Border tipis & bayangan presisi mendalam */
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
+            transition: border-color 0.3s ease;
         }
 
-        /* Respon hover minimalis dan modern */
-        .main-logo-img:hover {
-            transform: scale(1.03);
+        .logo-link:hover .main-logo-img {
             border-color: var(--blue);
         }
 
@@ -207,7 +215,7 @@
             transform: scale(1.1);
         }
 
-        /* Filter Warna Emoji Ekosistem DSW */
+        /* Filter Warna Emoji Ekosistem */
         .app-card.aqualab:hover::before { background: var(--blue); }
         .app-card.aqualab .app-icon { background: rgba(56, 189, 248, 0.08); }
         .app-card.aqualab .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(180deg) saturate(5); }
@@ -329,9 +337,11 @@
 <body>
 
     <header>
-        <div class="dsw-top-tag">DSW</div>
+        <div class="ares-top-tag">AREs</div>
         <h1 class="hero-title">
-            <img src="ARE%20Logo.png" alt="Logo Aquaculture Research Ecosystem" class="main-logo-img">
+            <a href="https://dandisw.github.io/Profil-Dandi/" target="_blank" class="logo-link" title="Lihat Profil Dandi Setio Wibowo">
+                <img src="AREs%20Logo.png" alt="Emblem AREs" class="main-logo-img">
+            </a>
             <span class="title-text">Aquaculture Research Ecosystem</span>
         </h1>
         <p class="hero-subtitle">Platform komputasi terintegrasi berbasis <em>client-side</em> untuk menunjang analisis statistika, bioinformatika, dan manajemen laboratorium sains.</p>
