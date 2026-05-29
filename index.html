@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSW Research Ecosystem — Integrated Scientific Tools</title>
+    <title>Aquaculture Research Ecosystem — Integrated Scientific Tools</title>
+    
+    <link rel="icon" href="ARE%20Logo.png" type="image/png">
+    <meta property="og:title" content="Aquaculture Research Ecosystem">
+    <meta property="og:description" content="Platform komputasi terintegrasi berbasis client-side untuk analisis statistika, bioinformatika, dan manajemen akuakultur.">
+    <meta property="og:image" content="https://dandisw.github.io/Aquaculture-Research-Ecosystem/ARE%20Logo.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0b0f14; --bg-card: #111620; --border: #2a3448;
             --text-main: #f8fafc; --text-muted: #8fa3c0;
             --blue: #38bdf8; --purple: #a855f7; --emerald: #10b981; 
-            --amber: #f59e0b; /* Warna khusus untuk EcoMetrics */
-            --red: #f43f5e; /* Warna khusus untuk Mendeley */
+            --amber: #f59e0b; --red: #f43f5e;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,20 +34,56 @@
         /* HEADER / HERO SECTION */
         header {
             text-align: center;
-            padding: 80px 20px 50px;
+            padding: 60px 20px 50px;
             background: radial-gradient(circle at top, #162032 0%, var(--bg) 70%);
             border-bottom: 1px solid var(--border);
         }
+
+        /* Gaya Khusus Penanda DSW Atas Tengah */
+        .dsw-top-tag {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--blue);
+            margin-bottom: 12px;
+            opacity: 0.85;
+            display: block;
+        }
+        
         .hero-title {
             font-family: 'Syne', sans-serif;
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 800;
             margin-bottom: 15px;
             letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+        }
+
+        .title-text {
             background: linear-gradient(90deg, #f8fafc, #94a3b8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
+        /* Desain Logo Baru Utama dengan Efek Melayang */
+        .main-logo-img {
+            display: inline-block;
+            border-radius: 50%;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.45);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
         .hero-subtitle {
             font-size: 1.1rem;
             color: var(--text-muted);
@@ -119,27 +160,6 @@
             border-color: #3a4a68;
         }
 
-        /* Card 1: AquaLab (Blue) */
-        .app-card.aqualab:hover::before { background: var(--blue); }
-        .app-card.aqualab .app-icon { color: var(--blue); background: rgba(56, 189, 248, 0.1); }
-        
-        /* Card 2: StatWise (Purple) */
-        .app-card.statwise:hover::before { background: var(--purple); }
-        .app-card.statwise .app-icon { color: var(--purple); background: rgba(168, 85, 247, 0.1); }
-        
-        /* Card 3: BioTools (Emerald) */
-        .app-card.biotools:hover::before { background: var(--emerald); }
-        .app-card.biotools .app-icon { color: var(--emerald); background: rgba(16, 185, 129, 0.1); }
-
-        /* Card 4: EcoMetrics (Amber) */
-        .app-card.ecometrics:hover::before { background: var(--amber); }
-        .app-card.ecometrics .app-icon { color: var(--amber); background: rgba(245, 158, 11, 0.1); }
-
-        /* Card 5: Mendeley Portal (Red/Rose) */
-        .app-card.mendeley:hover::before { background: var(--red); }
-        .app-card.mendeley .app-icon { color: var(--red); background: rgba(244, 63, 94, 0.1); }
-        .app-card.mendeley .app-link-text { color: var(--red); }
-
         .app-icon {
             width: 60px;
             height: 60px;
@@ -147,9 +167,47 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 32px;
             margin-bottom: 20px;
+            transition: all 0.3s ease;
         }
+
+        .emoji-filter {
+            display: inline-block;
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+
+        .app-card:hover .emoji-filter {
+            transform: scale(1.15);
+        }
+
+        /* Pewarnaan Monokromatik Berdasarkan Ekosistem DSW */
+        
+        /* Card 1: AquaLab (Cyan/Blue) */
+        .app-card.aqualab:hover::before { background: var(--blue); }
+        .app-card.aqualab .app-icon { background: rgba(56, 189, 248, 0.1); }
+        .app-card.aqualab .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(180deg) saturate(5); }
+        
+        /* Card 2: StatWise (Purple) */
+        .app-card.statwise:hover::before { background: var(--purple); }
+        .app-card.statwise .app-icon { background: rgba(168, 85, 247, 0.1); }
+        .app-card.statwise .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(250deg) saturate(5); }
+        
+        /* Card 3: BioTools (Emerald) */
+        .app-card.biotools:hover::before { background: var(--emerald); }
+        .app-card.biotools .app-icon { background: rgba(16, 185, 129, 0.1); }
+        .app-card.biotools .emoji-filter { filter: grayscale(100%) brightness(1.1) sepia(1) hue-rotate(110deg) saturate(4); }
+
+        /* Card 4: EcoMetrics (Amber) */
+        .app-card.ecometrics:hover::before { background: var(--amber); }
+        .app-card.ecometrics .app-icon { background: rgba(245, 158, 11, 0.1); }
+        .app-card.ecometrics .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(15deg) saturate(5); }
+
+        /* Card 5: Mendeley Portal (Rose/Red) */
+        .app-card.mendeley:hover::before { background: var(--red); }
+        .app-card.mendeley .app-icon { background: rgba(244, 63, 94, 0.1); }
+        .app-card.mendeley .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(330deg) saturate(5); }
+        .app-card.mendeley .app-link-text { color: var(--red); }
 
         .app-title {
             font-family: 'Syne', sans-serif;
@@ -184,15 +242,21 @@
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .hero-title { font-size: 2.2rem; }
+            .hero-title { font-size: 1.9rem; flex-direction: column; gap: 8px; }
+            .main-logo-img { width: 55px; height: 55px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1 class="hero-title">DSW Research Ecosystem</h1>
-        <p class="hero-subtitle">Platform komputasi terintegrasi berbasis *client-side* untuk menunjang analisis statistika, bioinformatika, dan manajemen laboratorium sains.</p>
+        <div class="dsw-top-tag">DSW</div>
+        
+        <h1 class="hero-title">
+            <img src="ARE%20Logo.png" alt="Logo Aquaculture Research Ecosystem" class="main-logo-img" style="width: 65px; height: 65px;">
+            <span class="title-text">Aquaculture Research Ecosystem</span>
+        </h1>
+        <p class="hero-subtitle">Platform komputasi terintegrasi berbasis <em>client-side</em> untuk menunjang analisis statistika, bioinformatika, dan manajemen laboratorium sains.</p>
         
         <a href="https://dandisw.github.io/Profil-Dandi/" class="author-badge" target="_blank" title="Lihat Profil Dandi Setio Wibowo">
             Developed by Dandi Setio Wibowo
@@ -203,35 +267,35 @@
         <div class="app-grid">
             
             <a href="https://dandisw.github.io/AquaLab-Workspace/" class="app-card aqualab" target="_blank">
-                <div class="app-icon">🔬</div>
+                <div class="app-icon"><span class="emoji-filter">🔬</span></div>
                 <h2 class="app-title">AquaLab Workspace</h2>
                 <p class="app-desc">Buku catatan laboratorium digital komprehensif. Dilengkapi EWS Kualitas Air, kalkulator performa In Vivo, biokinetika mikrobiologi, dan dokumentasi molekuler.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
             <a href="https://dandisw.github.io/StatWise/" class="app-card statwise" target="_blank">
-                <div class="app-icon">📊</div>
+                <div class="app-icon"><span class="emoji-filter">📊</span></div>
                 <h2 class="app-title">StatWise</h2>
                 <p class="app-desc">Mesin komputasi statistik murni JavaScript. Mendukung uji Normalitas, ANOVA, Korelasi, hingga visualisasi Scatter Plot tanpa memerlukan server backend.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
             <a href="https://dandisw.github.io/BioTools/" class="app-card biotools" target="_blank">
-                <div class="app-icon">🧬</div>
+                <div class="app-icon"><span class="emoji-filter">⚗</span></div>
                 <h2 class="app-title">BioTools Suite</h2>
-                <p class="app-desc">Perangkat bioinformatika untuk manipulasi sekuens. Menyediakan fitur *Reverse Complement*, persentase GC, translasi kodon, dan validasi sekuens genetik.</p>
+                <p class="app-desc">Perangkat bioinformatika *end-to-end*. Menyediakan fitur ekstraksi ORF, penjajaran MSA, Fisikokimia Protein, dan pembuatan pohon filogenetik beresolusi tinggi.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
             <a href="https://dandisw.github.io/EcoMetrics-Multivariat/" class="app-card ecometrics" target="_blank">
-                <div class="app-icon">🌿</div>
+                <div class="app-icon"><span class="emoji-filter">🌿</span></div>
                 <h2 class="app-title">EcoMetrics Multivariat</h2>
                 <p class="app-desc">Pusat eksplorasi data multivariat. Mendukung kalkulasi Rapfish (MDS Keberlanjutan), Principal Component Analysis (PCA), K-Means, ANOSIM, dan LDA.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
             <a href="https://dandisw.github.io/Mendeley-Citation-Portal-FPIK-Unsoed-2018/" class="app-card mendeley" target="_blank">
-                <div class="app-icon">📚</div>
+                <div class="app-icon"><span class="emoji-filter">📚</span></div>
                 <h2 class="app-title">Mendeley FPIK Portal</h2>
                 <p class="app-desc">Repositori distribusi digital CSL Style Tugas Akhir FPIK 2018 Resmi Universitas Jenderal Soedirman untuk instalasi Mendeley Cite secara instan.</p>
                 <div class="app-link-text">Buka Portal &rarr;</div>
@@ -241,7 +305,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 DSW Research Ecosystem. All tools execute locally in your browser for absolute privacy.</p>
+        <p>&copy; 2026 Aquaculture Research Ecosystem. All tools execute locally in your browser for absolute privacy.</p>
     </footer>
 
 </body>
