@@ -11,12 +11,21 @@
     <meta property="og:image" content="https://dandisw.github.io/Aquaculture-Research-Ecosystem/ARE%20Logo.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0b0f14; --bg-card: #111620; --border: #2a3448;
-            --text-main: #f8fafc; --text-muted: #8fa3c0;
-            --blue: #38bdf8; --purple: #a855f7; --emerald: #10b981; 
-            --amber: #f59e0b; --red: #f43f5e;
+            /* Tema Gelap Premium - Nuansa Deep Sea Blue & High Contrast Border */
+            --bg: #030914; 
+            --bg-card: rgba(10, 20, 38, 0.7); 
+            --border: rgba(56, 189, 248, 0.3); 
+            --border-hover: rgba(56, 189, 248, 0.85);
+            --text-main: #f8fafc; 
+            --text-muted: #8fa3c0;
+            --blue: #38bdf8; 
+            --purple: #a855f7; 
+            --emerald: #10b981; 
+            --amber: #f59e0b; 
+            --red: #f43f5e;
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -25,43 +34,52 @@
             font-family: 'DM Sans', sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
-            line-height: 1.6;
+            line-height: 1.5;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            /* Efek Gradasi Kedalaman Laut Dalam */
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(2, 132, 199, 0.22) 0%, transparent 50%),
+                radial-gradient(circle at 50% 100%, rgba(3, 105, 161, 0.12) 0%, transparent 50%),
+                linear-gradient(to bottom, #030914, #01040a);
+            background-attachment: fixed;
+            overflow-x: hidden;
         }
 
         /* HEADER / HERO SECTION */
         header {
             text-align: center;
-            padding: 60px 20px 50px;
-            background: radial-gradient(circle at top, #162032 0%, var(--bg) 70%);
-            border-bottom: 1px solid var(--border);
+            padding: 45px 20px 25px;
+            border-bottom: 1.5px solid var(--border); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background: rgba(3, 9, 20, 0.5);
         }
 
-        /* Gaya Khusus Penanda DSW Atas Tengah */
         .dsw-top-tag {
             font-family: 'Syne', sans-serif;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 4px;
+            letter-spacing: 5px;
             color: var(--blue);
-            margin-bottom: 12px;
-            opacity: 0.85;
+            margin-bottom: 14px;
+            opacity: 0.9;
             display: block;
         }
         
         .hero-title {
             font-family: 'Syne', sans-serif;
-            font-size: 2.8rem;
+            font-size: 2.6rem;
             font-weight: 800;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             letter-spacing: -1px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 18px;
+            gap: 16px;
         }
 
         .title-text {
@@ -70,180 +88,241 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Desain Logo Baru Utama dengan Efek Melayang */
+        /* Logo Desain Baru: Simpel, Elegan, Tanpa Animasi Bergerak */
         .main-logo-img {
-            display: inline-block;
+            display: block;
             border-radius: 50%;
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.45);
-            animation: float 6s ease-in-out infinite;
+            width: 125px;
+            height: 125px;
+            object-fit: cover;
+            /* Border tipis & bayangan presisi mendalam */
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
+        /* Respon hover minimalis dan modern */
+        .main-logo-img:hover {
+            transform: scale(1.03);
+            border-color: var(--blue);
         }
 
         .hero-subtitle {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             color: var(--text-muted);
-            max-width: 600px;
+            max-width: 580px;
             margin: 0 auto;
             font-weight: 300;
         }
         
-        /* Tombol Profil Author */
         .author-badge {
             display: inline-block;
-            margin-top: 25px;
-            padding: 8px 20px;
-            background: rgba(255,255,255,0.05);
+            margin-top: 14px;
+            padding: 4px 14px;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
             border-radius: 50px;
-            font-size: 0.85rem;
+            font-size: 0.72rem;
             letter-spacing: 1px;
             color: var(--text-muted);
             text-transform: uppercase;
             text-decoration: none;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
         }
         .author-badge:hover {
             color: var(--text-main);
             border-color: var(--blue);
             background: rgba(56, 189, 248, 0.1);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(56, 189, 248, 0.15);
         }
 
         /* MAIN CONTENT & GRID */
         main {
             flex: 1;
-            padding: 60px 20px;
+            padding: 35px 20px 50px;
             max-width: 1200px;
             margin: 0 auto;
             width: 100%;
+            display: flex;
+            align-items: center;
         }
         
         .app-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 22px;
+            width: 100%;
         }
 
-        /* APP CARDS */
+        /* KOTAK APP CARDS */
         .app-card {
             background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 30px;
+            border: 1.5px solid var(--border); 
+            border-radius: 10px;
+            padding: 22px 24px;
             text-decoration: none;
             color: inherit;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
         
         .app-card::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
-            height: 4px;
+            height: 3px;
             background: transparent;
-            transition: 0.3s ease;
+            transition: 0.25s ease;
         }
 
         .app-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            border-color: #3a4a68;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+            border-color: var(--border-hover);
+            background: rgba(14, 28, 54, 0.7);
         }
 
         .app-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
+            font-size: 22px;
+            margin-bottom: 12px;
+            transition: all 0.25s ease;
         }
 
         .emoji-filter {
             display: inline-block;
-            transition: filter 0.3s ease, transform 0.3s ease;
+            transition: filter 0.25s ease, transform 0.25s ease;
         }
 
         .app-card:hover .emoji-filter {
-            transform: scale(1.15);
+            transform: scale(1.1);
         }
 
-        /* Pewarnaan Monokromatik Berdasarkan Ekosistem DSW */
-        
-        /* Card 1: AquaLab (Cyan/Blue) */
+        /* Filter Warna Emoji Ekosistem DSW */
         .app-card.aqualab:hover::before { background: var(--blue); }
-        .app-card.aqualab .app-icon { background: rgba(56, 189, 248, 0.1); }
+        .app-card.aqualab .app-icon { background: rgba(56, 189, 248, 0.08); }
         .app-card.aqualab .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(180deg) saturate(5); }
         
-        /* Card 2: StatWise (Purple) */
         .app-card.statwise:hover::before { background: var(--purple); }
-        .app-card.statwise .app-icon { background: rgba(168, 85, 247, 0.1); }
+        .app-card.statwise .app-icon { background: rgba(168, 85, 247, 0.08); }
         .app-card.statwise .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(250deg) saturate(5); }
         
-        /* Card 3: BioTools (Emerald) */
         .app-card.biotools:hover::before { background: var(--emerald); }
-        .app-card.biotools .app-icon { background: rgba(16, 185, 129, 0.1); }
+        .app-card.biotools .app-icon { background: rgba(16, 185, 129, 0.08); }
         .app-card.biotools .emoji-filter { filter: grayscale(100%) brightness(1.1) sepia(1) hue-rotate(110deg) saturate(4); }
 
-        /* Card 4: EcoMetrics (Amber) */
         .app-card.ecometrics:hover::before { background: var(--amber); }
-        .app-card.ecometrics .app-icon { background: rgba(245, 158, 11, 0.1); }
+        .app-card.ecometrics .app-icon { background: rgba(245, 158, 11, 0.08); }
         .app-card.ecometrics .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(15deg) saturate(5); }
 
-        /* Card 5: Mendeley Portal (Rose/Red) */
         .app-card.mendeley:hover::before { background: var(--red); }
-        .app-card.mendeley .app-icon { background: rgba(244, 63, 94, 0.1); }
+        .app-card.mendeley .app-icon { background: rgba(244, 63, 94, 0.08); }
         .app-card.mendeley .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(330deg) saturate(5); }
         .app-card.mendeley .app-link-text { color: var(--red); }
 
         .app-title {
             font-family: 'Syne', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .app-desc {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             flex: 1;
+            line-height: 1.5;
         }
 
         .app-link-text {
-            margin-top: 25px;
-            font-size: 0.9rem;
+            margin-top: 14px;
+            font-size: 0.85rem;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            color: var(--blue);
         }
 
-        /* FOOTER */
+        /* FOOTER SYSTEM */
         footer {
             text-align: center;
             padding: 30px 20px;
-            border-top: 1px solid var(--border);
+            border-top: 2px solid var(--border);
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            background: rgba(2, 6, 12, 0.8);
         }
 
-        /* RESPONSIVE */
+        .footer-socials {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .footer-link:hover {
+            transform: translateY(-4px);
+            color: var(--text-main);
+            box-shadow: 0 0 12px var(--blue);
+        }
+        
+        .footer-link.github:hover { border-color: #ffffff; color: #ffffff; box-shadow: 0 0 12px rgba(255,255,255,0.4); }
+        .footer-link.linkedin:hover { border-color: #0A66C2; color: #0A66C2; box-shadow: 0 0 12px rgba(10,102,194,0.4); }
+        .footer-link.facebook:hover { border-color: #1877F2; color: #1877F2; box-shadow: 0 0 12px rgba(24,119,242,0.4); }
+        .footer-link.instagram:hover { border-color: #E1306C; color: #E1306C; box-shadow: 0 0 12px rgba(225,48,108,0.4); }
+        .footer-link.secreto:hover { border-color: var(--amber); color: var(--amber); box-shadow: 0 0 12px rgba(245,158,11,0.6); }
+
+        .feedback-text {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .feedback-text a {
+            color: var(--amber);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .feedback-text a:hover {
+            color: #fbbf24;
+            text-decoration: underline;
+        }
+
+        /* RESPONSIVE CONTROL */
         @media (max-width: 768px) {
-            .hero-title { font-size: 1.9rem; flex-direction: column; gap: 8px; }
-            .main-logo-img { width: 55px; height: 55px; }
+            header { padding: 35px 15px 15px; }
+            .hero-title { font-size: 1.8rem; gap: 10px; }
+            .main-logo-img { width: 110px; height: 110px; }
+            main { padding: 15px 15px 30px; }
+            .app-grid { grid-template-columns: 1fr; gap: 15px; }
+            .footer-socials { gap: 12px; }
         }
     </style>
 </head>
@@ -251,9 +330,8 @@
 
     <header>
         <div class="dsw-top-tag">DSW</div>
-        
         <h1 class="hero-title">
-            <img src="ARE%20Logo.png" alt="Logo Aquaculture Research Ecosystem" class="main-logo-img" style="width: 65px; height: 65px;">
+            <img src="ARE%20Logo.png" alt="Logo Aquaculture Research Ecosystem" class="main-logo-img">
             <span class="title-text">Aquaculture Research Ecosystem</span>
         </h1>
         <p class="hero-subtitle">Platform komputasi terintegrasi berbasis <em>client-side</em> untuk menunjang analisis statistika, bioinformatika, dan manajemen laboratorium sains.</p>
@@ -305,6 +383,28 @@
     </main>
 
     <footer>
+        <div class="footer-socials">
+            <a href="https://github.com/dandisw" class="footer-link github" target="_blank" title="Profil GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+            <a href="https://www.linkedin.com/in/dandi-setio-wibowo" class="footer-link linkedin" target="_blank" title="Koneksi LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://www.facebook.com/share/1B5nMB7Gde/" class="footer-link facebook" target="_blank" title="Koneksi Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/dandisetio_w" class="footer-link instagram" target="_blank" title="Ikuti Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://secreto.site/a8vwl7" class="footer-link secreto" target="_blank" title="Kirim Umpan Balik Anonim (Secreto)">
+                <i class="fas fa-comment-alt"></i>
+            </a>
+        </div>
+        
+        <p class="feedback-text">
+            Punya masukan atau temuan bug selama penelitian? Tuliskan <a href="https://secreto.site/a8vwl7" target="_blank">Kritik, Saran, &amp; Feedback Anonim Anda di Sini</a>.
+        </p>
+        
         <p>&copy; 2026 Aquaculture Research Ecosystem. All tools execute locally in your browser for absolute privacy.</p>
     </footer>
 
