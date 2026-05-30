@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aquaculture Research Ecosystem — Integrated Scientific Tools</title>
     
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0052c9">
+    
     <link rel="icon" href="AREs%20Logo%20Outline.png?v=2" type="image/png">
     
     <link rel="apple-touch-icon" sizes="180x180" href="AREs%20Logo%20Outline.png?v=2">
@@ -513,5 +516,14 @@
         </div>
     </footer>
 
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker PWA berhasil didaftarkan!', reg))
+                    .catch(err => console.error('Pendaftaran Service Worker gagal:', err));
+            });
+        }
+    </script>
 </body>
 </html>
