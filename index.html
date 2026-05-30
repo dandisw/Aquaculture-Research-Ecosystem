@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aquaculture Research Ecosystem — Integrated Scientific Tools</title>
     
-    <link rel="icon" href="Logo%20AREs%20New.png" type="image/png">
+    <link rel="icon" href="AREs%20Logo%20Outline.png" type="image/png">
     
     <meta property="og:title" content="Aquaculture Research Ecosystem">
     <meta property="og:description" content="Platform komputasi terintegrasi berbasis client-side untuk analisis statistika, bioinformatika, dan manajemen akuakultur.">
-    <meta property="og:image" content="https://dandisw.github.io/Aquaculture-Research-Ecosystem/Logo%20AREs%20New.png">
+    <meta property="og:image" content="https://dandisw.github.io/Aquaculture-Research-Ecosystem/AREs%20Logo%20Outline.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@400;600;700;800;900&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=Open+Sans:ital,wght@1,600;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@400;600;700;800;900&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -58,43 +58,26 @@
             background: rgba(3, 9, 20, 0.6);
         }
 
-        /* TEKS BRAND KIRI ATAS - DIPERBAIKI */
+        /* WADAH LOGO ACRONIM KIRI ATAS */
         .top-left-brand {
             position: absolute;
-            top: 25px;
+            top: 30px;
             left: 30px;
-            text-align: left;
             z-index: 20;
         }
         
-        .brand-main {
-            font-family: 'MuseoModerno', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 900;
-            color: #0052c9;
-            letter-spacing: 1px;
-            /* Outline putih solid hanya untuk AREs */
-            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
-            position: relative;
-            display: inline-block;
+        .acronim-logo {
+            height: 42px; /* Ukuran proporsional untuk logo akronim */
+            width: auto;
+            display: block;
+            transition: transform 0.3s ease;
         }
 
-        .brand-sub {
-            font-family: 'Open Sans', sans-serif;
-            font-size: 0.7rem;
-            font-weight: 700;
-            font-style: italic;
-            color: #e2e8f0; /* Warna putih redup yang clean */
-            letter-spacing: 0.5px;
-            text-transform: none; /* by DSW */
-            position: absolute;
-            bottom: -6px; /* Turun ke bawah */
-            right: -26px; /* Geser ke kanan (dekat E dan s) */
-            text-shadow: none; /* MENGHILANGKAN outline aneh/kotor */
-            white-space: nowrap;
+        .acronim-logo:hover {
+            transform: scale(1.05);
         }
 
-        /* WADAH FLEXBOX KANAN ATAS (Mencegah Tumpuk) */
+        /* WADAH FLEXBOX KANAN ATAS */
         .top-right-actions {
             position: absolute;
             top: 25px;
@@ -169,25 +152,17 @@
             z-index: 5;
         }
 
-        /* EFEK OUTLINE LOGO TENGAH (BURAM 0) */
+        /* LOGO UTAMA TENGAH - BERSIH TANPA CSS SHADOW */
         .main-logo-img {
             display: block;
-            width: 200px; 
+            width: 210px; /* Ukuran disesuaikan agar outline bawaan gambar terbaca jelas */
             height: auto;
             object-fit: contain;
-            filter: drop-shadow(1.5px 1.5px 0px #ffffff) 
-                    drop-shadow(-1.5px -1.5px 0px #ffffff) 
-                    drop-shadow(1.5px -1.5px 0px #ffffff) 
-                    drop-shadow(-1.5px 1.5px 0px #ffffff);
-            transition: filter 0.3s ease, transform 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
         .logo-link:hover .main-logo-img {
-            transform: scale(1.05);
-            filter: drop-shadow(2px 2px 0px #ffffff) 
-                    drop-shadow(-2px -2px 0px #ffffff) 
-                    drop-shadow(2px -2px 0px #ffffff) 
-                    drop-shadow(-2px 2px 0px #ffffff);
+            transform: scale(1.05); /* Hanya efek membesar saat hover, tanpa blur */
         }
 
         .hero-subtitle {
@@ -415,16 +390,13 @@
         @media (max-width: 768px) {
             header { padding: 45px 15px 20px; }
             .hero-title { font-size: 2rem; gap: 14px; margin-top: 15px; }
-            .main-logo-img { width: 160px; } 
+            .main-logo-img { width: 170px; } 
             
-            .top-left-brand { top: 15px; left: 15px; }
-            .brand-main { font-size: 1.2rem; }
-            .brand-sub { font-size: 0.6rem; bottom: -5px; right: -20px; }
+            .top-left-brand { top: 20px; left: 15px; }
+            .acronim-logo { height: 32px; }
             
-            /* Penyesuaian agar wadah header kanan tidak nabrak logo di HP */
-            .top-right-actions { top: 15px; right: 15px; gap: 8px; }
+            .top-right-actions { top: 20px; right: 15px; gap: 8px; }
             .header-btn { padding: 6px 12px; font-size: 0.65rem; }
-            /* Menyembunyikan teks nama IG di HP, hanya menampilkan logo kamera agar pas */
             .ig-text-hide { display: none; }
             
             main { padding: 15px 15px 30px; }
@@ -437,10 +409,9 @@
 
     <header>
         <div class="top-left-brand">
-            <div class="brand-main">
-                AREs
-                <div class="brand-sub">by DSW</div>
-            </div>
+            <a href="https://dandisw.github.io/Profil-Dandi/" target="_blank" title="Profil Dandi Setio Wibowo">
+                <img src="AREs%20Logo%20Acronim.png" alt="AREs by DSW" class="acronim-logo">
+            </a>
         </div>
         
         <div class="top-right-actions">
@@ -455,7 +426,7 @@
 
         <h1 class="hero-title">
             <a href="https://dandisw.github.io/Profil-Dandi/" target="_blank" class="logo-link" title="Lihat Profil Dandi Setio Wibowo">
-                <img src="Logo%20AREs%20New.png" alt="Logo Aquaculture Research Ecosystem" class="main-logo-img">
+                <img src="AREs%20Logo%20Outline.png" alt="Logo Aquaculture Research Ecosystem" class="main-logo-img">
             </a>
             
             <span class="title-text">Aquaculture Research Ecosystem</span>
