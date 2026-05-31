@@ -36,23 +36,10 @@
 body { font-family: var(--font-sans); background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 14px; transition: background 0.3s, color 0.3s; }
 
 /* Class Khusus untuk Mengubah Warna Emoji Menjadi Biru DSW Ecosystem */
-.dsw-icon-styled {
-    filter: grayscale(100%);
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 5px;
-    transition: filter 0.3s ease;
-}
-[data-theme="dark"] .dsw-icon-styled {
-    filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(180deg) saturate(4);
-}
-[data-theme="light"] .dsw-icon-styled {
-    filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(180deg) saturate(3);
-}
-.menu-item:hover .dsw-icon-styled,
-.btn:hover .dsw-icon-styled {
-    filter: grayscale(100%) brightness(1.5) sepia(1) hue-rotate(180deg) saturate(6);
-}
+.dsw-icon-styled { filter: grayscale(100%); display: inline-block; vertical-align: middle; margin-right: 5px; transition: filter 0.3s ease; }
+[data-theme="dark"] .dsw-icon-styled { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(180deg) saturate(4); }
+[data-theme="light"] .dsw-icon-styled { filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(180deg) saturate(3); }
+.menu-item:hover .dsw-icon-styled, .btn:hover .dsw-icon-styled { filter: grayscale(100%) brightness(1.5) sepia(1) hue-rotate(180deg) saturate(6); }
 
 /* HEADER & RESPONSIVE */
 header { background: var(--surface); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10; box-shadow: var(--shadow); transition: background 0.3s; }
@@ -76,8 +63,9 @@ header { background: var(--surface); padding: 0 24px; height: 60px; display: fle
 .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 39; display: none; opacity: 0; transition: opacity 0.3s; }
 .menu-group { margin-bottom: 15px; }
 .menu-title { font-size: 11px; text-transform: uppercase; font-weight: 600; color: var(--text3); padding: 0 20px; margin-bottom: 8px; letter-spacing: 0.5px; }
-.menu-item { padding: 8px 20px; font-size: 13px; color: var(--text2); cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 10px; font-weight: 500; }
+.menu-item { padding: 8px 20px; font-size: 13px; color: var(--text2); cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 10px; font-weight: 500; border-left: 3px solid transparent; }
 .menu-item:hover { background: var(--primary-light); color: var(--primary); }
+.menu-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
 
 /* WORKSPACE */
 .workspace { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; min-width: 0; }
@@ -85,10 +73,8 @@ header { background: var(--surface); padding: 0 24px; height: 60px; display: fle
 .tab { padding: 12px 20px; cursor: pointer; font-weight: 600; font-size: 13px; color: var(--text3); border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
 .tab:hover { color: var(--text); }
 .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
-
 .view-area { flex: 1; overflow: auto; padding: 16px; display: none; background: var(--bg); transition: background 0.3s; flex-direction: column; }
 .view-area.active { display: flex; }
-
 .table-wrapper { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); overflow: auto; flex: 1; box-shadow: var(--shadow); transition: background 0.3s; }
 table { width: 100%; border-collapse: collapse; text-align: left; table-layout: fixed; min-width: 600px; }
 th, td { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); height: 36px; padding: 0; }
@@ -180,7 +166,7 @@ select.var-input option { background: var(--surface); color: var(--text); }
   header { padding: 0 15px; }
   .menu-toggle { display: block; }
   .brand { font-size: 18px; }
-  .header-actions .btn-text { display: none; } /* Hide text on buttons */
+  .header-actions .btn-text { display: none; } 
   .sidebar { position: absolute; left: 0; top: 0; bottom: 0; transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); }
   .sidebar-overlay.open { display: block; opacity: 1; }
@@ -371,7 +357,11 @@ select.var-input option { background: var(--surface); color: var(--text); }
 
       <div class="about-section" id="sec-log">
         <div class="changelog-item">
-          <b>Versi 10.0 (Current) - Mobile & Documentation Update</b><br>
+          <b>Versi 11.0 (Current) - Final Polish</b><br>
+          Perbaikan fungsi Distribusi-T terbalik (<i>tInv</i>) pada statistik deskriptif dan penambahan sistem generator narasi kesimpulan/interpretasi otomatis berbasis p-value untuk semua metode uji komparatif.
+        </div>
+        <div class="changelog-item">
+          <b>Versi 10.0 - Mobile & Documentation Update</b><br>
           Penambahan tata letak responsif penuh untuk ponsel/tablet, integrasi dokumentasi rujukan, dan restrukturisasi antarmuka pengguna tanpa memutus komputasi statik.
         </div>
         <div class="changelog-item">
@@ -385,10 +375,6 @@ select.var-input option { background: var(--surface); color: var(--text); }
         <div class="changelog-item">
           <b>Versi 5.0 & 6.0 - Master Reporting</b><br>
           Lahirnya sistem panel laporan kumulatif (*append* uji statistik tiada batas) dengan cetak luring PDF native serta interpretasi kesimpulan teks bahasa ilmiah secara otomatis.
-        </div>
-        <div class="changelog-item">
-          <b>Versi 1.0 hingga 4.0 - Fondasi & Presisi Matematis</b><br>
-          Pengembangan arsitektur <i>Single Page Application</i> dengan input matriks Excel. Pengembangan engine Incomplete Beta & Log-Gamma untuk resolusi *p-value* tingkat ekstrim. Integrasi otomatis Notasi Uji Lanjut Piepho (2004).
         </div>
       </div>
     </div>
@@ -545,7 +531,7 @@ function copyTableToClipboard(btn) {
 function generateTable(htmlContent) { return `<div class="tbl-container"><button class="btn btn-outline btn-sm copy-btn" onclick="copyTableToClipboard(this)"><span class="dsw-icon-styled">📋</span> Salin Tabel</button>${htmlContent}</div>`; }
 
 // ==========================================
-// CORE MATH ENGINE 10.0 (MATRIX, LILLIEFORS, EXACT MW)
+// CORE MATH ENGINE 11.0 (MATRIX, LILLIEFORS, EXACT MW)
 // ==========================================
 const mean = a => a.reduce((s,v)=>s+v,0)/a.length;
 const variance = (a,s=true) => { const m=mean(a); return a.reduce((t,v)=>t+(v-m)**2,0)/(a.length-(s?1:0)); };
@@ -593,6 +579,12 @@ function qnorm(p) {
     const q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
 }
 function tDistPVal(t, df) { return betainc(df / (df + t * t), df / 2, 0.5); }
+// FUNGSI T-INVERSE DIKEMBALIKAN (Bug Fix Versi 11.0)
+const tInv = (alpha2, df) => {
+    if(df <= 0) return NaN; let lo = 0, hi = 1e4;
+    for (let i = 0; i < 70; i++) { const mid = (lo+hi)/2; tDistPVal(mid, df) > alpha2 ? lo = mid : hi = mid; } return (lo+hi)/2;
+}
+
 function tukeyPVal(q, k, df) {
     if (q <= 0) return 1; if (!isFinite(q) || df <= 0) return 0;
     const GLX = [0.09501251,0.28160355,0.45801678,0.61787624,0.75540441,0.86563120,0.94457502,0.98940093], GLW = [0.18945061,0.18260342,0.16915652,0.14959599,0.12462897,0.09515851,0.06225352,0.02715246];
@@ -818,7 +810,35 @@ function drawScatter(xArr, yArr, title, themeColor, xLab, yLab, slope, intercept
 }
 
 // ==========================================
-// UI DIALOGS & RUNNERS MAIN 10.0
+// 11.0 UPDATE: GENERATOR INTERPRETASI OTOMATIS
+// ==========================================
+function generateInterpretation(type, r, alpha, varName) {
+    let isSig = r.p <= alpha; let text = "";
+    if (type === 'anova1') {
+        text = `Berdasarkan uji One-Way ANOVA terhadap variabel <b>${varName}</b>, diperoleh nilai p = ${fmtp(r.p)}. ` +
+               (isSig ? `Karena p &le; ${alpha}, terdapat perbedaan rata-rata yang signifikan secara statistik antar kelompok perlakuan. Disarankan melihat hasil Post Hoc.` : `Karena p &gt; ${alpha}, tidak terdapat perbedaan rata-rata yang signifikan antar kelompok perlakuan.`);
+    } else if (type === 'kruskal') {
+        text = `Berdasarkan uji Kruskal-Wallis terhadap variabel <b>${varName}</b>, diperoleh nilai p = ${fmtp(r.p)}. ` +
+               (isSig ? `Karena p &le; ${alpha}, terdapat perbedaan distribusi median yang signifikan antar kelompok.` : `Karena p &gt; ${alpha}, tidak ditemukan perbedaan signifikan antar kelompok.`);
+    } else if (type === 'mannwhitney') {
+        text = `Uji Mann-Whitney U pada variabel <b>${varName}</b> menghasilkan p-value = ${fmtp(r.p)}. ` +
+               (isSig ? `Terdapat perbedaan yang signifikan antara kedua kelompok tersebut.` : `Tidak ditemukan perbedaan yang signifikan antara kedua kelompok.`);
+    } else if (type === 'ttest_indep') {
+        let pass = r.pStd <= alpha;
+        text = `Uji-T Independen pada variabel <b>${varName}</b> menghasilkan p-value = ${fmtp(r.pStd)} (Student's t). ` +
+               (pass ? `Terdapat perbedaan rata-rata yang signifikan antara kedua kelompok.` : `Tidak ditemukan perbedaan rata-rata yang signifikan antara kedua kelompok.`);
+    } else if (type === 'ttest_paired' || type === 'wilcoxon') {
+        text = `Uji komparasi berpasangan menghasilkan p-value = ${fmtp(r.p)}. ` +
+               (isSig ? `Terdapat perbedaan yang signifikan antara sebelum dan sesudah perlakuan.` : `Tidak ditemukan perbedaan yang signifikan antara sebelum dan sesudah perlakuan.`);
+    } else if (type === 'correg') {
+        text = `Analisis korelasi menghasilkan p-value = ${fmtp(r.p)} dengan koefisien r = ${fmt(r.r)}. ` +
+               (isSig ? `Terdapat hubungan yang signifikan antar variabel.` : `Tidak terdapat hubungan yang signifikan antar variabel.`);
+    }
+    return `<div class="r-note"><b>Interpretasi Akademis:</b><br>${text}</div>`;
+}
+
+// ==========================================
+// UI DIALOGS & RUNNERS MAIN 11.0
 // ==========================================
 function getFilteredOptions(typeFilter) { let opts = ''; S.vars.forEach((v, i) => { opts += `<option value="${i}">${v.name}</option>`; }); return opts; }
 function getMultiSelectCheckboxes(typeFilter, containerId) { let html = `<div class="multi-select-container" id="${containerId}">`; S.vars.forEach((v, i) => { if (v.type === typeFilter) html += `<label class="checkbox-label"><input type="checkbox" value="${i}" ${i===0?'checked':''}> ${v.name}</label>`; }); return html + `</div>`; }
@@ -910,7 +930,8 @@ function runDeskriptif() {
   deps.forEach(vIdx => {
     fullHtml += `<div style="font-weight:bold; margin-bottom:8px;">Variabel: ${S.vars[vIdx].name}</div>`;
     const d = S.data.map(r => parseFloat(String(r[vIdx]).replace(',','.'))).filter(v => !isNaN(v)); if (d.length === 0) return fullHtml += `<div class="r-alert">Data kosong.</div>`;
-    const n = d.length, m = mean(d), s = std(d), se = s / Math.sqrt(n), med = median(d), mn = Math.min(...d), mx = Math.max(...d), sk = skewness(d), ku = kurtosis(d), tc = n > 1 ? tInv(0.05, n - 1) : 0, ci_lo = m - tc * se, ci_hi = m + tc * se;
+    const n = d.length, m = mean(d), s = std(d), se = s / Math.sqrt(n), med = median(d), mn = Math.min(...d), mx = Math.max(...d), sk = skewness(d), ku = kurtosis(d);
+    const tc = n > 1 ? tInv(0.05, n - 1) : 0, ci_lo = m - tc * se, ci_hi = m + tc * se;
     fullHtml += `<div class="stat-grid"><div class="stat-box"><div class="label">N Valid</div><div class="value">${n}</div></div><div class="stat-box"><div class="label">Mean</div><div class="value">${fmt(m)}</div></div><div class="stat-box"><div class="label">Median</div><div class="value">${fmt(med)}</div></div><div class="stat-box"><div class="label">Std. Dev</div><div class="value">${fmt(s)}</div></div><div class="stat-box"><div class="label">Min</div><div class="value">${fmt(mn)}</div></div><div class="stat-box"><div class="label">Max</div><div class="value">${fmt(mx)}</div></div></div>`;
     let tbl = `<table class="res-table"><thead><tr><th>Statistik Tambahan</th><th>Nilai</th><th>Keterangan</th></tr></thead><tbody><tr><td>Std. Error Mean</td><td>${fmt(se)}</td><td>—</td></tr><tr><td>Skewness</td><td>${fmt(sk)}</td><td>${Math.abs(sk)<0.5?'Simetris':sk>1||sk<-1?'Menceng ekstrem':'Menceng'}</td></tr><tr><td>Kurtosis</td><td>${fmt(ku)}</td><td>${Math.abs(ku)<0.5?'Mesokurtik':ku>0?'Leptokurtik':'Platikurtik'}</td></tr><tr><td>95% CI (Mean)</td><td>[${fmt(ci_lo)}, ${fmt(ci_hi)}]</td><td>Rentang Kepercayaan</td></tr></tbody></table>`;
     fullHtml += generateTable(tbl) + `<hr>`;
@@ -959,16 +980,16 @@ function runTTestIndep() {
     const r = tTestIndep(groups[0], groups[1]), pass = r.pStd <= 0.05;
     fullHtml += `<div class="verdict ${pass?'v-fail':'v-pass'}">${pass ? '✅ Perbedaan signifikan (p ≤ 0.05)' : '❌ Tidak ada perbedaan'}</div>`;
     let tbl = `<table class="res-table"><thead><tr><th>Asumsi Varians</th><th>t</th><th>df</th><th>p-value</th></tr></thead><tbody><tr><td>Equal (Student's t)</td><td>${fmt(r.tStd)}</td><td>${fmt(r.dfStd, 1)}</td><td class="${pass?'sig':''}">${fmtp(r.pStd)}</td></tr><tr><td>Unequal (Welch's t)</td><td>${fmt(r.tWelch)}</td><td>${fmt(r.dfWelch, 1)}</td><td class="${r.pWelch<=0.05?'sig':''}">${fmtp(r.pWelch)}</td></tr></tbody></table>`;
-    fullHtml += generateTable(tbl) + drawChart(cType, names, groups, `Perbandingan ${S.vars[depIdx].name}`, theme, yL || S.vars[depIdx].name) + `<hr>`;
+    fullHtml += generateTable(tbl) + drawChart(cType, names, groups, `Perbandingan ${S.vars[depIdx].name}`, theme, yL || S.vars[depIdx].name) + generateInterpretation('ttest_indep', r, 0.05, S.vars[depIdx].name) + `<hr>`;
   }); appendToReport('Independent Sample T-Test', fullHtml);
 }
 
 function runPaired(type) {
   const v1 = parseInt(document.getElementById('dlg-var1').value), v2 = parseInt(document.getElementById('dlg-var2').value), cType = document.getElementById('dlg-chart-type').value, theme = document.getElementById('dlg-theme').value, yL = document.getElementById('dlg-ylabel').value; if(v1===v2) return alert('Pilih 2 variabel berbeda!'); closeDialog(); const {a1, a2} = extractPair(v1, v2); if(a1.length < 3) return alert('Data berpasangan kurang!');
-  let fullHtml = `<div style="font-weight:bold; margin-bottom:8px;">${S.vars[v1].name} vs ${S.vars[v2].name} (N=${a1.length})</div>`;
-  if (type === 'ttest_paired') { const r = tTestPaired(a1, a2), pass = r.p <= 0.05; fullHtml += `<div class="verdict ${pass?'v-fail':'v-pass'}">${pass ? '✅ Perbedaan signifikan' : '❌ Tidak signifikan'}</div><div class="stat-grid"><div class="stat-box"><div class="label">t-Stat</div><div class="value">${fmt(r.t)}</div></div><div class="stat-box"><div class="label">df</div><div class="value">${r.df}</div></div><div class="stat-box"><div class="label">p-value</div><div class="value ${pass?'sig':''}">${fmtp(r.p)}</div></div></div>`; } 
-  else { const r = wilcoxonSignedRank(a1, a2), pass = r.p <= 0.05; fullHtml += `<div class="verdict ${pass?'v-fail':'v-pass'}">${pass ? '✅ Perbedaan signifikan' : '❌ Tidak signifikan'}</div><div class="stat-grid"><div class="stat-box"><div class="label">W (Pos/Neg)</div><div class="value">${fmt(r.Wpos,1)} / ${fmt(r.Wneg,1)}</div></div><div class="stat-box"><div class="label">Z-Score</div><div class="value">${fmt(r.z)}</div></div><div class="stat-box"><div class="label">p-value</div><div class="value ${pass?'sig':''}">${fmtp(r.p)}</div></div></div>`; }
-  fullHtml += drawChart(cType, [S.vars[v1].name, S.vars[v2].name], [a1, a2], `Perbandingan Berpasangan`, theme, yL || "Nilai"); appendToReport(type === 'ttest_paired' ? 'Paired Sample T-Test' : 'Wilcoxon Signed-Rank', fullHtml + '<hr>');
+  let fullHtml = `<div style="font-weight:bold; margin-bottom:8px;">${S.vars[v1].name} vs ${S.vars[v2].name} (N=${a1.length})</div>`; let pass = false; let rOut = null;
+  if (type === 'ttest_paired') { const r = tTestPaired(a1, a2); rOut = r; pass = r.p <= 0.05; fullHtml += `<div class="verdict ${pass?'v-fail':'v-pass'}">${pass ? '✅ Perbedaan signifikan' : '❌ Tidak signifikan'}</div><div class="stat-grid"><div class="stat-box"><div class="label">t-Stat</div><div class="value">${fmt(r.t)}</div></div><div class="stat-box"><div class="label">df</div><div class="value">${r.df}</div></div><div class="stat-box"><div class="label">p-value</div><div class="value ${pass?'sig':''}">${fmtp(r.p)}</div></div></div>`; } 
+  else { const r = wilcoxonSignedRank(a1, a2); rOut = r; pass = r.p <= 0.05; fullHtml += `<div class="verdict ${pass?'v-fail':'v-pass'}">${pass ? '✅ Perbedaan signifikan' : '❌ Tidak signifikan'}</div><div class="stat-grid"><div class="stat-box"><div class="label">W (Pos/Neg)</div><div class="value">${fmt(r.Wpos,1)} / ${fmt(r.Wneg,1)}</div></div><div class="stat-box"><div class="label">Z-Score</div><div class="value">${fmt(r.z)}</div></div><div class="stat-box"><div class="label">p-value</div><div class="value ${pass?'sig':''}">${fmtp(r.p)}</div></div></div>`; }
+  fullHtml += drawChart(cType, [S.vars[v1].name, S.vars[v2].name], [a1, a2], `Perbandingan Berpasangan`, theme, yL || "Nilai") + generateInterpretation(type, rOut, 0.05, ""); appendToReport(type === 'ttest_paired' ? 'Paired Sample T-Test' : 'Wilcoxon Signed-Rank', fullHtml + '<hr>');
 }
 
 function runAnova1() {
@@ -979,7 +1000,7 @@ function runAnova1() {
     const r = oneWayAnova(vG), pass = r.p <= 0.05;
     fullHtml += `<div class="verdict ${pass?'v-fail':'v-pass'}">${pass ? `✅ Ada perbedaan signifikan` : `❌ Tidak ada perbedaan`}</div>`;
     let tbl = `<table class="res-table"><thead><tr><th>Sumber</th><th>SS</th><th>df</th><th>MS</th><th>F</th><th>p-value</th></tr></thead><tbody><tr><td>Antar Kelompok</td><td>${fmt(r.SSB)}</td><td>${r.dfB}</td><td>${fmt(r.MSB)}</td><td class="${pass?'sig':''}">${fmt(r.F)}</td><td class="${pass?'sig':''}">${fmtp(r.p)}</td></tr><tr><td>Dalam Kelompok</td><td>${fmt(r.SSW)}</td><td>${r.dfW}</td><td>${fmt(r.MSW)}</td><td>—</td><td>—</td></tr></tbody></table>`;
-    fullHtml += generateTable(tbl) + drawChart(cType, vN, vG, `Visualisasi`, theme, yL || S.vars[depIdx].name) + `<div class="r-note">ANOVA menunjukan ${pass?'terdapat':'tidak terdapat'} perbedaan (p = ${fmtp(r.p)}).</div><hr>`;
+    fullHtml += generateTable(tbl) + drawChart(cType, vN, vG, `Visualisasi`, theme, yL || S.vars[depIdx].name) + generateInterpretation('anova1', r, 0.05, S.vars[depIdx].name) + `<hr>`;
   }); appendToReport('One-Way ANOVA', fullHtml);
 }
 
@@ -1021,7 +1042,7 @@ function runKruskal() {
       }} letters = getLetters(vN, r.meanRanks, pairs, 'p_sig');
     }
     let tbl = `<table class="res-table"><thead><tr><th>Kelompok</th><th>Mean Rank</th>${letters?'<th>Notasi</th>':''}</tr></thead><tbody>`; vN.forEach((nm,i) => { tbl += `<tr><td>${nm}</td><td>${fmt(r.meanRanks[i])}</td>${letters?`<td class="notation-b">${letters[i]}</td>`:''}</tr>`; }); tbl += `</tbody></table>`;
-    fullHtml += generateTable(tbl) + drawChart(cType, vN, vG, `Data Distribusi`, theme, yL || 'Nilai Data', letters) + `<hr>`;
+    fullHtml += generateTable(tbl) + drawChart(cType, vN, vG, `Data Distribusi`, theme, yL || 'Nilai Data', letters) + generateInterpretation('kruskal', r, 0.05, S.vars[depIdx].name) + `<hr>`;
   }); appendToReport('Kruskal-Wallis Test', fullHtml);
 }
 
@@ -1034,7 +1055,7 @@ function runMannWhitney() {
     fullHtml += `<div class="verdict ${pass?'v-fail':'v-pass'}">${pass ? '✅ Ada perbedaan signifikan' : '❌ Tidak ada perbedaan signifikan'}</div>`;
     fullHtml += `<div class="stat-grid"><div class="stat-box"><div class="label">U-Stat</div><div class="value">${fmt(r.U)}</div></div><div class="stat-box"><div class="label">p-value${r.exact?' (Exact)':' (Asymp)'}</div><div class="value ${pass?'sig':''}">${fmtp(r.p)}</div></div></div>`;
     let tbl = `<table class="res-table"><thead><tr><th>Kelompok</th><th>N</th><th>Mean Rank</th><th>Sum Rank</th></tr></thead><tbody><tr><td>${vN[0]}</td><td>${r.n1}</td><td>${fmt(r.R1/r.n1)}</td><td>${fmt(r.R1)}</td></tr><tr><td>${vN[1]}</td><td>${r.n2}</td><td>${fmt(r.R2/r.n2)}</td><td>${fmt(r.R2)}</td></tr></tbody></table>`;
-    fullHtml += generateTable(tbl) + drawChart(cType, vN, vG, `Distribusi Data`, theme, yL || S.vars[depIdx].name) + `<hr>`;
+    fullHtml += generateTable(tbl) + drawChart(cType, vN, vG, `Distribusi Data`, theme, yL || S.vars[depIdx].name) + generateInterpretation('mannwhitney', r, 0.05, S.vars[depIdx].name) + `<hr>`;
   }); appendToReport('Mann-Whitney U Test', fullHtml);
 }
 
@@ -1045,7 +1066,7 @@ function runCorReg() {
   fullHtml += `<div class="verdict ${pass?'v-fail':'v-pass'}">${pass ? '✅ Terdapat korelasi signifikan' : '❌ Tidak terdapat korelasi nyata'}</div>
               <div class="stat-grid"><div class="stat-box"><div class="label">Korelasi (r)</div><div class="value">${fmt(r.r)}</div></div><div class="stat-box"><div class="label">R² (Determinasi)</div><div class="value">${fmt(r.r2)}</div></div><div class="stat-box"><div class="label">p-value</div><div class="value ${pass?'sig':''}">${fmtp(r.p)}</div></div></div>`;
   if (meth === 'pearson') { fullHtml += `<div class="r-note" style="margin-bottom:10px;"><b>Regresi:</b> Y = ${fmt(r.slope)}X ${r.intercept >= 0 ? '+' : '-'} ${fmt(Math.abs(r.intercept))}</div>` + drawScatter(x, y, `Scatter Plot & Trendline`, theme, S.vars[vX].name, S.vars[vY].name, r.slope, r.intercept); } 
-  else { fullHtml += `<div class="r-note">Metode Spearman hanya mengukur korelasi peringkat.</div>`; }
+  fullHtml += generateInterpretation('correg', r, 0.05, "");
   appendToReport(meth === 'pearson' ? 'Korelasi Pearson' : 'Korelasi Spearman', fullHtml + '<hr>');
 }
 
