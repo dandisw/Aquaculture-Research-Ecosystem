@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aquaculture Research Ecosystem — Integrated Scientific Tools</title>
     
-    <link rel="manifest" href="manifest.json">
+    <!-- Penambahan ./ agar path terbaca absolut di GitHub Pages -->
+    <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#0052c9">
     
+    <!-- Favicon Tab Browser -->
     <link rel="icon" href="AREs%20Logo%20Outline.png?v=2" type="image/png">
     
+    <!-- Ikon HD untuk Pintasan Layar Utama (Android/Chrome/iOS) -->
     <link rel="apple-touch-icon" sizes="180x180" href="AREs%20Logo%20Outline.png?v=2">
     <link rel="icon" type="image/png" sizes="192x192" href="AREs%20Logo%20Outline.png?v=2">
     <link rel="icon" type="image/png" sizes="512x512" href="AREs%20Logo%20Outline.png?v=2">
     
+    <!-- Meta Thumbnail (Pratinjau tautan WhatsApp/LinkedIn) -->
     <meta property="og:title" content="Aquaculture Research Ecosystem">
     <meta property="og:description" content="Platform komputasi terintegrasi berbasis client-side untuk analisis statistika, bioinformatika, dan manajemen akuakultur.">
     <meta property="og:image" content="https://dandisw.github.io/Aquaculture-Research-Ecosystem/AREs%20Logo%20Outline.png?v=2">
     <meta name="twitter:card" content="summary_large_image">
 
+    <!-- Integrasi Font Google: MuseoModerno, Syne, DM Sans -->
     <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@400;600;700;800;900&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -516,10 +521,11 @@
         </div>
     </footer>
 
+    <!-- SKRIP OTOMATIS PENDAFTARAN SERVICE WORKER PWA (Diperbarui dengan ./) -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
+                navigator.serviceWorker.register('./sw.js')
                     .then(reg => console.log('Service Worker PWA berhasil didaftarkan!', reg))
                     .catch(err => console.error('Pendaftaran Service Worker gagal:', err));
             });
