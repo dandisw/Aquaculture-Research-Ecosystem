@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mendeley Style FPIK UNSOED — DSW Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ===== DESIGN TOKENS (DSW Research Ecosystem Aligned) ===== */
+        :root {
+            --bg: #0b0f14; 
+            --bg-card: #111620; 
+            --bg-hover: #161c26;
+            --border: #2a3448;
+            --border-focus: #3a4a68;
+            --text-main: #f8fafc; 
+            --text-muted: #8fa3c0;
+            --text-dim: #5a7090;
+            --blue: #38bdf8; 
+            --purple: #a855f7; 
+            --emerald: #10b981;
+            --radius: 12px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at top, #162032 0%, var(--bg) 60%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* ===== HERO HEADER ===== */
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--blue);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            background: linear-gradient(90deg, #f8fafc, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* ===== MAIN CARDS ===== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+        }
+
+        .card-title i {
+            color: var(--blue);
+        }
+
+        /* ===== LINK COPY SECTION ===== */
+        .link-wrapper {
+            margin-bottom: 20px;
+        }
+
+        .link-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .copy-group {
+            display: flex;
+            gap: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 6px 6px 14px;
+            align-items: center;
+        }
+
+        .copy-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--blue);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+            outline: none;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .btn-copy {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-copy:hover {
+            background: var(--border);
+            border-color: var(--text-muted);
+        }
+
+        .btn-copy.copied {
+            background: var(--emerald);
+            border-color: var(--emerald);
+            color: #fff;
+        }
+
+        /* ===== INSTALLATION STEPS TIMELINE ===== */
+        .steps-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .steps-timeline::before {
+            content: '';
+            position: absolute;
+            top: 5px; bottom: 5px; left: 5px;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .step-item {
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .step-number {
+            position: absolute;
+            left: -21px; top: 2px;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 3px solid var(--blue);
+        }
+
+        .step-text {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+        .step-text strong {
+            color: var(--text-main);
+        }
+
+        /* ===== PATCH NOTES ===== */
+        .patch-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .patch-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .patch-item i {
+            color: var(--emerald);
+            margin-top: 5px;
+            font-size: 0.8rem;
+        }
+
+        /* ===== AUTHOR WIDGET ===== */
+        .author-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 25px;
+            margin-top: 40px;
+        }
+
+        .author-img {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--purple);
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .author-bio {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .author-socials {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .author-socials a {
+            color: var(--text-dim);
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+
+        .author-socials a:hover {
+            color: var(--purple);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .hero-title { font-size: 1.8rem; }
+            .card { padding: 20px; }
+            .copy-group { padding: 4px; }
+            .copy-group span { display: none; }
+            .author-card { flex-direction: column; text-align: center; }
+            .author-socials { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <div class="hero-badge">
+                <i class="fas fa-graduation-cap"></i> FPIK UNSOED Style Guide
+            </div>
+            <h1 class="hero-title">Mendeley Citation Portal</h1>
+            <p class="hero-subtitle">Repositori distribusi digital CSL Style Tugas Akhir FPIK 2018 Resmi Universitas Jenderal Soedirman.</p>
+        </header>
+
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-link"></i> Salin URL Citation Style</h2>
+            
+            <div class="link-wrapper">
+                <label class="link-label">1. Format FPIK Standar (Tanpa Tautan DOI)</label>
+                <div class="copy-group">
+                    <input type="text" class="copy-input" id="linkTanpaDoi" value="https://gist.githubusercontent.com/dandisw/80c9e79e0c2867621efbb8e1bc6a8b85/raw/" readonly>
+                    <button class="btn-copy" onclick="copyLink('linkTanpaDoi', this)">
+                        <i class="fas fa-copy"></i> <span>Salin Link</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="link-wrapper" style="margin-bottom: 0;">
+                <label class="link-label">2. Format FPIK Premium (Dengan Tautan DOI Terintegrasi)</label>
+                <div class="copy-group">
+                    <input type="text" class="copy-input" id="linkDenganDoi" value="https://gist.githubusercontent.com/dandisw/a1c886b82de9c20ff6fdb8796e330f2e/raw/" readonly>
+                    <button class="btn-copy" onclick="copyLink('linkDenganDoi', this)">
+                        <i class="fas fa-copy"></i> <span>Salin Link</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-book-open"></i> Langkah-Langkah Instalasi</h2>
+            <div class="steps-timeline">
+                <div class="step-item">
+                    <div class="step-number"></div>
+                    <div class="step-text">Buka <strong>Microsoft Word</strong>, lalu luncurkan *add-in* <strong>Mendeley Cite</strong> Anda.</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number"></div>
+                    <div class="step-text">Klik tab menu <strong>Citation Settings</strong> yang berada di panel sebelah kanan bawah.</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number"></div>
+                    <div class="step-text">Pilih opsi tombol <strong>Change Citation Style</strong> lalu gulir (*scroll*) ke posisi paling bawah.</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number"></div>
+                    <div class="step-text">Klik menu <strong>Add a custom style</strong>.</div>
+                </div>
+                <div class="step-item" style="margin-bottom: 0;">
+                    <div class="step-number"></div>
+                    <div class="step-text"><strong>Tempel (*Paste*)</strong> salah satu tautan URL repositori yang telah Anda salin di atas, kemudian eksekusi tombol <strong>Update Citation Style</strong>. Selesai!</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-code-branch"></i> Pembaruan & Log Perbaikan (v1.4.2026)</h2>
+            <ul class="patch-list">
+                <li class="patch-item"><i class="fas fa-check-circle"></i> Otomatisasi konversi penghubung sitasi ganda dari bahasa asing "and" menjadi kata baku "dan".</li>
+                <li class="patch-item"><i class="fas fa-check-circle"></i> Integrasi format cetak miring (*italic*) otomatis pada frasa penanda sejenis sekuens jamak "et al." tanpa perlu penyuntingan manual.</li>
+                <li class="patch-item"><i class="fas fa-check-circle"></i> Rekonsiliasi tanda baca pemisah volume jurnal dari tanda koma (,) menjadi tanda titik dua (:) mutlak sesuai pakem buku pedoman Tugas Akhir FPIK.</li>
+            </ul>
+        </div>
+
+        <div class="author-card">
+            <img src="https://i1.rgstatic.net/ii/profile.image/11431281895952982-1769604133704_Q128/Dandi-Setio-Wibowo.jpg" alt="Dandi Setio Wibowo" class="author-img">
+            <div class="author-info">
+                <div class="author-name">Dandi Setio Wibowo</div>
+                <div class="author-bio">R&D Developer & Mahasiswa Program Studi Akuakultur, Universitas Jenderal Soedirman.</div>
+                <div class="author-socials">
+                    <a href="https://github.com/dandisw" target="_blank" title="GitHub Profile"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/dandi-setio-wibowo" target="_blank" title="LinkedIn Connection"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.instagram.com/dandisetio_w/" target="_blank" title="Instagram Feed"><i class="fab fa-instagram"></i></a>
+                    <a href="https://secreto.site/a8vwl7" target="_blank" title="Kirim Pesan Anonim/Feedback"><i class="fas fa-comment-dots"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 DSW Research Ecosystem. "Sebaik-baik manusia adalah yang bermanfaat bagi orang lain."</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function copyLink(inputId, button) {
+            const inputEl = document.getElementById(inputId);
+            inputEl.select();
+            inputEl.setSelectionRange(0, 99999); // Untuk perangkat seluler
+
+            navigator.clipboard.writeText(inputEl.value)
+                .then(() => {
+                    // Berikan feedback transisi visual tombol
+                    const icon = button.querySelector('i');
+                    const text = button.querySelector('span');
+                    
+                    button.classList.add('copied');
+                    icon.className = 'fas fa-check';
+                    text.textContent = 'Tersalin!';
+                    
+                    setTimeout(() => {
+                        button.classList.remove('copied');
+                        icon.className = 'fas fa-copy';
+                        text.textContent = 'Salin Link';
+                    }, 2000);
+                })
+                .catch(() => {
+                    alert('Gagal menyalin otomatis. Silakan salin tautan secara manual.');
+                });
+        }
+    </script>
+</body>
+</html>
