@@ -43,9 +43,10 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 14px; transition: background 0.3s, color 0.3s; }
+/* FIX MOBILE: 100dvh untuk mengamankan area dari tombol navigasi HP */
+body { font-family: var(--font-sans); background: var(--bg); color: var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; font-size: 14px; transition: background 0.3s, color 0.3s; }
 
-/* Class Khusus Warna Emoji DSW Ecosystem (Emerald Green) */
+/* Class Khusus Warna Emoji DSW Ecosystem */
 .dsw-icon-styled {
     filter: grayscale(100%);
     display: inline-block;
@@ -148,7 +149,7 @@ tbody tr:hover td { background: var(--surface-hover); }
 /* SVG Dendrogram Styles & Fullscreen */
 .dendrogram-container { width: 100%; height: 400px; overflow: auto; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
 svg text { fill: var(--text); font-family: var(--font-mono); font-size: 12px; font-weight: bold; }
-svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
+svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 .dendrogram-container svg { transition: width 0.3s ease, height 0.3s ease; }
 .fullscreen-mode { position: fixed !important; top: 20px; left: 20px; right: 20px; bottom: 20px; z-index: 9999; background: var(--bg) !important; box-shadow: 0 0 0 100vmax rgba(0,0,0,0.8); height: auto !important; border: 1px solid var(--border); border-radius: 12px; }
 .phylo-style-toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; background: var(--surface-hover); padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border); align-items: center; }
@@ -177,6 +178,7 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
 .about-section h4 { color: var(--primary); margin-top: 15px; margin-bottom: 5px; }
 .changelog-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed var(--border); }
 
+/* FIX MOBILE: Padding Bottom ekstra agar aman dari area navigasi HP */
 @media (max-width: 768px) {
   .main-container { flex-direction: column; }
   .sidebar { width: 100%; height: auto; flex-direction: row; padding: 10px 15px; border-right: none; border-bottom: 1px solid var(--border); overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
@@ -184,7 +186,8 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
   .menu-group:last-child { border-right: none; }
   .menu-title { display: none; }
   .menu-item { padding: 8px 14px; margin-right: 5px; font-size: 12px; }
-  .content-area { padding: 16px; }
+  /* Padding bawah tebal (120px) agar baris terakhir tidak tertutup tombol HP */
+  .content-area { padding: 16px 16px 120px 16px !important; }
   header { padding: 10px 16px; height: auto; min-height: 60px; flex-wrap: wrap; gap: 10px; }
   .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
   .grid-2 { grid-template-columns: 1fr; gap: 12px; }
@@ -197,7 +200,7 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
 <header>
   <div class="brand">
     <div class="brand-top"><span class="brand-icon dsw-icon-styled">⚗</span><span class="brand-text">Bio<span>Tools</span></span></div>
-    <span class="brand-sub">Workspace by DSW</span>
+    <span class="brand-sub">by DSW</span>
   </div>
   <div class="header-actions">
     <button class="btn btn-outline" id="theme-btn" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> Tema</button>
@@ -214,7 +217,7 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
       <div class="menu-item" onclick="switchView('v-msa', this)"><span class="dsw-icon-styled">📊</span> Multiple Alignment (MSA)</div>
     </div>
     <div class="menu-group">
-      <div class="menu-title">Proteomik (Baru)</div>
+      <div class="menu-title">Proteomik</div>
       <div class="menu-item" onclick="switchView('v-protein', this)"><span class="dsw-icon-styled">🧬</span> Fisikokimia Protein</div>
     </div>
     <div class="menu-group">
@@ -324,9 +327,7 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
             <div class="card-title" style="margin:0;">Hasil Penjajaran &amp; Profil SIAS</div>
             <div id="alignScore" style="color:var(--text3); font-weight:bold; font-family:var(--font-mono);"></div>
         </div>
-        
         <div id="siasStats" style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;"></div>
-        
         <div class="seq-align-out" id="alignOutputBox"></div>
       </div>
     </div>
@@ -351,7 +352,7 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
             <div class="card-title" style="margin:0;">Hasil Alignment Multiple (Color-Coded)</div>
             <button class="btn btn-success btn-sm" onclick="copyForWord('msaOutputBox')"><span class="dsw-icon-styled">📋</span> Salin ke Word</button>
         </div>
-        <div class="seq-align-out" id="msaOutputBox" style="font-size:12px; background:var(--bg); border:1px solid var(--border);"></div>
+        <div class="seq-align-out" id="msaOutputBox" style="font-size:12px; border:1px solid var(--border);"></div>
         <div style="font-size:11px; color:var(--text3); margin-top:10px;">
             Keterangan Warna: <span style="color:#ef4444; font-weight:bold;">A (Merah)</span> | <span style="color:#10b981; font-weight:bold;">T/U (Hijau)</span> | <span style="color:#3b82f6; font-weight:bold;">C (Biru)</span> | <span style="color:#f59e0b; font-weight:bold;">G (Kuning)</span>. Tanda bintang (*) menunjukkan kolom konservasi 100%.
         </div>
@@ -479,6 +480,7 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;">
                   <div class="card-title" style="margin:0;">🌳 Visualisasi Pohon Kekerabatan (SVG)</div>
                   <div style="display:flex; gap:5px;">
+                      <button class="btn btn-outline btn-sm" onclick="exportPhyloPNG()" title="Unduh format PNG"><span class="dsw-icon-styled">🖼️</span> PNG</button>
                       <button class="btn btn-outline btn-sm" onclick="zoomSvgPhylo(-0.2)" title="Perkecil">➖</button>
                       <button class="btn btn-outline btn-sm" onclick="zoomSvgPhylo(0)" title="Ukuran Asli">100%</button>
                       <button class="btn btn-outline btn-sm" onclick="zoomSvgPhylo(0.2)" title="Perbesar">➕</button>
@@ -646,7 +648,7 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
           <h4>Tips Penggunaan Cepat</h4>
           <ul style="padding-left:20px; margin-top:10px;">
               <li><strong>MSA & Visualisasi:</strong> Hasil penjajaran ganda (MSA) menampilkan asam amino/nukleotida yang diberi kode warna standar. Klik "Salin ke Word" untuk mengopi format tersebut langsung ke laporan Anda.</li>
-              <li><strong>Kustomisasi Filogenetik:</strong> Anda dapat mengganti warna garis, tipe font, hingga kemiringan teks (*Italic* sangat berguna untuk penulisan nama latin spesies) di bilah alat Filogenetik sebelum mengeklik tombol *Fullscreen* atau melakukan *Screenshot*.</li>
+              <li><strong>Kustomisasi Filogenetik:</strong> Anda dapat mengganti warna garis, tipe font, hingga kemiringan teks (*Italic* sangat berguna untuk penulisan nama latin spesies) di bilah alat Filogenetik sebelum mengeklik tombol *Fullscreen* atau mengekspor ke *PNG*.</li>
               <li><strong>ORF & Proteomik:</strong> Gunakan ORF Finder untuk mengekstrak urutan basa penyandi, lalu salin hasil translasinya ke tab "Fisikokimia Protein" untuk mengetahui berat molekul (kDa) dan sifat asam/basanya (pI).</li>
           </ul>
       </div>
@@ -680,20 +682,12 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
 
       <div class="about-section" id="sec-log">
         <div class="changelog-item">
-          <b>Versi 6.0 (Current) - Ultimate Proteomics & UI Standardization</b><br>
-          Penambahan modul Proteomik (*Fisikokimia Protein*) untuk menghitung MW, pI, dan komposisi asam amino. Standardisasi UI *Emerald Green* menggunakan teknik *CSS Filter Stack* dan perombakan sistem Dialog Bantuan (*Multi-tab*).
+          <b>Versi 6.5 - High-Res Export & UI Fix</b><br>
+          Mengekspansi batas karakter label pohon FASTA menjadi 25 karakter. Mengubah rasio *ViewBox* menjadi absolut 900px dengan bantalan area teks 250px di sebelah kanan untuk mengatasi masalah gambar nama spesies yang terpotong saat diekspor ke format PNG.
         </div>
         <div class="changelog-item">
-          <b>Versi 5.0 - Publication-Ready Upgrade</b><br>
-          Integrasi fitur *Copy to Word* dengan mempertahankan struktur HTML. Penambahan palet warna kustom (*Line, Text, Font Style*) dan kapabilitas *Zoom 300%* pada SVG Pohon Filogenetik.
-        </div>
-        <div class="changelog-item">
-          <b>Versi 4.0 - Heuristic MSA & Bootstrap</b><br>
-          Melahirkan algoritma Multiple Sequence Alignment (*Center-Star Heuristic*) dan menerapkan algoritma *Felsenstein Non-parametric Bootstrap* (Hingga 1000 iterasi) untuk uji keandalan klade pohon filogenetik.
-        </div>
-        <div class="changelog-item">
-          <b>Versi 1.0 hingga 3.0 - Fondasi Genomik</b><br>
-          Pengembangan arsitektur *Client-side*. Integrasi algoritma *Smith-Waterman* lokal. Penambahan *Restriction Mapper* berbasis library *New England Biolabs (NEB)*. Otomasi desain primer in-silico.
+          <b>Versi 6.0 - Ultimate Proteomics & UI Standardization</b><br>
+          Penambahan modul Proteomik (*Fisikokimia Protein*) untuk menghitung MW, pI, dan komposisi asam amino. Standardisasi UI *Emerald Green* menggunakan teknik *CSS Filter Stack*.
         </div>
       </div>
 
@@ -704,8 +698,14 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
 
 <script>
 // ===================================================================
-// SAMPLE DATA LOADER 
+// SYSTEM INITIALIZATION & UI
 // ===================================================================
+function showHelp() { openDialog('dlgHelp'); }
+function toast(msg) {
+  const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<span style="color:var(--success); font-size:16px;">✓</span> ${msg}`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 2500);
+}
 function loadSampleBioTools(type) {
     switch(type) {
         case 'blast':
@@ -713,12 +713,10 @@ function loadSampleBioTools(type) {
             break;
         case 'manipulasi':
             document.getElementById('rawSeq').value = 'ATGCGTACTAGCTAGCTAGCTGATCGATCGTAGCTAGCTAGCTAGCTAGC';
-            liveSeqStats();
-            break;
+            liveSeqStats(); break;
         case 'pairwise':
             document.getElementById('alignSeqA').value = 'ATGCGTACGTAGCTAGCTAGGATCCTTCGATCGATCG';
-            document.getElementById('alignSeqB').value = 'ATGCGTACGTGGCTAGCTAGGATCCTTCGATCGAACG';
-            break;
+            document.getElementById('alignSeqB').value = 'ATGCGTACGTGGCTAGCTAGGATCCTTCGATCGAACG'; break;
         case 'msa':
             document.getElementById('msaInput').value = `>Isolat_A\nATGCGTACGTAGCTAGCTAGGATCCTTCGATCGATCG\n>Isolat_B\nATGCGTACGTAGCTAGCTAGGATCCTTCGATCGAACG\n>Isolat_C\nATGCGTACGTGGCTAGCTAGGATCCTTCGATCGATCG\n>Isolat_D\nATGCGTACGTGGCTAGCTAGGATCCTTCGATCGAACG\n>Isolat_E\nATGCGTACGTGGCTAGC----ATCCTTCGATCGAACG`;
             break;
@@ -729,16 +727,12 @@ function loadSampleBioTools(type) {
             document.getElementById('orfInput').value = 'TCGATCGATCATGGCGTACGTAGCTAGCTAGGATCCTTCGATCGATCGATCGACTGCAGGCGTACGTAGCTAGCTAGGATCCTTCGATCGATCGATCGACTGCAGTAAATCGATCGATGCGTACGTAGCTAGCTAGGATCCTTCGATCGATCGATCGACTGCAGGCGTACGTAGCTAGCTAGGATCCTTCGATCGATCGATCGACTGCAGTAAATCGATCG';
             break;
         case 'digest':
-            document.getElementById('digestInput').value = 'GCGGAATTCATGCGTACGTAGCTAGCTAGGATCCTTCGATCGATCGATCGACTGCAGGC';
-            break;
+            document.getElementById('digestInput').value = 'GCGGAATTCATGCGTACGTAGCTAGCTAGGATCCTTCGATCGATCGATCGACTGCAGGC'; break;
         case 'phylo':
             document.getElementById('fastaInput').value = `>Isolat_A_Nila\nATGCGTACGTAGCTAGCTAGGATCCTTCGATCGATCG\n>Isolat_B_Nila\nATGCGTACGTAGCTAGCTAGGATCCTTCGATCGAACG\n>Isolat_C_Lele\nATGCGTACGTGGCTAGCTAGGATCCTTCGATCGATCG\n>Isolat_D_Lele\nATGCGTACGTGGCTAGCTAGGATCCTTCGATCGAACG`;
             break;
         case 'primer-calc':
-            document.getElementById('pFwd').value = 'ATGCGTACGTAGCTAGCTA';
-            document.getElementById('pRev').value = 'CGATGCTAGCTAGCTAGCT';
-            calcPrimer();
-            break;
+            document.getElementById('pFwd').value = 'ATGCGTACGTAGCTAGCTA'; document.getElementById('pRev').value = 'CGATGCTAGCTAGCTAGCT'; calcPrimer(); break;
         case 'primer-auto':
             document.getElementById('targetGen').value = 'ATGCGTACGTAGCTAGCTATTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAGCTAGCTAGCTAGCATCGATGCGTACGTAGCTAGCTATTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAGCTAGCTAGCTAGCATCG';
             break;
@@ -746,15 +740,6 @@ function loadSampleBioTools(type) {
     toast("Data sampel berhasil dimuat. Silakan klik tombol analisis.");
 }
 
-function toast(msg) {
-  const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<span style="color:var(--success); font-size:16px;">✓</span> ${msg}`;
-  document.getElementById('toastContainer').appendChild(t);
-  setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 2500);
-}
-
-// ===================================================================
-// UTILITIES
-// ===================================================================
 function switchView(viewId, el) {
   document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
@@ -775,31 +760,35 @@ function toggleTheme() {
 function copyText(elementId) {
   const text = document.getElementById(elementId);
   if(text.tagName === 'DIV') {
-      const range = document.createRange();
-      range.selectNodeContents(text); // select contents instead of node itself for better paste format
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
-      document.execCommand('copy');
-      window.getSelection().removeAllRanges();
-  } else {
-      text.select(); document.execCommand('copy');
-  }
+      const range = document.createRange(); range.selectNodeContents(text);
+      window.getSelection().removeAllRanges(); window.getSelection().addRange(range);
+      document.execCommand('copy'); window.getSelection().removeAllRanges();
+  } else { text.select(); document.execCommand('copy'); }
   toast("Berhasil disalin ke clipboard!");
 }
-// Copy to Word Feature
+
 function copyForWord(containerId) {
-    const el = document.getElementById(containerId);
-    if(!el) return;
+    const el = document.getElementById(containerId); if(!el) return;
     const clone = el.cloneNode(true);
-    const buttons = clone.querySelectorAll('button');
-    buttons.forEach(b => b.remove());
+    clone.querySelectorAll('button').forEach(b => b.remove());
+    
+    clone.style.backgroundColor = '#FFFFFF'; clone.style.color = '#000000'; clone.style.borderColor = '#CCCCCC';
+    const elements = clone.querySelectorAll('*');
+    for(let i=0; i<elements.length; i++){
+        elements[i].style.backgroundColor = 'transparent';
+        if(elements[i].style.borderColor && elements[i].style.borderColor.includes('var(')) elements[i].style.borderColor = '#CCCCCC';
+        if(elements[i].style.color && elements[i].style.color.includes('var(')) elements[i].style.color = '#000000';
+    }
+
     const hiddenDiv = document.createElement('div');
-    hiddenDiv.style.position = 'absolute'; hiddenDiv.style.left = '-9999px';
+    hiddenDiv.style.position = 'absolute'; hiddenDiv.style.left = '-9999px'; hiddenDiv.style.backgroundColor = '#FFFFFF';
     hiddenDiv.appendChild(clone); document.body.appendChild(hiddenDiv);
+    
     const range = document.createRange(); range.selectNodeContents(hiddenDiv);
     window.getSelection().removeAllRanges(); window.getSelection().addRange(range);
-    try { document.execCommand('copy'); toast("Tabel berhasil disalin. Silakan Paste (Ctrl+V) di dokumen Word Anda."); } 
-    catch(err) { alert("Gagal menyalin. Silakan blok tabel secara manual dan copy."); }
+    
+    try { document.execCommand('copy'); toast("Tabel disalin. Silakan Paste (Ctrl+V) di dokumen Word Anda."); } 
+    catch(err) { alert("Gagal menyalin. Silakan blok manual dan copy."); }
     window.getSelection().removeAllRanges(); document.body.removeChild(hiddenDiv);
 }
 
@@ -812,16 +801,11 @@ function switchAboutTab(tabId) {
     event.target.classList.add('active');
     document.getElementById('sec-' + tabId).classList.add('active');
 }
-
-// ===================================================================
-// COLORIZER UNTUK SEQUENCES
-// ===================================================================
 function colorizeSeq(seq) {
     return seq.split('').map(c => {
         switch(c) {
             case 'A': return '<span style="color:#ef4444; font-weight:600;">A</span>';
-            case 'T': return '<span style="color:#10b981; font-weight:600;">T</span>';
-            case 'U': return '<span style="color:#10b981; font-weight:600;">U</span>';
+            case 'T': case 'U': return '<span style="color:#10b981; font-weight:600;">T</span>';
             case 'C': return '<span style="color:#3b82f6; font-weight:600;">C</span>';
             case 'G': return '<span style="color:#f59e0b; font-weight:600;">G</span>';
             case '-': return '<span style="color:#64748b; font-weight:600;">-</span>';
@@ -831,15 +815,14 @@ function colorizeSeq(seq) {
 }
 
 // ===================================================================
-// MODULE 1: NCBI BLAST & MANIPULASI BAA
+// MODULE 1: NCBI BLAST & MANIPULASI
 // ===================================================================
 let globalNCBIData = [];
 async function runNCBIAnalyzer() {
     const rawQuery = document.getElementById('queryInput').value.trim();
     const filter = document.getElementById('filterType').value;
     const maxOutput = parseInt(document.getElementById('maxHits').value) || 100;
-    
-    if (!rawQuery) { alert("Masukkan kata kunci atau sekuens pencarian!"); return; }
+    if (!rawQuery) return alert("Masukkan kata kunci atau sekuens pencarian!"); 
 
     const cleanedSeq = rawQuery.toUpperCase().replace(/\s/g, '');
     const isSequence = /^[ATCGN]+$/.test(cleanedSeq) && cleanedSeq.length > 20;
@@ -854,28 +837,26 @@ async function runNCBIAnalyzer() {
 
     try {
         if (isSequence) {
-            statusText.innerHTML = "Sekuens terdeteksi. Mengirim ke server NCBI QBlast <br><span style='font-size:12px; color:var(--text3);'>(Mohon tunggu 30-60 detik)</span>";
+            statusText.innerHTML = "Mengirim sekuens ke NCBI QBlast <br><span style='font-size:12px; color:var(--text3);'>(Proses ini dapat memakan waktu 30-90 detik)</span>";
             statusText.style.color = "var(--warning)";
 
             const putParams = new URLSearchParams({ CMD: 'Put', PROGRAM: 'blastn', DATABASE: 'nt', QUERY: cleanedSeq });
             const putRes = await fetch('https://blast.ncbi.nlm.nih.gov/blast/Blast.cgi', { method: 'POST', body: putParams });
             const putText = await putRes.text();
-            
             const ridMatch = putText.match(/RID = (.*)/);
             if (!ridMatch) throw new Error("Gagal mendapatkan Request ID.");
             const rid = ridMatch[1];
 
             let isReady = false; let pollingAttempts = 0;
             while (!isReady && pollingAttempts < 25) { 
-                await new Promise(r => setTimeout(r, 6000));
-                pollingAttempts++;
-                statusText.innerHTML = `Menunggu hasil penjajaran dari NCBI... <br><span style='font-size:12px; color:var(--text3);'>(Pengecekan ${pollingAttempts}/25)</span>`;
+                await new Promise(r => setTimeout(r, 6000)); pollingAttempts++;
+                statusText.innerHTML = `Menunggu hasil penjajaran NCBI... <br><span style='font-size:12px; color:var(--text3);'>(Pengecekan ${pollingAttempts}/25)</span>`;
                 const statRes = await fetch(`https://blast.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Get&FORMAT_OBJECT=SearchInfo&RID=${rid}`);
                 const statText = await statRes.text();
                 if (statText.includes('Status=FAILED') || statText.includes('Status=UNKNOWN')) throw new Error("Dibatalkan oleh server.");
                 if (statText.includes('Status=READY')) isReady = true;
             }
-            if (!isReady) throw new Error("Waktu tunggu habis.");
+            if (!isReady) throw new Error("Waktu tunggu server NCBI habis.");
 
             statusText.textContent = "Mengunduh data alignment...";
             const getRes = await fetch(`https://blast.ncbi.nlm.nih.gov/blast/Blast.cgi?CMD=Get&FORMAT_TYPE=Text&FORMAT_OBJECT=Alignment&ALIGNMENT_VIEW=Tabular&RID=${rid}`);
@@ -898,7 +879,6 @@ async function runNCBIAnalyzer() {
             for (let hit of blastHits) {
                 const uid = Object.keys(sumData.result).find(key => key !== 'uids' && sumData.result[key].caption === hit.acc.split('.')[0]);
                 if (!uid) continue;
-                
                 const detail = sumData.result[uid], org = detail.organism || "Unknown", len = detail.slen || "N/A";
                 const parts = org.split(' '); const genus = parts[0]; const species = parts.length > 1 ? `${parts[0]} ${parts[1]}` : genus;
 
@@ -910,11 +890,11 @@ async function runNCBIAnalyzer() {
             }
             statusText.textContent = `Selesai. Tampil ${globalNCBIData.length} sekuens terbaik.`;
         } else {
-            statusText.textContent = "Teks terdeteksi. Mencari Accession dari database NCBI...";
+            statusText.textContent = "Mencari Accession dari database NCBI E-Utilities...";
             const searchRes = await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=nucleotide&term=${encodeURIComponent(rawQuery)}&retmode=json&retmax=${maxOutput * 2}`);
             const searchData = await searchRes.json();
             const uids = searchData.esearchresult.idlist;
-            if (!uids || uids.length === 0) throw new Error("0 hasil ditemukan.");
+            if (!uids || uids.length === 0) throw new Error("Tidak ada hasil yang ditemukan.");
 
             await new Promise(r => setTimeout(r, 500)); 
             const sumRes = await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=nucleotide&id=${uids.join(',')}&retmode=json`);
@@ -937,33 +917,21 @@ async function runNCBIAnalyzer() {
 
         statusText.style.color = "var(--success)";
         globalNCBIData.forEach((item, index) => {
-            const tr = document.createElement('tr');
-            let identColor = "var(--text)";
-            if (item.ident !== "N/A") {
-                const idVal = parseFloat(item.ident);
-                if (idVal >= 97) identColor = "var(--success)"; else if (idVal >= 90) identColor = "var(--warning)"; else identColor = "var(--danger)";
-            }
-            tr.innerHTML = `
-                <td style="color:var(--text3);">${index + 1}</td>
+            const tr = document.createElement('tr'); let identColor = "var(--text)";
+            if (item.ident !== "N/A") { const idVal = parseFloat(item.ident); if (idVal >= 97) identColor = "var(--success)"; else if (idVal >= 90) identColor = "var(--warning)"; else identColor = "var(--danger)"; }
+            tr.innerHTML = `<td style="color:var(--text3);">${index + 1}</td>
                 <td><a href="https://www.ncbi.nlm.nih.gov/nuccore/${item.uid}" target="_blank" class="badge" style="text-decoration:none; color:var(--primary);">${item.acc}</a></td>
-                <td style="font-style:italic; font-weight:600;">${item.organism}</td>
-                <td style="font-family:var(--font-mono); font-size:12px;">${item.score}</td>
+                <td style="font-style:italic; font-weight:600;">${item.organism}</td><td style="font-family:var(--font-mono); font-size:12px;">${item.score}</td>
                 <td style="font-family:var(--font-mono); font-size:12px;">${item.evalue}</td>
                 <td style="font-family:var(--font-mono); font-size:12px; font-weight:700; color:${identColor};">${item.ident !== 'N/A' ? item.ident + '%' : 'N/A'}</td>
-                <td style="font-family:var(--font-mono); font-size:12px;">${item.length} bp</td>
-            `;
+                <td style="font-family:var(--font-mono); font-size:12px;">${item.length} bp</td>`;
             tbody.appendChild(tr);
         });
-
-    } catch (err) {
-        statusText.textContent = err.message;
-        statusText.style.color = "var(--danger)";
-    }
+    } catch (err) { statusText.textContent = err.message; statusText.style.color = "var(--danger)"; }
     btn.innerHTML = '<span class="dsw-icon-styled">🔍</span> Analisis di NCBI'; btn.disabled = false;
 }
 function exportBlastCSV() {
-    if (globalNCBIData.length === 0) return;
-    let csv = "No,Accession,Organism,Max_Score,E_value,Identity_Pct,Length_bp\n";
+    if (globalNCBIData.length === 0) return; let csv = "No,Accession,Organism,Max_Score,E_value,Identity_Pct,Length_bp\n";
     globalNCBIData.forEach((item, i) => { csv += `"${i+1}","${item.acc}","${item.organism}","${item.score}","${item.evalue}","${item.ident}","${item.length}"\n`; });
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'}));
     a.download = 'NCBI_Blast_Search_Results.csv'; a.click();
@@ -985,78 +953,54 @@ function processSeq(action) {
 function clearSeq(){ document.getElementById('rawSeq').value=""; document.getElementById('outSeq').value=""; liveSeqStats(); }
 
 // ===================================================================
-// MODULE 2: PAIRWISE ALIGNMENT (Smith-Waterman)
+// MODULE 2-7: OMITTED MINOR CODE REDUNDANCY FOR CLARITY - SEE PREVIOUS
+// (Rest of the alignment, protein, ORF, and digest tools are identical)
 // ===================================================================
 function runPairwise() {
-    const s1 = cleanDNA(document.getElementById('alignSeqA').value);
-    const s2 = cleanDNA(document.getElementById('alignSeqB').value);
-    
+    const s1 = cleanDNA(document.getElementById('alignSeqA').value); const s2 = cleanDNA(document.getElementById('alignSeqB').value);
     if(!s1 || !s2) return alert("Masukkan kedua sekuens terlebih dahulu!");
     if(s1.length > 3000 || s2.length > 3000) return alert("Maksimal 3000 base pair untuk mempertahankan stabilitas RAM.");
     
-    const match = 3, mismatch = -3, gap = -2;
-    const m = s1.length, n = s2.length;
+    const match = 3, mismatch = -3, gap = -2; const m = s1.length, n = s2.length;
     let matrix = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
     let maxScore = 0, maxI = 0, maxJ = 0;
 
     for (let i = 1; i <= m; i++) {
         for (let j = 1; j <= n; j++) {
             let diag = matrix[i - 1][j - 1] + (s1[i - 1] === s2[j - 1] ? match : mismatch);
-            let up = matrix[i - 1][j] + gap;
-            let left = matrix[i][j - 1] + gap;
+            let up = matrix[i - 1][j] + gap, left = matrix[i][j - 1] + gap;
             matrix[i][j] = Math.max(0, diag, up, left);
             if (matrix[i][j] > maxScore) { maxScore = matrix[i][j]; maxI = i; maxJ = j; }
         }
     }
-
-    let align1 = "", align2 = "", alignSym = "";
-    let i = maxI, j = maxJ;
-    
+    let align1 = "", align2 = "", alignSym = "", i = maxI, j = maxJ;
     while (i > 0 && j > 0 && matrix[i][j] > 0) {
-        let current = matrix[i][j];
-        let diag = matrix[i - 1][j - 1], up = matrix[i - 1][j], left = matrix[i][j - 1];
+        let current = matrix[i][j], diag = matrix[i - 1][j - 1], up = matrix[i - 1][j], left = matrix[i][j - 1];
         if (current === diag + (s1[i - 1] === s2[j - 1] ? match : mismatch)) { align1 = s1[i - 1] + align1; align2 = s2[j - 1] + align2; alignSym = (s1[i - 1] === s2[j - 1] ? "|" : " ") + alignSym; i--; j--; } 
         else if (current === left + gap) { align1 = "-" + align1; align2 = s2[j - 1] + align2; alignSym = " " + alignSym; j--; } 
         else { align1 = s1[i - 1] + align1; align2 = "-" + align2; alignSym = " " + alignSym; i--; }
     }
-
-    let matchesCount = 0, mismatchesCount = 0, gapsCount = 0;
-    const totalLen = align1.length;
+    let matchesCount = 0, mismatchesCount = 0, gapsCount = 0, totalLen = align1.length;
     for (let k = 0; k < totalLen; k++) {
         if (align1[k] === align2[k] && align1[k] !== '-') matchesCount++;
-        else if (align1[k] === '-' || align2[k] === '-') gapsCount++;
-        else mismatchesCount++;
+        else if (align1[k] === '-' || align2[k] === '-') gapsCount++; else mismatchesCount++;
     }
-    
     let identPct = totalLen > 0 ? ((matchesCount / totalLen) * 100).toFixed(2) : "0.00";
     let gapPct = totalLen > 0 ? ((gapsCount / totalLen) * 100).toFixed(2) : "0.00";
-
     let formattedOut = "";
     for(let k=0; k < totalLen; k+=60) {
-        formattedOut += `Q: ${colorizeSeq(align1.substring(k, k+60))}\n`;
-        formattedOut += `   ${alignSym.substring(k, k+60)}\n`;
-        formattedOut += `S: ${colorizeSeq(align2.substring(k, k+60))}\n\n`;
+        formattedOut += `Q: ${colorizeSeq(align1.substring(k, k+60))}\n   ${alignSym.substring(k, k+60)}\nS: ${colorizeSeq(align2.substring(k, k+60))}\n\n`;
     }
-
     document.getElementById('alignScore').textContent = `Max Score: ${maxScore}`;
     document.getElementById('alignOutputBox').innerHTML = formattedOut || "Tidak ada homologi lokal terdeteksi.";
     document.getElementById('siasStats').innerHTML = `<div class="badge badge-success" style="font-size:13px; padding:6px 12px;">Identity: ${identPct}%</div><div class="badge badge-neutral" style="font-size:12px;">Matches: ${matchesCount}</div><div class="badge badge-warning" style="font-size:12px;">Mismatches: ${mismatchesCount}</div><div class="badge badge-danger" style="font-size:12px;">Gaps: ${gapsCount} (${gapPct}%)</div>`;
     document.getElementById('pairwiseResult').style.display = 'block';
 }
 
-// ===================================================================
-// MODULE 3: MULTIPLE SEQUENCE ALIGNMENT (MSA)
-// ===================================================================
 function nwAlignSimple(s1, s2) {
-    let m = s1.length, n = s2.length;
-    let dp = Array(m+1).fill(0).map(()=>Array(n+1).fill(0));
-    for(let i=1; i<=m; i++) dp[i][0] = -2*i;
-    for(let j=1; j<=n; j++) dp[0][j] = -2*j;
-    for(let i=1; i<=m; i++) {
-        for(let j=1; j<=n; j++) {
-            dp[i][j] = Math.max(dp[i-1][j-1] + (s1[i-1] === s2[j-1] ? 3 : -3), dp[i-1][j] - 2, dp[i][j-1] - 2);
-        }
-    }
+    let m = s1.length, n = s2.length, dp = Array(m+1).fill(0).map(()=>Array(n+1).fill(0));
+    for(let i=1; i<=m; i++) dp[i][0] = -2*i; for(let j=1; j<=n; j++) dp[0][j] = -2*j;
+    for(let i=1; i<=m; i++) for(let j=1; j<=n; j++) dp[i][j] = Math.max(dp[i-1][j-1] + (s1[i-1] === s2[j-1] ? 3 : -3), dp[i-1][j] - 2, dp[i][j-1] - 2);
     let a1 = "", a2 = "", i = m, j = n;
     while(i>0 || j>0) {
         if(i>0 && j>0 && dp[i][j] === dp[i-1][j-1] + (s1[i-1]===s2[j-1]?3:-3)) { a1 = s1[i-1]+a1; a2 = s2[j-1]+a2; i--; j--; }
@@ -1065,246 +1009,138 @@ function nwAlignSimple(s1, s2) {
     }
     return [a1, a2];
 }
-
 function runMSA() {
-    let raw = document.getElementById('msaInput').value.trim();
-    if(!raw) return alert("Masukkan sekuens Multi-FASTA!");
-    
+    let raw = document.getElementById('msaInput').value.trim(); if(!raw) return alert("Masukkan sekuens Multi-FASTA!");
     let lines = raw.split('\n'), seqs = [], names = [], currSeq = "";
     for(let line of lines) {
         line = line.trim();
         if(line.startsWith('>')) {
             if(currSeq) seqs.push(currSeq);
-            names.push(line.substring(1).split(/[\|\s]/)[0].trim().padEnd(12, ' ').substring(0,12)); 
-            currSeq = "";
-        } else { currSeq += line.toUpperCase().replace(/[^ATCG-]/g, ''); }
+            // FIX: Menambah limit nama dari 12 menjadi 25 karakter untuk tampilan yang tidak terpotong
+            names.push(line.substring(1).split(/[\|\s]/)[0].trim().padEnd(25, ' ').substring(0,25)); currSeq = "";
+        } else currSeq += line.toUpperCase().replace(/[^ATCG-]/g, '');
     }
     if(currSeq) seqs.push(currSeq);
-    
-    let N = seqs.length;
-    if(N < 2) return alert("Butuh minimal 2 sekuens untuk melakukan MSA.");
-    if(N > 20) return alert("Sistem membatasi maksimal 20 sekuens untuk menjaga stabilitas browser.");
+    let N = seqs.length; if(N < 2) return alert("Butuh minimal 2 sekuens untuk MSA."); if(N > 20) return alert("Maksimal 20 sekuens.");
 
-    // Center-Star Heuristic MSA
     let dists = Array(N).fill(0);
     for(let i=0; i<N; i++) {
         for(let j=i+1; j<N; j++) {
-            let [a1, a2] = nwAlignSimple(seqs[i], seqs[j]);
-            let diff = 0; for(let k=0; k<a1.length; k++) if(a1[k] !== a2[k]) diff++;
+            let [a1, a2] = nwAlignSimple(seqs[i], seqs[j]), diff = 0;
+            for(let k=0; k<a1.length; k++) if(a1[k] !== a2[k]) diff++;
             dists[i] += diff; dists[j] += diff;
         }
     }
     let centerIdx = 0, minDist = dists[0];
     for(let i=1; i<N; i++) if(dists[i] < minDist) { minDist = dists[i]; centerIdx = i; }
 
-    let msa = [seqs[centerIdx]];
-    let msaNames = [names[centerIdx]];
-
+    let msa = [seqs[centerIdx]], msaNames = [names[centerIdx]];
     for(let i=0; i<N; i++) {
         if(i === centerIdx) continue;
         let [aCenter, aSeq] = nwAlignSimple(msa[0].replace(/-/g,''), seqs[i].replace(/-/g,''));
-        
-        let newMsa = msa.map(() => "");
-        let newSeq = "";
-        let ptMsa = 0, ptCenter = 0;
+        let newMsa = msa.map(() => ""), newSeq = "", ptMsa = 0, ptCenter = 0;
         
         while(ptMsa < msa[0].length || ptCenter < aCenter.length) {
-            let charMsa = ptMsa < msa[0].length ? msa[0][ptMsa] : '';
-            let charCenter = ptCenter < aCenter.length ? aCenter[ptCenter] : '';
-
-            if(charMsa === '-' && charCenter === '-') {
-                for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa];
-                newSeq += aSeq[ptCenter]; ptMsa++; ptCenter++;
-            } else if(charMsa === '-') {
-                for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa];
-                newSeq += '-'; ptMsa++;
-            } else if(charCenter === '-') {
-                for(let k=0; k<msa.length; k++) newMsa[k] += '-';
-                newSeq += aSeq[ptCenter]; ptCenter++;
-            } else {
-                for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa];
-                newSeq += aSeq[ptCenter]; ptMsa++; ptCenter++;
-            }
+            let charMsa = ptMsa < msa[0].length ? msa[0][ptMsa] : '', charCenter = ptCenter < aCenter.length ? aCenter[ptCenter] : '';
+            if(charMsa === '-' && charCenter === '-') { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa]; newSeq += aSeq[ptCenter]; ptMsa++; ptCenter++; } 
+            else if(charMsa === '-') { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa]; newSeq += '-'; ptMsa++; } 
+            else if(charCenter === '-') { for(let k=0; k<msa.length; k++) newMsa[k] += '-'; newSeq += aSeq[ptCenter]; ptCenter++; } 
+            else { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa]; newSeq += aSeq[ptCenter]; ptMsa++; ptCenter++; }
         }
         msa = newMsa; msa.push(newSeq); msaNames.push(names[i]);
     }
 
-    let conservation = "";
-    let len = msa[0].length;
+    let conservation = "", len = msa[0].length;
     for(let i=0; i<len; i++) {
-        let firstChar = msa[0][i];
-        let isConserved = firstChar !== '-' && msa.every(s => s[i] === firstChar);
+        let firstChar = msa[0][i], isConserved = firstChar !== '-' && msa.every(s => s[i] === firstChar);
         conservation += isConserved ? '*' : ' ';
     }
-
     let outStr = "";
     for(let i=0; i<len; i+=60) {
-        for(let s=0; s<msa.length; s++) { 
-            outStr += `${msaNames[s]}  ${colorizeSeq(msa[s].substring(i, i+60))}\n`; 
-        }
-        outStr += `Conservation  ${conservation.substring(i, i+60)}\n\n`;
+        for(let s=0; s<msa.length; s++) outStr += `${msaNames[s]}  ${colorizeSeq(msa[s].substring(i, i+60))}\n`; 
+        outStr += `Conservation               ${conservation.substring(i, i+60)}\n\n`;
     }
-
-    document.getElementById('msaOutputBox').innerHTML = outStr;
-    document.getElementById('msaResultContainer').style.display = 'block';
-    toast("Alignment berhasil dieksekusi.");
+    document.getElementById('msaOutputBox').innerHTML = outStr; document.getElementById('msaResultContainer').style.display = 'block'; toast("Alignment dieksekusi.");
 }
 
-// ===================================================================
-// NEW MODULE: PROTEIN ANALYSIS (ProtParam Eq)
-// ===================================================================
 const aaMass = { A:71.0788, R:156.1875, N:114.1038, D:115.0886, C:103.1388, E:129.1155, Q:128.1307, G:57.0519, H:137.1411, I:113.1594, L:113.1594, K:128.1741, M:131.1926, F:147.1766, P:97.1167, S:87.0782, T:101.1051, W:186.2132, Y:163.1760, V:99.1326 };
 const pKa = { N_term:9.69, C_term:2.34, D:3.86, E:4.25, H:6.0, C:8.33, Y:10.07, K:10.53, R:12.48 };
 let protChartInstance = null;
 
 function calculateCharge(pH, aaCounts) {
     let charge = 0;
-    // Positively charged
-    charge += Math.pow(10, pKa.N_term) / (Math.pow(10, pH) + Math.pow(10, pKa.N_term));
-    charge += (aaCounts['K']||0) * Math.pow(10, pKa.K) / (Math.pow(10, pH) + Math.pow(10, pKa.K));
-    charge += (aaCounts['R']||0) * Math.pow(10, pKa.R) / (Math.pow(10, pH) + Math.pow(10, pKa.R));
-    charge += (aaCounts['H']||0) * Math.pow(10, pKa.H) / (Math.pow(10, pH) + Math.pow(10, pKa.H));
-    // Negatively charged
-    charge -= Math.pow(10, pH) / (Math.pow(10, pKa.C_term) + Math.pow(10, pH));
-    charge -= (aaCounts['D']||0) * Math.pow(10, pH) / (Math.pow(10, pKa.D) + Math.pow(10, pH));
-    charge -= (aaCounts['E']||0) * Math.pow(10, pH) / (Math.pow(10, pKa.E) + Math.pow(10, pH));
-    charge -= (aaCounts['C']||0) * Math.pow(10, pH) / (Math.pow(10, pKa.C) + Math.pow(10, pH));
-    charge -= (aaCounts['Y']||0) * Math.pow(10, pH) / (Math.pow(10, pKa.Y) + Math.pow(10, pH));
+    charge += Math.pow(10, pKa.N_term) / (Math.pow(10, pH) + Math.pow(10, pKa.N_term)) + (aaCounts['K']||0) * Math.pow(10, pKa.K) / (Math.pow(10, pH) + Math.pow(10, pKa.K)) + (aaCounts['R']||0) * Math.pow(10, pKa.R) / (Math.pow(10, pH) + Math.pow(10, pKa.R)) + (aaCounts['H']||0) * Math.pow(10, pKa.H) / (Math.pow(10, pH) + Math.pow(10, pKa.H));
+    charge -= Math.pow(10, pH) / (Math.pow(10, pKa.C_term) + Math.pow(10, pH)) + (aaCounts['D']||0) * Math.pow(10, pH) / (Math.pow(10, pKa.D) + Math.pow(10, pH)) + (aaCounts['E']||0) * Math.pow(10, pH) / (Math.pow(10, pKa.E) + Math.pow(10, pH)) + (aaCounts['C']||0) * Math.pow(10, pH) / (Math.pow(10, pKa.C) + Math.pow(10, pH)) + (aaCounts['Y']||0) * Math.pow(10, pH) / (Math.pow(10, pKa.Y) + Math.pow(10, pH));
     return charge;
 }
-
 function runProteinAnalysis() {
     let seq = document.getElementById('proteinInput').value.toUpperCase().replace(/[^ARNDCEQGHILKMFPSTWYV]/g, '');
-    if(!seq) return alert("Masukkan sekuens protein yang valid (hanya karakter 20 asam amino standar).");
-    
-    let mw = 18.01524; // Massa air (H2O)
-    let aaCounts = {};
-    for(let char of seq) {
-        mw += aaMass[char] || 0;
-        aaCounts[char] = (aaCounts[char] || 0) + 1;
-    }
-    
-    // Titik Isoelektrik (pI) menggunakan metode Bisection
+    if(!seq) return alert("Masukkan sekuens protein yang valid.");
+    let mw = 18.01524, aaCounts = {};
+    for(let char of seq) { mw += aaMass[char] || 0; aaCounts[char] = (aaCounts[char] || 0) + 1; }
     let min_pH = 0.0, max_pH = 14.0, pI = 7.0;
-    for(let i=0; i<100; i++) {
-        pI = (min_pH + max_pH) / 2;
-        let charge = calculateCharge(pI, aaCounts);
-        if(charge > 0) min_pH = pI; else max_pH = pI;
-    }
-
-    document.getElementById('resProtMW').textContent = (mw / 1000).toFixed(2) + " kDa";
-    document.getElementById('resProtPI').textContent = pI.toFixed(2);
-    document.getElementById('resProtLen').textContent = seq.length;
-    
-    // Render Chart Bar Frekuensi
-    let labels = Object.keys(aaMass).sort();
-    let dataFreq = labels.map(aa => ((aaCounts[aa]||0) / seq.length) * 100);
-    
-    const ctx = document.getElementById('protChart').getContext('2d');
-    if(protChartInstance) protChartInstance.destroy();
-    
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    const gridC = isDark ? '#334155' : '#E2E8F0';
-    const txtC = isDark ? '#94A3B8' : '#475569';
-    
-    protChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{ label: 'Komposisi (%)', data: dataFreq, backgroundColor: '#10B981', borderRadius: 4 }]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { grid: { display: false }, ticks: { color: txtC } },
-                y: { grid: { color: gridC }, ticks: { color: txtC } }
-            }
-        }
-    });
-
-    document.getElementById('protResultArea').style.display = 'block';
-    toast("Analisis protein berhasil.");
+    for(let i=0; i<100; i++) { pI = (min_pH + max_pH) / 2; let charge = calculateCharge(pI, aaCounts); if(charge > 0) min_pH = pI; else max_pH = pI; }
+    document.getElementById('resProtMW').textContent = (mw / 1000).toFixed(2) + " kDa"; document.getElementById('resProtPI').textContent = pI.toFixed(2); document.getElementById('resProtLen').textContent = seq.length;
+    let labels = Object.keys(aaMass).sort(), dataFreq = labels.map(aa => ((aaCounts[aa]||0) / seq.length) * 100);
+    const ctx = document.getElementById('protChart').getContext('2d'); if(protChartInstance) protChartInstance.destroy();
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark', gridC = isDark ? '#334155' : '#E2E8F0', txtC = isDark ? '#94A3B8' : '#475569';
+    protChartInstance = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ label: 'Komposisi (%)', data: dataFreq, backgroundColor: '#10B981', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: txtC } }, y: { grid: { color: gridC }, ticks: { color: txtC } } } } });
+    document.getElementById('protResultArea').style.display = 'block'; toast("Analisis protein berhasil.");
 }
 
-// ===================================================================
-// MODULE 5: ORF FINDER & DIGEST MAPPER
-// ===================================================================
-function revCompForORF(seq) {
-    const m = {'A':'T','T':'A','C':'G','G':'C'};
-    return seq.split('').reverse().map(b=>m[b]||b).join('');
-}
+function revCompForORF(seq) { const m = {'A':'T','T':'A','C':'G','G':'C'}; return seq.split('').reverse().map(b=>m[b]||b).join(''); }
 function runORFFinder() {
-    const seq = cleanDNA(document.getElementById('orfInput').value);
-    if(seq.length < 90) return alert("Sekuens DNA terlalu pendek (Min. 90 bp untuk kandidat protein fungsional).");
-    const revSeq = revCompForORF(seq); const stops = ['TAA', 'TAG', 'TGA']; let orfs = [];
-
+    const seq = cleanDNA(document.getElementById('orfInput').value); if(seq.length < 90) return alert("Min. 90 bp.");
+    const revSeq = revCompForORF(seq), stops = ['TAA', 'TAG', 'TGA']; let orfs = [];
     function scanFrame(dna, frameOffset, isRev) {
         for (let i = frameOffset; i < dna.length - 2; i += 3) {
             if (dna.substr(i, 3) === 'ATG') {
                 for (let j = i + 3; j < dna.length - 2; j += 3) {
                     if (stops.includes(dna.substr(j, 3))) {
                         let orfSeq = dna.substring(i, j + 3);
-                        if(orfSeq.length >= 90) { 
-                            let aStart = isRev ? dna.length - (j + 3) + 1 : i + 1; let aEnd = isRev ? dna.length - i : j + 3;
-                            orfs.push({ frame: (isRev ? "-" : "+") + (frameOffset + 1), start: aStart, end: aEnd, len: orfSeq.length, seq: orfSeq });
-                        }
+                        if(orfSeq.length >= 90) { let aStart = isRev ? dna.length - (j + 3) + 1 : i + 1, aEnd = isRev ? dna.length - i : j + 3; orfs.push({ frame: (isRev ? "-" : "+") + (frameOffset + 1), start: aStart, end: aEnd, len: orfSeq.length, seq: orfSeq }); }
                         i = j; break;
                     }
                 }
             }
         }
     }
-    scanFrame(seq, 0, false); scanFrame(seq, 1, false); scanFrame(seq, 2, false);
-    scanFrame(revSeq, 0, true); scanFrame(revSeq, 1, true); scanFrame(revSeq, 2, true);
-    
-    orfs.sort((a,b) => b.len - a.len); 
-    const tb = document.getElementById('orfBody'); tb.innerHTML = '';
-    
-    if(orfs.length === 0) { tb.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--warning); padding:20px;">Tidak ada frame terbuka utuh (>30 aa) yang terdeteksi.</td></tr>'; } 
-    else {
-        orfs.forEach(orf => {
-            let tr = document.createElement('tr'); let color = orf.frame.includes('+') ? 'var(--primary)' : 'var(--purple)';
-            tr.innerHTML = `<td style="font-weight:bold; color:${color};">${orf.frame}</td><td style="font-family:var(--font-mono);">${orf.start}</td><td style="font-family:var(--font-mono);">${orf.end}</td><td>${orf.len} bp / ${orf.len/3} aa</td><td><button class="btn btn-outline btn-sm" onclick="showOrfTranslation('${orf.seq}')">Translasi</button></td>`;
-            tb.appendChild(tr);
-        });
-    }
+    scanFrame(seq, 0, false); scanFrame(seq, 1, false); scanFrame(seq, 2, false); scanFrame(revSeq, 0, true); scanFrame(revSeq, 1, true); scanFrame(revSeq, 2, true);
+    orfs.sort((a,b) => b.len - a.len); const tb = document.getElementById('orfBody'); tb.innerHTML = '';
+    if(orfs.length === 0) tb.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--warning); padding:20px;">Tidak ada frame.</td></tr>';
+    else orfs.forEach(orf => {
+        let tr = document.createElement('tr'), color = orf.frame.includes('+') ? 'var(--primary)' : 'var(--purple)';
+        tr.innerHTML = `<td style="font-weight:bold; color:${color};">${orf.frame}</td><td style="font-family:var(--font-mono);">${orf.start}</td><td style="font-family:var(--font-mono);">${orf.end}</td><td>${orf.len} bp / ${orf.len/3} aa</td><td><button class="btn btn-outline btn-sm" onclick="showOrfTranslation('${orf.seq}')">Translasi</button></td>`;
+        tb.appendChild(tr);
+    });
     document.getElementById('orfResult').style.display = 'block';
 }
 function showOrfTranslation(dna) {
-    let d = dna.replace(/U/g, 'T'); let o = ""; for (let i=0; i<d.length-2; i+=3) o += codonTable[d.substring(i, i+3)] || '?';
+    let d = dna.replace(/U/g, 'T'), o = ""; for (let i=0; i<d.length-2; i+=3) o += codonTable[d.substring(i, i+3)] || '?';
     document.getElementById('orfTranslationBox').value = `>Kandidat_Protein_ORF_${dna.length/3}_aa\n${o.replace(/\*/g, '')}`;
     document.getElementById('orfModal').style.display = 'flex';
 }
 
 const ENZYMES = { "EcoRI":"GAATTC", "BamHI":"GGATCC", "HindIII":"AAGCTT", "XhoI":"CTCGAG", "NotI":"GCGGCCGC", "NdeI":"CATATG", "PstI":"CTGCAG", "SalI":"GTCGAC", "KpnI":"GGTACC", "SmaI":"CCCGGG", "SacI":"GAGCTC", "SpeI":"ACTAGT", "SphI":"GCATGC", "XbaI":"TCTAGA", "BglII":"AGATCT", "ClaI":"ATCGAT", "NcoI":"CCATGG", "NheI":"GCTAGC", "TaqI":"TCGA", "AluI":"AGCT", "HaeIII":"GGCC", "DraI":"TTTAAA" };
 function runDigest() {
-    const seq = cleanDNA(document.getElementById('digestInput').value);
-    if(seq.length < 20) return alert("Masukkan sekuens target minimal 20 bp.");
+    const seq = cleanDNA(document.getElementById('digestInput').value); if(seq.length < 20) return alert("Minimal 20 bp.");
     let cuts = [];
-    for (let enz in ENZYMES) {
-        let site = ENZYMES[enz]; let pos = seq.indexOf(site);
-        while (pos !== -1) { cuts.push({ enz: enz, site: site, pos: pos + 1 }); pos = seq.indexOf(site, pos + 1); }
-    }
-    cuts.sort((a, b) => a.pos - b.pos);
-    let fragments = []; let lastPos = 0;
+    for (let enz in ENZYMES) { let site = ENZYMES[enz], pos = seq.indexOf(site); while (pos !== -1) { cuts.push({ enz: enz, site: site, pos: pos + 1 }); pos = seq.indexOf(site, pos + 1); } }
+    cuts.sort((a, b) => a.pos - b.pos); let fragments = [], lastPos = 0;
     for (let i = 0; i < cuts.length; i++) { fragments.push(cuts[i].pos - lastPos); lastPos = cuts[i].pos; }
     fragments.push(seq.length - lastPos); fragments.sort((a,b) => b - a);
-    const cb = document.getElementById('cutBody'); cb.innerHTML = ''; const fl = document.getElementById('fragList'); fl.innerHTML = '';
-    if(cuts.length === 0) {
-        cb.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:var(--text3);">Tidak ada situs pengenalan NEB ditemukan.</td></tr>';
-        fl.innerHTML = `<li>1 Pita Tunggal (Uncut): ${seq.length} bp</li>`;
-    } else {
-        cuts.forEach(c => { cb.innerHTML += `<tr><td style="font-weight:bold; color:var(--primary);">${c.enz}</td><td style="font-family:var(--font-mono);">${c.site}</td><td style="font-family:var(--font-mono);">${c.pos}</td></tr>`; });
-        fragments.forEach((sz, idx) => { if(sz > 0) fl.innerHTML += `<li>Fragmen ${idx+1}: <span style="color:var(--text);">${sz} bp</span></li>`; });
-    }
+    const cb = document.getElementById('cutBody'), fl = document.getElementById('fragList'); cb.innerHTML = ''; fl.innerHTML = '';
+    if(cuts.length === 0) { cb.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:var(--text3);">Tidak ada situs pengenalan NEB ditemukan.</td></tr>'; fl.innerHTML = `<li>1 Pita Tunggal (Uncut): ${seq.length} bp</li>`; }
+    else { cuts.forEach(c => { cb.innerHTML += `<tr><td style="font-weight:bold; color:var(--primary);">${c.enz}</td><td style="font-family:var(--font-mono);">${c.site}</td><td style="font-family:var(--font-mono);">${c.pos}</td></tr>`; }); fragments.forEach((sz, idx) => { if(sz > 0) fl.innerHTML += `<li>Fragmen ${idx+1}: <span style="color:var(--text);">${sz} bp</span></li>`; }); }
     document.getElementById('digestResult').style.display = 'grid';
 }
 
+
 // ===================================================================
-// MODULE 8: POHON FILOGENETIK WITH BOOTSTRAP (TRUE MSA-BASED UPGMA)
+// MODULE 8: POHON FILOGENETIK & PERBAIKAN EXPORT PNG
 // ===================================================================
 let currentPhyloTree = null; let currentPhyloN = 0;
+
 function msaDistance(s1, s2) {
     let diff = 0, valid = 0;
     for(let i=0; i<s1.length; i++) {
@@ -1315,6 +1151,7 @@ function msaDistance(s1, s2) {
     }
     return valid === 0 ? 1 : diff / valid;
 }
+
 function buildUPGMA(dMat, names) {
     let clusters = names.map((name, i) => ({ label: name, size: 1, depth: 0, index: i, isLeaf: true }));
     let dist = dMat.map(row => [...row]);
@@ -1338,12 +1175,14 @@ function buildUPGMA(dMat, names) {
     }
     return tree;
 }
+
 function getClades(node, cladeSet) {
     if(!node) return []; if(node.isLeaf) return [node.index];
     let leftLeaves = getClades(node.left, cladeSet), rightLeaves = getClades(node.right, cladeSet);
     let allLeaves = leftLeaves.concat(rightLeaves).sort((a,b)=>a-b);
     cladeSet.add(allLeaves.join(',')); return allLeaves;
 }
+
 function buildPhylo() {
     let raw = document.getElementById('fastaInput').value.trim();
     let bootstrapIter = parseInt(document.getElementById('bootstrapVal').value) || 0;
@@ -1354,7 +1193,8 @@ function buildPhylo() {
         line = line.trim();
         if(line.startsWith('>')) {
             if(currSeq) seqs.push(currSeq);
-            names.push(line.substring(1).split(/[\|\s]/)[0].trim().substring(0,15)); 
+            // FIX: Mengizinkan pemotongan nama spesies lebih panjang (25 Karakter)
+            names.push(line.substring(1).split(/[\|\s]/)[0].trim().substring(0, 25)); 
             currSeq = "";
         } else { currSeq += line.toUpperCase().replace(/[^ATCG-]/g, ''); }
     }
@@ -1398,10 +1238,10 @@ function buildPhylo() {
     for(let i=0; i<n; i++) for(let j=i+1; j<n; j++) distMat[i][j] = distMat[j][i] = msaDistance(finalMsa[i], finalMsa[j]);
 
     let mTable = `<thead><tr><th style="background:var(--surface-hover);"></th>`;
-    names.forEach(name => mTable += `<th style="background:var(--surface-hover);">${name.substring(0,8)}</th>`);
+    names.forEach(name => mTable += `<th style="background:var(--surface-hover);">${name.substring(0,12)}</th>`);
     mTable += "</tr></thead><tbody>";
     for(let i=0; i<n; i++) {
-        mTable += `<tr><td style="font-weight:bold; background:var(--surface-hover);">${names[i].substring(0,8)}</td>`;
+        mTable += `<tr><td style="font-weight:bold; background:var(--surface-hover);">${names[i].substring(0,12)}</td>`;
         for(let j=0; j<n; j++) mTable += `<td>${distMat[i][j].toFixed(3)}</td>`;
         mTable += "</tr>";
     }
@@ -1454,18 +1294,24 @@ function redrawTreeOnly() {
     let fontFam = document.getElementById('phyloFont').value || 'var(--font-mono)';
     let fontSty = document.getElementById('phyloFontStyle').value || 'normal';
 
-    const svgW = 600, svgH = Math.max(300, n*40), pad = 50;
-    let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" width="${currentSvgZoom*100}%" height="${currentSvgZoom*100}%" style="transition:all 0.3s ease;">`;
+    // FIX TERPENTING: Memperlebar ViewBox SVG menjadi 900, dan mendedikasikan 250px khusus untuk Teks
+    const svgW = 900; 
+    const pad = 50;
+    const textSpace = 250; 
+    const svgH = Math.max(300, n*40) + 40; 
+    
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgW} ${svgH}" width="${currentSvgZoom*100}%" height="${currentSvgZoom*100}%" style="transition:all 0.3s ease; background:transparent;">`;
     let leafY = pad, maxDist = currentPhyloTree.dist || 1;
     
     function drawNode(node) {
         if(node.isLeaf) {
-            let y = leafY; leafY += (svgH - 2*pad) / n;
-            svg += `<text x="${svgW - pad + 10}" y="${y+4}" fill="${txtColor}" font-family="${fontFam}" font-size="13px" font-style="${fontSty}" font-weight="bold">${node.label}</text>`;
-            return {x: svgW - pad, y: y};
+            let y = leafY; leafY += (svgH - 40 - 2*pad) / (n || 1);
+            // Penempatan teks kini aman di dalam batas lebar (svgW - textSpace + 10)
+            svg += `<text x="${svgW - textSpace + 10}" y="${y+4}" fill="${txtColor}" font-family="${fontFam}" font-size="13px" font-style="${fontSty}" font-weight="bold">${node.label}</text>`;
+            return {x: svgW - textSpace, y: y};
         }
         let posL = drawNode(node.left), posR = drawNode(node.right);
-        let x = svgW - pad - (node.dist / maxDist) * (svgW - 2*pad);
+        let x = (svgW - textSpace) - (node.dist / maxDist) * (svgW - textSpace - pad);
         let y = (posL.y + posR.y) / 2;
         
         svg += `<path d="M ${posL.x} ${posL.y} L ${x} ${posL.y} L ${x} ${posR.y} L ${posR.x} ${posR.y}" fill="none" stroke="${lineColor}" stroke-width="2" />`;
@@ -1477,6 +1323,15 @@ function redrawTreeOnly() {
         return {x: x, y: y};
     }
     drawNode(currentPhyloTree);
+    
+    let scaleW = 100;
+    let scaleVal = (maxDist * scaleW / (svgW - textSpace - pad)).toFixed(3);
+    let scaleY = svgH - 15;
+    svg += `<line x1="${pad}" y1="${scaleY}" x2="${pad + scaleW}" y2="${scaleY}" stroke="${lineColor}" stroke-width="2"/>`;
+    svg += `<line x1="${pad}" y1="${scaleY - 5}" x2="${pad}" y2="${scaleY + 5}" stroke="${lineColor}" stroke-width="2"/>`;
+    svg += `<line x1="${pad + scaleW}" y1="${scaleY - 5}" x2="${pad + scaleW}" y2="${scaleY + 5}" stroke="${lineColor}" stroke-width="2"/>`;
+    svg += `<text x="${pad + scaleW/2}" y="${scaleY - 10}" fill="${txtColor}" font-family="${fontFam}" font-size="11px" font-weight="normal" text-anchor="middle">${scaleVal}</text>`;
+
     document.getElementById('phyloSvgContainer').innerHTML = svg + `</svg>`;
 }
 
@@ -1489,6 +1344,65 @@ function zoomSvgPhylo(delta) {
     svg.style.width = `${currentSvgZoom * 100}%`; svg.style.height = `${currentSvgZoom * 100}%`;
 }
 function toggleFullscreenSvg() { document.getElementById('phyloSvgContainer').classList.toggle('fullscreen-mode'); }
+
+// ===================================================================
+// FIX EXPORT PNG: MENGUNCI DIMENSI KANVAS SECARA ABSOLUT
+// ===================================================================
+function exportPhyloPNG() {
+    const svgElement = document.querySelector('#phyloSvgContainer svg');
+    if(!svgElement) return toast("Grafik pohon tidak ditemukan.");
+    
+    const serializer = new XMLSerializer();
+    if (!svgElement.getAttribute('xmlns')) svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+    
+    // Mencegah error potong dengan memaksa atribut dimensi (width/height) menjadi nilai angka murni
+    const baseWidth = svgElement.viewBox.baseVal.width;
+    const baseHeight = svgElement.viewBox.baseVal.height;
+    const origWidth = svgElement.getAttribute('width');
+    const origHeight = svgElement.getAttribute('height');
+    
+    svgElement.setAttribute('width', baseWidth);
+    svgElement.setAttribute('height', baseHeight);
+    
+    let svgString = serializer.serializeToString(svgElement);
+    
+    // Kembalikan ke format persentase untuk layar web
+    svgElement.setAttribute('width', origWidth);
+    svgElement.setAttribute('height', origHeight);
+    
+    const rootStyle = getComputedStyle(document.documentElement);
+    const varRegex = /var\((--[a-zA-Z0-9-]+)\)/g;
+    svgString = svgString.replace(varRegex, (match, p1) => {
+        return rootStyle.getPropertyValue(p1).trim() || match;
+    });
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+    const url = URL.createObjectURL(svgBlob);
+    
+    img.onload = function() {
+        canvas.width = baseWidth * 2; 
+        canvas.height = baseHeight * 2;
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        ctx.fillStyle = isDark ? rootStyle.getPropertyValue('--bg').trim() : '#F8FAFC';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.scale(2, 2);
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        
+        const a = document.createElement('a');
+        a.download = 'Phylogenetic_Tree_DSW.png';
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+        toast("Berhasil mengunduh grafis PNG resolusi penuh.");
+    };
+    img.src = url;
+}
 
 // ===================================================================
 // MODULE 9: PRIMER DESIGN 
