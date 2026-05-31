@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoMetrics Multivariat by DSW</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%23A855F7%22>🌿</text></svg>">
+<meta property="og:title" content="EcoMetrics Multivariat by DSW">
+<meta property="og:description" content="Pusat eksplorasi data multivariat, PCA, Rapfish, dan Analisis Klaster.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+
+<style>
+:root {
+  --bg: #F8FAFC; --surface: #FFFFFF; --surface-hover: #F1F5F9;
+  --border: #E2E8F0; --border-focus: #94A3B8;
+  --text: #0F172A; --text2: #475569; --text3: #94A3B8;
+  --primary: #8B5CF6; --primary-light: #F3E8FF; --primary-dark: #7E22CE;
+  --success: #10B981; --danger: #EF4444; --warning: #F59E0B; --blue: #3B82F6;
+  --font-sans: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; --font-serif: 'Syne', sans-serif;
+  --radius: 8px; --shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+[data-theme="dark"] {
+  --bg: #0F172A; --surface: #1E293B; --surface-hover: #334155;
+  --border: #334155; --border-focus: #475569;
+  --text: #F8FAFC; --text2: #CBD5E1; --text3: #94A3B8;
+  --primary: #A855F7; --primary-light: #3B0764; --primary-dark: #D8B4FE;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 13px; transition: background 0.3s, color 0.3s; }
+
+/* Class Khusus untuk Mengubah Warna Emoji Menjadi Ungu DSW Ecosystem */
+.dsw-icon-styled {
+    filter: grayscale(100%);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
+    transition: filter 0.3s ease;
+}
+[data-theme="dark"] .dsw-icon-styled {
+    /* hue-rotate(260deg) untuk Ungu/Purple */
+    filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(250deg) saturate(5);
+}
+[data-theme="light"] .dsw-icon-styled {
+    filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(250deg) saturate(4);
+}
+.menu-item:hover .dsw-icon-styled,
+.btn:hover .dsw-icon-styled {
+    filter: grayscale(100%) brightness(1.5) sepia(1) hue-rotate(250deg) saturate(7);
+}
+
+header { background: var(--surface); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10; box-shadow: var(--shadow); transition: background 0.3s; }
+.brand { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.brand-top { display: flex; align-items: center; gap: 8px; }
+.brand-icon { font-size: 22px; }
+.brand-text { font-family: var(--font-serif); font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+.brand-text span { color: var(--primary); }
+.brand-sub { font-family: var(--font-sans); font-size: 11px; font-weight: 500; color: var(--text3); margin-left: 34px; margin-top: -3px; display: block; }
+
+.btn { padding: 8px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: var(--font-sans); font-size: 12px; transition: 0.2s;}
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { opacity: 0.9; }
+.btn-outline { background: transparent; border-color: var(--border); color: var(--text2); }
+.btn-outline:hover { background: var(--surface-hover); color: var(--text); }
+.btn-success { background: var(--success); color: #fff; border-color: var(--success); }
+.btn-icon { padding: 4px 6px; background: transparent; border: 1px solid var(--border); color: var(--text3); border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 14px; }
+.btn-icon:hover { background: var(--surface-hover); color: var(--danger); border-color: var(--danger); }
+
+.main-container { display: flex; flex: 1; overflow: hidden; }
+.sidebar { width: 250px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 15px 0 0; overflow-y: auto; transition: background 0.3s;}
+.menu-group { margin-bottom: 12px; }
+.menu-title { font-size: 10px; text-transform: uppercase; font-weight: 700; color: var(--text3); padding: 5px 20px; letter-spacing: 0.5px; }
+.menu-item { padding: 8px 20px; color: var(--text2); cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; font-weight: 500; border-left: 3px solid transparent; }
+.menu-item:hover, .menu-item.active { background: var(--primary-light); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+.sidebar-footer { margin-top: auto; padding: 16px; border-top: 1px solid var(--border); }
+
+.content-area { flex: 1; overflow-y: auto; padding: 25px 36px; transition: background 0.3s;}
+.tab-pane { display: none; animation: fadeUp 0.3s ease; } .tab-pane.active { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.page-title { font-family: var(--font-serif); font-size: 20px; font-weight: 700; color: var(--text); }
+.toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+.card { background: var(--surface); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 20px; box-shadow: var(--shadow); }
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+
+textarea.matrix-input { font-family: var(--font-mono); font-size: 12px; min-height: 180px; white-space: pre; overflow-x: auto; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 12px; width: 100%; resize: vertical; line-height: 1.5;}
+textarea.matrix-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 2px rgba(168,85,247,0.15);}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.chart-box { background: var(--surface); padding: 15px; border-radius: var(--radius); border: 1px solid var(--border); height: 380px; display: flex; flex-direction: column; box-shadow: var(--shadow);}
+.chart-title { text-align: center; font-weight: 600; margin-bottom: 10px; font-family: var(--font-serif); }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th, td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; }
+th { background: var(--surface-hover); color: var(--text2); font-weight: 600; white-space: nowrap; }
+
+.r-note { background: var(--surface-hover); padding: 14px 18px; border-radius: 8px; font-size: 13px; color: var(--text2); line-height: 1.6; border-left: 4px solid var(--primary); margin-top: 15px; margin-bottom: 15px;}
+.r-note b { color: var(--text); font-weight: 700; }
+
+.dendrogram-container { width: 100%; height: 400px; overflow: auto; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 20px; display: flex; align-items: center; justify-content: center; }
+svg text { fill: var(--text); font-family: var(--font-mono); font-size: 12px; }
+svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
+
+/* Modal & Dialogs */
+.overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.7); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 200; }
+.overlay.active { display: flex; }
+.dialog { background: var(--surface); width: 680px; max-width: 95vw; border-radius: 12px; box-shadow: var(--shadow-md); overflow: hidden; display:flex; flex-direction:column; max-height:90vh; }
+.dialog-header { padding: 18px 24px; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 18px; font-family: var(--font-serif); color: var(--text); display: flex; justify-content: space-between; align-items: center; }
+.dialog-body { padding: 24px; overflow-y:auto; display: flex; flex-direction: column; gap: 14px; font-family: var(--font-sans); line-height: 1.6; }
+.dialog-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: var(--surface-hover); }
+.section-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text3); margin: 24px 0 12px; display: flex; align-items: center; gap: 10px; font-family: var(--font-sans); }
+.section-label:first-child { margin-top: 0; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Toasts */
+.toast-container { position: fixed; bottom: 20px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.toast { background: var(--surface); border: 1px solid var(--border); padding: 12px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: var(--font-sans); box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 10px; pointer-events: all; animation: slideIn 0.3s ease; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+.toast.hide { animation: slideOut 0.3s ease forwards; }
+@keyframes slideOut { to { opacity: 0; transform: translateX(20px); } }
+
+@media (max-width: 768px) {
+  .main-container { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; flex-direction: row; padding: 10px 15px; border-bottom: 1px solid var(--border); border-right: none; overflow-x: auto; white-space: nowrap; }
+  .menu-group { display: inline-flex; align-items: center; margin-bottom: 0; margin-right: 10px; padding-right: 10px; border-right: 1px solid var(--border); }
+  .menu-group:last-child { border-right: none; }
+  .menu-title { display: none; } .menu-item { padding: 8px 14px; margin-right: 5px; font-size: 12px; }
+  .content-area { padding: 16px; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .page-header { flex-direction: column; gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-top"><span class="brand-icon dsw-icon-styled">🌿</span><span class="brand-text">Eco<span>Metrics</span></span></div>
+    <span class="brand-sub">Multivariat by DSW</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-outline" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> Tema</button>
+  </div>
+</header>
+
+<div class="main-container">
+  <nav class="sidebar">
+    <div class="menu-group">
+      <div class="menu-title">Analisis Keberlanjutan</div>
+      <div class="menu-item active" onclick="switchView('v-rapfish', this)"><span class="dsw-icon-styled">🎯</span> Rapfish (Anchored Proj)</div>
+    </div>
+    <div class="menu-group">
+      <div class="menu-title">Eksplorasi Dimensi & Vektor</div>
+      <div class="menu-item" onclick="switchView('v-pca', this)"><span class="dsw-icon-styled">📉</span> PCA + Biplot</div>
+      <div class="menu-item" onclick="switchView('v-lda', this)"><span class="dsw-icon-styled">🔮</span> Discriminant Analysis (LDA)</div>
+    </div>
+    <div class="menu-group">
+      <div class="menu-title">Analisis Pengelompokan</div>
+      <div class="menu-item" onclick="switchView('v-kmeans', this)"><span class="dsw-icon-styled">🧩</span> K-Means++ & Elbow</div>
+      <div class="menu-item" onclick="switchView('v-hca', this)"><span class="dsw-icon-styled">🌳</span> Hierarchical (Dendrogram)</div>
+      <div class="menu-item" onclick="switchView('v-anosim', this)"><span class="dsw-icon-styled">⚖️</span> ANOSIM (Permutation)</div>
+    </div>
+    <div class="sidebar-footer">
+      <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="showHelp()"><span class="dsw-icon-styled">❓</span> Panduan & Referensi</button>
+    </div>
+  </nav>
+
+  <main class="content-area">
+    
+    <div id="v-rapfish" class="tab-pane active">
+      <div class="page-header">
+        <div><div class="page-title">Rapfish (Anchored Projection)</div><p style="color:var(--text3); margin-top:5px;">Proyeksi multidimensi ortogonal ke garis referensi Bad-Good.</p></div>
+        <div class="toolbar">
+            <button class="btn btn-outline" onclick="loadSampleRapfish()"><span class="dsw-icon-styled">📝</span> Isi Data Sampel</button>
+            <button class="btn btn-primary" onclick="runRapfish()"><span class="dsw-icon-styled">🚀</span> Jalankan Rapfish</button>
+        </div>
+      </div>
+      <div id="rapfishInputs">
+          <div class="card" id="dim-card-1">
+              <input type="text" value="Dimensi Ekologi" style="background:transparent; border:none; color:var(--primary); font-weight:bold; font-size:14px; margin-bottom:10px; width: 250px;" id="dim-name-1">
+              <textarea class="matrix-input rapfish-matrix" id="dim-data-1" placeholder="Indikator&#9;Buruk&#9;Baik&#9;Stasiun_A&#9;Stasiun_B&#10;Kualitas Air&#9;0&#9;10&#9;8&#9;4&#10;Penyakit&#9;10&#9;0&#9;2&#9;8"></textarea>
+          </div>
+      </div>
+      <button class="btn btn-outline" style="width:100%; border-style:dashed;" onclick="addDim()"><span class="dsw-icon-styled">➕</span> Tambah Dimensi (Sosial/Ekonomi/Etika)</button>
+      
+      <div id="rapfishOutput" style="display:none; margin-top:20px;">
+          <div class="grid-2">
+              <div class="chart-box"><div class="chart-title">Radar Kelestarian (Kite Diagram)</div><canvas id="rapfishRadar"></canvas><p style="font-size:11px; color:var(--text3); text-align:center; margin-top:5px;">*Klik kanan pada grafik &rarr; 'Copy Image' untuk menyalin ke Word.</p></div>
+              <div class="card" id="rapfishTableContainer">
+                  <div class="card-title"><div>Indeks Keberlanjutan (%)</div> <button class="btn btn-success btn-sm" onclick="copyForWord('rapfishTableContainer')"><span class="dsw-icon-styled">📋</span> Salin ke Word</button></div>
+                  <div class="table-wrap" id="rapfishTable"></div>
+                  <div id="rapfishInterpret"></div>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <div id="v-pca" class="tab-pane">
+      <div class="page-header">
+        <div><div class="page-title">PCA + Biplot</div><p style="color:var(--text3); margin-top:5px;">Eigen decomposition riil dengan ekstraksi vektor beban (Loadings).</p></div>
+        <div class="toolbar">
+            <button class="btn btn-outline" onclick="loadSample('pcaInput', samplePCA)"><span class="dsw-icon-styled">📝</span> Isi Data Sampel</button>
+            <button class="btn btn-primary" onclick="runPCA()"><span class="dsw-icon-styled">🚀</span> Jalankan PCA</button>
+        </div>
+      </div>
+      <div class="card">
+        <label style="font-weight:bold; font-size:12px; margin-bottom:10px; display:block;">Matriks Data Observasi <span style="font-weight:normal; color:var(--text3);">(Paste dari Excel. Kolom 1 wajib Label/Nama Sampel)</span></label>
+        <textarea id="pcaInput" class="matrix-input" placeholder="Sampel&#9;Suhu&#9;Salinitas&#9;DO&#10;St1&#9;29.5&#9;15&#9;5.5&#10;St2&#9;32.0&#9;25&#9;3.2&#10;St3&#9;28.0&#9;12&#9;6.0&#10;St4&#9;33.5&#9;30&#9;2.5"></textarea>
+      </div>
+      <div id="pcaOutput" style="display:none;">
+          <div class="grid-2">
+              <div class="chart-box"><div class="chart-title">Scree Plot (Variance)</div><canvas id="pcaScree"></canvas></div>
+              <div class="chart-box"><div class="chart-title">PCA Biplot (Scores + Loadings)</div><canvas id="pcaBiplot"></canvas></div>
+          </div>
+          <p style="font-size:11px; color:var(--text3); text-align:center; margin-top:5px; margin-bottom:20px;">*Klik kanan pada grafik &rarr; 'Copy Image' (Salin Gambar) untuk menempelkannya ke dokumen MS Word.</p>
+          <div class="card" id="pcaTableContainer">
+              <div class="card-title"><div>Ringkasan Eigenvalues & Varians</div> <button class="btn btn-success btn-sm" onclick="copyForWord('pcaTableContainer')"><span class="dsw-icon-styled">📋</span> Salin ke Word</button></div>
+              <div class="table-wrap" id="pcaTable"></div>
+              <div id="pcaInterpret"></div>
+          </div>
+      </div>
+    </div>
+
+    <div id="v-kmeans" class="tab-pane">
+      <div class="page-header">
+        <div><div class="page-title">K-Means++ & Elbow Method</div><p style="color:var(--text3); margin-top:5px;">Inisialisasi cerdas dengan evaluasi Within-Cluster Sum of Squares.</p></div>
+        <div class="toolbar">
+            <input type="number" id="kVal" value="2" min="2" style="width:50px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:var(--text); text-align:center; padding:6px;">
+            <button class="btn btn-outline" onclick="loadSample('kmeansInput', sampleCluster)"><span class="dsw-icon-styled">📝</span> Isi Data Sampel</button>
+            <button class="btn btn-primary" onclick="runKMeans()"><span class="dsw-icon-styled">🚀</span> Analisis Klaster</button>
+        </div>
+      </div>
+      <div class="card">
+        <label style="font-weight:bold; font-size:12px; margin-bottom:10px; display:block;">Matriks Data Observasi <span style="font-weight:normal; color:var(--text3);">(Kolom 1 Label. Scatter 2D memplot 2 parameter pertama)</span></label>
+        <textarea id="kmeansInput" class="matrix-input" placeholder="Sampel&#9;Var1&#9;Var2&#10;A&#9;1.5&#9;2.0&#10;B&#9;1.6&#9;2.1&#10;C&#9;5.5&#9;6.0&#10;D&#9;5.8&#9;6.1"></textarea>
+      </div>
+      <div id="kmeansOutput" style="display:none;">
+          <div class="grid-2">
+              <div class="chart-box"><div class="chart-title">Elbow Method (WCSS)</div><canvas id="kmeansElbow"></canvas></div>
+              <div class="chart-box"><div class="chart-title">Visualisasi Klaster 2D</div><canvas id="kmeansScatter"></canvas></div>
+          </div>
+          <div class="card" style="margin-top:20px;" id="kmeansTableContainer">
+              <div class="card-title"><div>Hasil Keanggotaan Klaster</div> <button class="btn btn-success btn-sm" onclick="copyForWord('kmeansTableContainer')"><span class="dsw-icon-styled">📋</span> Salin ke Word</button></div>
+              <div id="kmeansInterpret"></div>
+          </div>
+      </div>
+    </div>
+
+    <div id="v-hca" class="tab-pane">
+      <div class="page-header">
+        <div><div class="page-title">Hierarchical Clustering (UPGMA)</div><p style="color:var(--text3); margin-top:5px;">Pengelompokan bertingkat (Agglomerative) berdasarkan Jarak Euclidean.</p></div>
+        <div class="toolbar">
+            <button class="btn btn-outline" onclick="loadSample('hcaInput', sampleCluster)"><span class="dsw-icon-styled">📝</span> Isi Data Sampel</button>
+            <button class="btn btn-primary" onclick="runHCA()"><span class="dsw-icon-styled">🌿</span> Buat Dendrogram</button>
+        </div>
+      </div>
+      <div class="card">
+        <label style="font-weight:bold; font-size:12px; margin-bottom:10px; display:block;">Matriks Data Observasi <span style="font-weight:normal; color:var(--text3);">(Paste dari Excel. Kolom 1 wajib Label/Nama Sampel)</span></label>
+        <textarea id="hcaInput" class="matrix-input" placeholder="Sampel&#9;Param1&#9;Param2&#10;Sp1&#9;10&#9;20&#10;Sp2&#9;11&#9;21&#10;Sp3&#9;50&#9;60&#10;Sp4&#9;52&#9;58"></textarea>
+      </div>
+      <div class="card" id="hcaOutput" style="display:none;">
+          <div class="card-title"><div>Dendrogram (SVG)</div></div>
+          <div class="dendrogram-container" id="svgContainer"></div>
+          <div id="hcaInterpret"></div>
+      </div>
+    </div>
+
+    <div id="v-anosim" class="tab-pane">
+      <div class="page-header">
+        <div><div class="page-title">ANOSIM (Analysis of Similarities)</div><p style="color:var(--text3); margin-top:5px;">Uji signifikansi multivariat non-parametrik dengan 999 permutasi.</p></div>
+        <div class="toolbar">
+            <button class="btn btn-outline" onclick="loadSample('anosimInput', sampleGroup)"><span class="dsw-icon-styled">📝</span> Isi Data Sampel</button>
+            <button class="btn btn-primary" onclick="runANOSIM()"><span class="dsw-icon-styled">🚀</span> Jalankan Permutasi</button>
+        </div>
+      </div>
+      <div class="card">
+        <label style="font-weight:bold; font-size:12px; margin-bottom:10px; display:block;">Format: Kolom 1 = ID, <span style="color:var(--primary);">Kolom 2 = GRUP Kategori</span>, Kolom 3 dst = Numerik</label>
+        <textarea id="anosimInput" class="matrix-input" placeholder="ID&#9;Grup&#9;Var1&#9;Var2&#10;S1&#9;Hulu&#9;10&#9;20&#10;S2&#9;Hulu&#9;12&#9;22&#10;S3&#9;Hilir&#9;50&#9;60&#10;S4&#9;Hilir&#9;55&#9;58"></textarea>
+      </div>
+      <div class="card" id="anosimOutput" style="display:none; position:relative;"></div>
+    </div>
+
+    <div id="v-lda" class="tab-pane">
+      <div class="page-header">
+        <div><div class="page-title">Linear Discriminant Analysis (LDA)</div><p style="color:var(--text3); margin-top:5px;">Mencari sumbu yang memaksimalkan separasi antar grup perlakuan.</p></div>
+        <div class="toolbar">
+            <button class="btn btn-outline" onclick="loadSample('ldaInput', sampleGroup)"><span class="dsw-icon-styled">📝</span> Isi Data Sampel</button>
+            <button class="btn btn-primary" onclick="runLDA()"><span class="dsw-icon-styled">🚀</span> Jalankan LDA</button>
+        </div>
+      </div>
+      <div class="card">
+        <label style="font-weight:bold; font-size:12px; margin-bottom:10px; display:block;">Format: Kolom 1 = ID, <span style="color:var(--primary);">Kolom 2 = GRUP Kategori</span>, Kolom 3 dst = Numerik</label>
+        <textarea id="ldaInput" class="matrix-input" placeholder="ID&#9;Spesies&#9;P_Kepala&#9;P_Ekor&#10;I1&#9;Nila&#9;5.1&#9;2.0&#10;I2&#9;Nila&#9;5.3&#9;2.1&#10;I3&#9;Lele&#9;3.2&#9;4.0&#10;I4&#9;Lele&#9;3.1&#9;4.2"></textarea>
+      </div>
+      <div id="ldaOutput" style="display:none;">
+          <div class="grid-2">
+              <div class="chart-box"><div class="chart-title">LDA Scatter Plot (LD1 vs LD2)</div><canvas id="ldaChart"></canvas></div>
+              <div class="card" id="ldaTableContainer">
+                  <div class="card-title"><div>Ringkasan Fungsi Diskriminan</div> <button class="btn btn-success btn-sm" onclick="copyForWord('ldaTableContainer')"><span class="dsw-icon-styled">📋</span> Salin ke Word</button></div>
+                  <div class="table-wrap" id="ldaTable"></div>
+                  <div id="ldaInterpret"></div>
+              </div>
+          </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="overlay" id="dlgHelp">
+  <div class="dialog">
+    <div class="dialog-header">📐 Panduan & Referensi Ilmiah <button class="btn-icon" onclick="closeDialog('dlgHelp')" style="font-size:18px;">×</button></div>
+    <div class="dialog-body">
+      
+      <div class="section-label">Format Input Data (Semua Modul)</div>
+      <p style="font-size:13px; color:var(--text); margin-bottom: 10px;">
+        Aplikasi ini memproses data tabular mentah yang disalin (*Copy-Paste*) langsung dari <strong>Microsoft Excel</strong> atau file TSV. <br><br>
+        Untuk modul <strong>PCA, K-Means, dan HCA</strong>, kolom pertama wajib berupa Label Identitas (misal: "Stasiun 1"), diikuti kolom numerik di sebelahnya.<br>
+        Untuk <strong>ANOSIM dan LDA</strong>, kolom 1 = Label, Kolom 2 = Grup Perlakuan, dan Kolom 3 dst = Numerik.
+      </p>
+
+      <div class="section-label">Daftar Referensi Algoritma (Standar APA)</div>
+      <p style="font-size:12px; color:var(--text2); line-height:1.6; margin-bottom: 8px;">
+        <strong>Rapfish (MDS Keberlanjutan):</strong><br>
+        Pitcher, T. J., & Preikshot, D. (2001). RAPFISH: a rapid appraisal technique to evaluate the sustainability status of fisheries. <em>Fisheries Research</em>, 49(3), 255-270. <a href="https://doi.org/10.1016/S0165-7836(00)00205-8" target="_blank" style="color:var(--primary);">doi:10.1016/S0165-7836(00)00205-8</a>
+      </p>
+      <p style="font-size:12px; color:var(--text2); line-height:1.6; margin-bottom: 8px;">
+        <strong>Principal Component Analysis (PCA):</strong><br>
+        Jolliffe, I. T., & Cadima, J. (2016). Principal component analysis: a review and recent developments. <em>Philosophical Transactions of the Royal Society A</em>, 374(2065), 20150202. <a href="https://doi.org/10.1098/rsta.2015.0202" target="_blank" style="color:var(--primary);">doi:10.1098/rsta.2015.0202</a>
+      </p>
+      <p style="font-size:12px; color:var(--text2); line-height:1.6; margin-bottom: 8px;">
+        <strong>K-Means Clustering:</strong><br>
+        Jain, A. K. (2010). Data clustering: 50 years beyond K-means. <em>Pattern Recognition Letters</em>, 31(8), 651-666. <a href="https://doi.org/10.1016/j.patrec.2009.09.011" target="_blank" style="color:var(--primary);">doi:10.1016/j.patrec.2009.09.011</a>
+      </p>
+      <p style="font-size:12px; color:var(--text2); line-height:1.6; margin-bottom: 8px;">
+        <strong>Hierarchical Clustering (UPGMA):</strong><br>
+        Murtagh, F., & Contreras, P. (2012). Algorithms for hierarchical clustering: an overview. <em>Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery</em>, 2(1), 86-97. <a href="https://doi.org/10.1002/widm.53" target="_blank" style="color:var(--primary);">doi:10.1002/widm.53</a>
+      </p>
+      <p style="font-size:12px; color:var(--text2); line-height:1.6; margin-bottom: 8px;">
+        <strong>ANOSIM (Analysis of Similarities):</strong><br>
+        Clarke, K. R. (1993). Non-parametric multivariate analyses of changes in community structure. <em>Australian Journal of Ecology</em>, 18(1), 117-143. <a href="https://doi.org/10.1111/j.1442-9993.1993.tb00438.x" target="_blank" style="color:var(--primary);">doi:10.1111/j.1442-9993.1993.tb00438.x</a>
+      </p>
+      <p style="font-size:12px; color:var(--text2); line-height:1.6; margin-bottom: 8px;">
+        <strong>LDA (Linear Discriminant Analysis):</strong><br>
+        Izenman, I. T. (2013). Linear discriminant analysis. In <em>Modern Multivariate Statistical Techniques</em> (pp. 237-280). Springer. <a href="https://doi.org/10.1007/978-0-387-78189-1_8" target="_blank" style="color:var(--primary);">doi:10.1007/978-0-387-78189-1_8</a>
+      </p>
+
+    </div>
+    <div class="dialog-footer"><button class="btn btn-primary" onclick="closeDialog('dlgHelp')">Tutup Mengerti</button></div>
+  </div>
+</div>
+
+<script>
+// --- SAMPLE DATA STRINGS ---
+const samplePCA = `Sampel\tSuhu\tSalinitas\tDO\tpH\tAmonia
+Stasiun_1\t29.5\t15\t5.5\t7.5\t0.1
+Stasiun_2\t32.0\t25\t3.2\t8.2\t0.5
+Stasiun_3\t28.0\t12\t6.0\t7.2\t0.05
+Stasiun_4\t33.5\t30\t2.5\t8.5\t0.8
+Stasiun_5\t30.0\t20\t4.5\t7.8\t0.3
+Stasiun_6\t27.5\t10\t6.5\t7.0\t0.02`;
+
+const sampleCluster = `Lokasi\tFosfat\tNitrat\tKecerahan
+L1\t0.5\t1.2\t45
+L2\t0.6\t1.5\t40
+L3\t2.5\t5.0\t15
+L4\t2.8\t4.8\t12
+L5\t0.4\t1.0\t50
+L6\t2.2\t5.5\t10`;
+
+const sampleGroup = `ID\tZona\tSuhu\tSalinitas\tDO
+S1\tHulu\t26.5\t0\t7.5
+S2\tHulu\t26.8\t0\t7.2
+S3\tHulu\t27.0\t1\t7.0
+S4\tMuara\t30.5\t15\t5.0
+S5\tMuara\t31.0\t18\t4.5
+S6\tMuara\t30.8\t16\t4.8
+S7\tLaut\t29.0\t32\t6.5
+S8\tLaut\t28.5\t33\t6.8
+S9\tLaut\t29.2\t32\t6.6`;
+
+function loadSample(id, data) {
+    document.getElementById(id).value = data;
+    toast("Data sampel berhasil dimuat. Silakan klik Jalankan.");
+}
+
+function loadSampleRapfish() {
+    document.getElementById('dim-name-1').value = 'Dimensi Ekologi';
+    document.getElementById('dim-data-1').value = `Indikator\tBuruk\tBaik\tIntensif\tTradisional\nKualitas Air\t0\t10\t4\t8\nPenyakit\t10\t0\t7\t2\nPlankton\t0\t10\t5\t9`;
+    
+    if(!document.getElementById('dim-data-2')) {
+        addDim();
+    }
+    document.getElementById(`dim-name-2`).value = 'Dimensi Ekonomi';
+    document.getElementById(`dim-data-2`).value = `Indikator\tBuruk\tBaik\tIntensif\tTradisional\nFCR\t3.0\t1.0\t1.4\t2.2\nProfit\t0\t100\t80\t40\nBiaya Pakan\t20\t5\t15\t8`;
+    
+    toast("Data sampel Rapfish berhasil dimuat. Silakan klik Jalankan.");
+}
+
+function toast(msg) {
+  const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<span style="color:var(--success); font-size:16px;">✓</span> ${msg}`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 2500);
+}
+
+// Copy to Word Feature
+function copyForWord(containerId) {
+    const el = document.getElementById(containerId);
+    if(!el) return;
+    
+    // Create a temporary clone to remove buttons before copying
+    const clone = el.cloneNode(true);
+    const buttons = clone.querySelectorAll('button');
+    buttons.forEach(b => b.remove());
+    
+    // Create hidden div, append clone, copy, remove
+    const hiddenDiv = document.createElement('div');
+    hiddenDiv.style.position = 'absolute';
+    hiddenDiv.style.left = '-9999px';
+    hiddenDiv.appendChild(clone);
+    document.body.appendChild(hiddenDiv);
+    
+    const range = document.createRange();
+    range.selectNode(hiddenDiv);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    
+    try {
+        document.execCommand('copy');
+        toast("Hasil berhasil disalin. Silakan Paste (Ctrl+V) di dokumen Word Anda.");
+    } catch(err) {
+        alert("Gagal menyalin. Silakan blok tabel secara manual dan copy.");
+    }
+    
+    window.getSelection().removeAllRanges();
+    document.body.removeChild(hiddenDiv);
+}
+
+// --- CORE UTILS ---
+function switchView(id, el) {
+  document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
+  document.getElementById(id).classList.add('active'); el.classList.add('active');
+}
+function toggleTheme() {
+    const html = document.documentElement;
+    html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    Chart.helpers.each(Chart.instances, function(instance){ instance.update(); });
+}
+function parseMatrix(text, hasGroup=false) {
+    let rows = text.trim().split('\n').map(r=>r.trim().split(/\t+|,|;/));
+    if(rows.length < 2) return null;
+    let headers = rows[0], labels = [], groups = [], data = [];
+    for(let i=1; i<rows.length; i++) {
+        if(rows[i].length < 2) continue;
+        labels.push(rows[i][0]);
+        if(hasGroup) { groups.push(rows[i][1]); data.push(rows[i].slice(2).map(Number)); }
+        else { data.push(rows[i].slice(1).map(Number)); }
+    }
+    return {headers, labels, groups, data};
+}
+function getChartColors() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    return { txt: isDark ? '#94A3B8' : '#475569', grid: isDark ? '#334155' : '#E2E8F0', pal: ['#A855F7', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899'] };
+}
+function openDialog(id) { document.getElementById(id).classList.add('active'); }
+function closeDialog(id) { document.getElementById(id).classList.remove('active'); }
+function showHelp() { openDialog('dlgHelp'); }
+
+// --- 1. RAPFISH (ANCHORED PROJECTION) ---
+let dimCount = 1; let rapChart = null;
+function addDim() {
+    dimCount++; const c = document.getElementById('rapfishInputs');
+    const div = document.createElement('div'); div.className = 'card'; div.id = `dim-card-${dimCount}`;
+    div.innerHTML = `<div class="card-title" style="margin-bottom: 10px;"><input type="text" value="Dimensi ${dimCount}" class="form-control" style="background:transparent; border:none; color:var(--primary); font-weight:bold; font-size:14px; width: 250px;" id="dim-name-${dimCount}"><button class="btn-icon" onclick="this.parentElement.parentElement.remove()" title="Hapus Dimensi">🗑️</button></div><textarea class="matrix-input rapfish-matrix" id="dim-data-${dimCount}" placeholder="Indikator&#9;Buruk&#9;Baik&#9;Stasiun_A&#9;Stasiun_B"></textarea>`;
+    c.appendChild(div);
+}
+function runRapfish() {
+    const tas = document.querySelectorAll('.rapfish-matrix');
+    let results = [], fNames = [];
+    tas.forEach((ta, idx) => {
+        let p = parseMatrix(ta.value); if(!p) return;
+        if(idx===0) fNames = p.headers.slice(3);
+        let bad = [], good = [], F = fNames.map(()=>[]);
+        for(let i=0; i<p.data.length; i++) {
+            bad.push(p.data[i][0]); good.push(p.data[i][1]);
+            fNames.forEach((_, fi) => F[fi].push(p.data[i][2+fi]));
+        }
+        // Anchored Projection Math
+        let scores = fNames.map((_, fi) => {
+            let num = 0, den = 0;
+            for(let j=0; j<bad.length; j++) {
+                let r = good[j] - bad[j]; if(r===0) r=1e-9;
+                let projG = (good[j]-bad[j])/r; // Always 1
+                let projF = (F[fi][j]-bad[j])/r; // Normalized position
+                num += projF * projG; den += projG * projG;
+            }
+            let s = (num / den) * 100;
+            return Math.max(0, Math.min(100, s)); 
+        });
+        
+        let dimNameInput = ta.previousElementSibling.querySelector('input');
+        let dimName = dimNameInput ? dimNameInput.value : `D${idx+1}`;
+        results.push({name: dimName, scores});
+    });
+    if(!results.length) return alert("Data kosong atau format salah.");
+    
+    // Render Chart
+    document.getElementById('rapfishOutput').style.display = 'block';
+    let {txt, grid, pal} = getChartColors();
+    let datasets = fNames.map((n, i) => ({ label: n, data: results.map(r=>r.scores[i]), borderColor: pal[i%pal.length], backgroundColor: pal[i%pal.length]+'33', borderWidth: 2 }));
+    if(rapChart) rapChart.destroy();
+    rapChart = new Chart(document.getElementById('rapfishRadar'), { type: 'radar', data: {labels: results.map(r=>r.name), datasets}, options: { maintainAspectRatio:false, scales:{r:{min:0,max:100, grid:{color:grid}, angleLines:{color:grid}, pointLabels:{color:txt}, ticks:{color:txt, backdropColor:'transparent'}}}, plugins:{legend:{labels:{color:txt}}} } });
+    
+    // Render Table
+    let th = `<table><thead><tr><th>Stasiun (Lokasi)</th>` + results.map(r=>`<th>${r.name}</th>`).join('') + `<th>Rata-rata Indeks</th></tr></thead><tbody>`;
+    let isBad = false;
+    fNames.forEach((n, i) => {
+        let avg = results.reduce((sum, r)=>sum+r.scores[i], 0) / results.length;
+        if(avg < 50) isBad = true;
+        th += `<tr><td style="font-weight:bold; color:var(--text);">${n}</td>` + results.map(r=>`<td style="color:${r.scores[i]>50?'var(--success)':'var(--danger)'}; font-weight:500;">${r.scores[i].toFixed(2)}%</td>`).join('') + `<td style="font-weight:bold; background:var(--surface-hover);">${avg.toFixed(2)}%</td></tr>`;
+    });
+    document.getElementById('rapfishTable').innerHTML = th + `</tbody></table>`;
+    
+    // Interpretasi
+    let interpretation = `<div class="r-note"><b>Interpretasi Status Keberlanjutan:</b><br>
+    Model proyeksi skala 0-100%. Nilai indeks <b>&gt; 50%</b> mengindikasikan status <b>Berkelanjutan</b> (Sustainable) pada dimensi tersebut. Nilai <b>&lt; 50%</b> mengindikasikan status <b>Kurang Berkelanjutan</b> (Unsustainable). <br><br>
+    <i>Berdasarkan nilai rata-rata, sistem Anda saat ini dinilai <b>${isBad ? 'memiliki beberapa faktor pembatas kritis (<50%)' : 'berada pada batas aman yang berkelanjutan (>50%)'}</b>.</i></div>`;
+    document.getElementById('rapfishInterpret').innerHTML = interpretation;
+}
+
+// --- 2. PCA + BIPLOT ---
+let pcaSc, pcaBp;
+function runPCA() {
+    let p = parseMatrix(document.getElementById('pcaInput').value); if(!p) return alert("Data kosong");
+    let Z = [], n = p.data.length, m = p.data[0].length;
+    let means = Array(m).fill(0), sds = Array(m).fill(0);
+    for(let j=0; j<m; j++) { for(let i=0; i<n; i++) means[j]+=p.data[i][j]; means[j]/=n; }
+    for(let j=0; j<m; j++) { for(let i=0; i<n; i++) sds[j]+=Math.pow(p.data[i][j]-means[j],2); sds[j]=Math.sqrt(sds[j]/(n-1))||1; }
+    for(let i=0; i<n; i++) { Z.push([]); for(let j=0; j<m; j++) Z[i][j] = (p.data[i][j]-means[j])/sds[j]; }
+    
+    let cov = numeric.mul(numeric.dot(numeric.transpose(Z), Z), 1/(n-1));
+    let eig = numeric.eig(cov);
+    
+    let pairs = [];
+    for(let i=0; i<m; i++) { if(!eig.lambda.y || Math.abs(eig.lambda.y[i]) < 1e-10) pairs.push({ val: eig.lambda.x[i], vec: eig.E.x.map(r=>r[i]) }); }
+    pairs.sort((a,b)=>b.val-a.val);
+    
+    let vals = pairs.map(x=>x.val), vecs = numeric.transpose(pairs.map(x=>x.vec));
+    let totVar = vals.reduce((a,b)=>a+b,0), varExp = vals.map(v=>(v/totVar)*100);
+    let scores = numeric.dot(Z, vecs);
+    
+    // Loadings for Biplot
+    let loadings = [];
+    for(let i=0; i<m; i++) loadings.push([ vecs[i][0]*Math.sqrt(vals[0]), vecs[i][1]*Math.sqrt(vals[1]) ]);
+    
+    document.getElementById('pcaOutput').style.display = 'block';
+    let {txt, grid, pal} = getChartColors();
+    
+    if(pcaSc) pcaSc.destroy();
+    pcaSc = new Chart(document.getElementById('pcaScree'), { type: 'bar', data: {labels: varExp.map((_,i)=>`PC${i+1}`), datasets:[{label:'% Varians', data:varExp, backgroundColor:pal[0]}]}, options:{maintainAspectRatio:false, scales:{y:{grid:{color:grid},ticks:{color:txt}}, x:{grid:{display:false},ticks:{color:txt}}}, plugins:{legend:{display:false}}} });
+    
+    // Biplot
+    let scatterData = scores.map((s,i) => ({x: s[0], y: s[1], label: p.labels[i]}));
+    let loadingData = loadings.map((l,i) => ({x: l[0]*Math.max(...scores.map(s=>Math.abs(s[0]))), y: l[1]*Math.max(...scores.map(s=>Math.abs(s[1]))), label: p.headers[i+1]}));
+    
+    if(pcaBp) pcaBp.destroy();
+    pcaBp = new Chart(document.getElementById('pcaBiplot'), {
+        type: 'scatter',
+        data: { datasets: [
+            { label:'Sampel Observasi', data:scatterData, backgroundColor:pal[1], pointRadius:5 },
+            { label:'Vektor Parameter (Loadings)', data:loadingData, backgroundColor:pal[3], pointStyle:'triangle', pointRadius:7 }
+        ]},
+        options: { maintainAspectRatio:false, plugins:{tooltip:{callbacks:{label:c=>c.raw.label}}, legend:{labels:{color:txt}}}, scales:{x:{grid:{color:grid},ticks:{color:txt},title:{display:true,text:`PC1 (${varExp[0].toFixed(1)}%)`,color:txt}}, y:{grid:{color:grid},ticks:{color:txt},title:{display:true,text:`PC2 (${varExp[1].toFixed(1)}%)`,color:txt}}} }
+    });
+
+    let tbl = `<table><thead><tr><th>Komponen Utama</th><th>Eigenvalue</th><th>% Varians</th><th>Kumulatif %</th></tr></thead><tbody>`;
+    let cum = 0;
+    vals.forEach((v,i) => { cum+=varExp[i]; tbl += `<tr><td>PC${i+1}</td><td style="font-family:var(--font-mono);">${v.toFixed(4)}</td><td style="color:var(--primary); font-weight:600;">${varExp[i].toFixed(2)}%</td><td style="font-weight:bold;">${cum.toFixed(2)}%</td></tr>`; });
+    document.getElementById('pcaTable').innerHTML = tbl + `</tbody></table>`;
+    
+    let interpretation = `<div class="r-note"><b>Interpretasi PCA:</b><br>
+    Dua Komponen Utama pertama (PC1 dan PC2) mampu merangkum dan menjelaskan <b>${(varExp[0]+varExp[1]).toFixed(1)}%</b> dari seluruh varians/informasi data asli. <br>
+    <b>Membaca Biplot:</b> Vektor (garis segitiga) yang searah atau membentuk sudut sempit menunjukkan korelasi positif antar parameter. Titik sampel (lingkaran) yang berada di arah vektor tertentu menandakan sampel tersebut memiliki nilai dominan pada parameter tersebut.</div>`;
+    document.getElementById('pcaInterpret').innerHTML = interpretation;
+}
+
+// --- 3. K-MEANS++ ---
+let kmSc, kmElb;
+function distSq(a, b) { let d=0; for(let i=0; i<a.length; i++) d+=Math.pow(a[i]-b[i],2); return d; }
+function runKMeans() {
+    let p = parseMatrix(document.getElementById('kmeansInput').value); if(!p) return alert("Data kosong");
+    let K = parseInt(document.getElementById('kVal').value), n = p.data.length, m = p.data[0].length;
+    
+    // Elbow Method
+    let wcssArr = []; let maxK = Math.min(10, n-1);
+    for(let kTest=1; kTest<=maxK; kTest++) {
+        let {wcss} = runSingleKMeans(p.data, kTest); wcssArr.push(wcss);
+    }
+    
+    // Main Run
+    let {assigns} = runSingleKMeans(p.data, K);
+    
+    document.getElementById('kmeansOutput').style.display = 'block';
+    let {txt, grid, pal} = getChartColors();
+    if(kmElb) kmElb.destroy();
+    kmElb = new Chart(document.getElementById('kmeansElbow'), { type: 'line', data: {labels: Array.from({length:maxK},(_,i)=>i+1), datasets:[{label:'WCSS', data:wcssArr, borderColor:pal[0], tension:0.2, pointRadius:4}]}, options:{maintainAspectRatio:false, scales:{y:{grid:{color:grid},ticks:{color:txt}}, x:{grid:{color:grid},ticks:{color:txt}}}, plugins:{legend:{labels:{color:txt}}}} });
+    
+    let ds = Array.from({length:K}, (_,i)=>({label:`Klaster ${i+1}`, data:[], backgroundColor:pal[i%pal.length], pointRadius:6}));
+    assigns.forEach((k, i) => ds[k].data.push({x: p.data[i][0], y: p.data[i][1]||0, label:p.labels[i]}));
+    if(kmSc) kmSc.destroy();
+    kmSc = new Chart(document.getElementById('kmeansScatter'), { type: 'scatter', data: {datasets:ds}, options:{maintainAspectRatio:false, plugins:{tooltip:{callbacks:{label:c=>c.raw.label}}, legend:{labels:{color:txt}}}, scales:{x:{grid:{color:grid},ticks:{color:txt}, title:{display:true, text:p.headers[1]||'Var 1', color:txt}}, y:{grid:{color:grid},ticks:{color:txt}, title:{display:true, text:p.headers[2]||'Var 2', color:txt}}}} });
+    
+    // Group table
+    let members = Array(K).fill(0).map(()=>[]);
+    assigns.forEach((k, i) => members[k].push(p.labels[i]));
+    let tbl = `<table><thead><tr><th>Klaster</th><th>Jumlah Sampel</th><th>Anggota</th></tr></thead><tbody>`;
+    members.forEach((mem, i) => {
+        tbl += `<tr><td style="font-weight:bold; color:${pal[i%pal.length]}">Klaster ${i+1}</td><td>${mem.length}</td><td>${mem.join(', ')}</td></tr>`;
+    });
+    
+    let interpretation = `<div class="r-note"><b>Interpretasi K-Means & Elbow:</b><br>
+    <b>Metode Elbow:</b> Amati grafik WCSS (Within-Cluster Sum of Square). Titik K optimal biasanya berada di "siku" patahan di mana grafik mulai melandai secara perlahan.<br>
+    Pada tabel di atas, dataset telah dibagi menjadi <b>${K} klaster</b> yang saling eksklusif. Anggota di dalam klaster yang sama memiliki tingkat kemiripan (jarak Euclidean terdekat) terhadap titik pusat (Centroid) klasternya.</div>`;
+    
+    document.getElementById('kmeansInterpret').innerHTML = `<div class="table-wrap">${tbl}</tbody></table></div>` + interpretation;
+}
+function runSingleKMeans(data, K) {
+    let n = data.length, m = data[0].length, cents = [data[Math.floor(Math.random()*n)]];
+    while(cents.length < K) {
+        let dists = data.map(pt => Math.min(...cents.map(c => distSq(pt, c))));
+        let sum = dists.reduce((a,b)=>a+b,0), rnd = Math.random()*sum, cum=0;
+        for(let i=0; i<n; i++) { cum+=dists[i]; if(cum>=rnd) { cents.push(data[i]); break; } }
+    }
+    let assigns = Array(n).fill(-1), changed=true, iter=0;
+    while(changed && iter<100) {
+        changed = false; iter++;
+        for(let i=0; i<n; i++) {
+            let bestK=0, minD=distSq(data[i], cents[0]);
+            for(let k=1; k<K; k++) { let d=distSq(data[i], cents[k]); if(d<minD) { minD=d; bestK=k; } }
+            if(assigns[i] !== bestK) { assigns[i]=bestK; changed=true; }
+        }
+        let sums = Array(K).fill(0).map(()=>Array(m).fill(0)), counts = Array(K).fill(0);
+        for(let i=0; i<n; i++) { let k=assigns[i]; counts[k]++; for(let j=0; j<m; j++) sums[k][j]+=data[i][j]; }
+        for(let k=0; k<K; k++) if(counts[k]>0) for(let j=0; j<m; j++) cents[k][j] = sums[k][j]/counts[k];
+    }
+    let wcss = 0; for(let i=0; i<n; i++) wcss += distSq(data[i], cents[assigns[i]]);
+    return {assigns, wcss};
+}
+
+// --- 4. HIERARCHICAL CLUSTERING ---
+function runHCA() {
+    let p = parseMatrix(document.getElementById('hcaInput').value); if(!p) return alert("Data kosong");
+    let n = p.data.length, dists = [], clusters = p.labels.map((l,i)=>({id:i, label:l, size:1, depth:0}));
+    for(let i=0; i<n; i++) { dists[i]=[]; for(let j=0; j<n; j++) dists[i][j] = Math.sqrt(distSq(p.data[i], p.data[j])); }
+    
+    let cCount = n, tree = [];
+    while(cCount > 1) {
+        let minD = Infinity, c1=-1, c2=-1;
+        for(let i=0; i<n; i++) {
+            if(!clusters[i]) continue;
+            for(let j=i+1; j<n; j++) {
+                if(!clusters[j]) continue;
+                if(dists[i][j] < minD) { minD=dists[i][j]; c1=i; c2=j; }
+            }
+        }
+        let merged = { left:clusters[c1], right:clusters[c2], dist:minD, size: clusters[c1].size+clusters[c2].size, depth: Math.max(clusters[c1].depth, clusters[c2].depth)+1 };
+        tree = merged;
+        for(let i=0; i<n; i++) {
+            if(i!==c1 && i!==c2 && clusters[i]) {
+                let nd = (dists[c1][i]*clusters[c1].size + dists[c2][i]*clusters[c2].size) / merged.size;
+                dists[c1][i] = dists[i][c1] = nd;
+            }
+        }
+        clusters[c1] = merged; clusters[c2] = null; cCount--;
+    }
+    
+    document.getElementById('hcaOutput').style.display = 'block';
+    const svgW = 600, svgH = Math.max(300, n*25), pad=50;
+    let svg = `<svg viewBox="0 0 ${svgW} ${svgH}" width="100%" height="100%">`;
+    let leafY = pad, maxDist = tree.dist;
+    
+    function drawNode(node) {
+        if(!node.left && !node.right) {
+            let y = leafY; leafY += (svgH-2*pad)/n;
+            svg += `<text x="${svgW-pad+5}" y="${y+4}" style="fill:var(--text); font-family:var(--font-mono); font-size:12px; font-weight:bold;">${node.label}</text>`;
+            return {x: svgW-pad, y: y};
+        }
+        let posL = drawNode(node.left), posR = drawNode(node.right);
+        let x = svgW - pad - (node.dist/maxDist)*(svgW-2*pad);
+        let y = (posL.y + posR.y)/2;
+        svg += `<path d="M ${posL.x} ${posL.y} L ${x} ${posL.y} L ${x} ${posR.y} L ${posR.x} ${posR.y}" />`;
+        svg += `<path d="M ${x} ${y} L ${x+10} ${y}" stroke-dasharray="2,2" opacity="0.3"/>`;
+        return {x: x, y: y};
+    }
+    drawNode(tree);
+    document.getElementById('svgContainer').innerHTML = svg + `</svg>`;
+    
+    let interpretation = `<div class="r-note" style="margin-top:20px;"><b>Interpretasi Dendrogram UPGMA:</b><br>
+    Sumbu vertikal menunjukkan pengelompokan, sedangkan sumbu horizontal menunjukkan jarak Euclidean (tingkat ketidakmiripan). Garis vertikal yang menghubungkan dua cabang di sebelah kanan (nilai jarak rendah) menunjukkan bahwa kelompok sampel tersebut memiliki kemiripan parameter yang sangat tinggi. Sebaliknya, titik pisah di sebelah kiri menandakan perbedaan karakteristik utama.</div>`;
+    document.getElementById('hcaInterpret').innerHTML = interpretation;
+}
+
+// --- 5. ANOSIM ---
+function runANOSIM() {
+    let p = parseMatrix(document.getElementById('anosimInput').value, true); if(!p) return alert("Data kosong");
+    let n = p.data.length, dists = [];
+    for(let i=0; i<n; i++) { for(let j=i+1; j<n; j++) { dists.push({i, j, d: Math.sqrt(distSq(p.data[i], p.data[j]))}); } }
+    dists.sort((a,b)=>a.d - b.d);
+    dists.forEach((obj, idx) => obj.rank = idx+1);
+    
+    function calcR(groupsArr) {
+        let rw=0, cw=0, rb=0, cb=0;
+        dists.forEach(o => {
+            if(groupsArr[o.i] === groupsArr[o.j]) { rw += o.rank; cw++; } else { rb += o.rank; cb++; }
+        });
+        return ((rb/cb) - (rw/cw)) / (n*(n-1)/4);
+    }
+    
+    let R_obs = calcR(p.groups), count = 0, perms = 999;
+    for(let pStep=0; pStep<perms; pStep++) {
+        let shuf = [...p.groups].sort(()=>Math.random()-0.5);
+        if(calcR(shuf) >= R_obs) count++;
+    }
+    let pVal = (count+1)/(perms+1);
+    
+    let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;"><div class="card-title" style="margin:0; border:none; padding:0;">Hasil ANOSIM (Iterasi Permutasi: ${perms})</div><button class="btn btn-success btn-sm" onclick="copyForWord('anosimOutput')"><span class="dsw-icon-styled">📋</span> Salin ke Word</button></div>
+    <div style="font-size:18px; margin-bottom:10px;">R-Statistic: <b style="color:var(--primary);">${R_obs.toFixed(4)}</b> | P-Value: <b style="color:${pVal<=0.05?'var(--success)':'var(--danger)'}">${pVal.toFixed(4)}</b></div>
+    <div class="r-note"><b>Interpretasi Analisis Vektor:</b><br>
+    Nilai P-Value <b>${pVal <= 0.05 ? '< 0.05 (Signifikan)' : '> 0.05 (Tidak Signifikan)'}</b>. Hal ini mengindikasikan bahwa <b>${pVal <= 0.05 ? 'Terdapat' : 'Tidak terdapat'} perbedaan komposisi/struktur multivariat yang nyata</b> antar grup perlakuan.<br><br>
+    Nilai R-Statistic (Global R) berkisar antara -1 hingga 1. Nilai R yang mendekati 1 berarti kelompok terpisah secara sempurna (sangat berbeda). Nilai R yang mendekati 0 berarti sampel tercampur secara acak (homogen antar dan dalam grup).</div>`;
+    
+    document.getElementById('anosimOutput').style.display = 'block';
+    document.getElementById('anosimOutput').innerHTML = html;
+}
+
+// --- 6. LDA ---
+let ldaChart = null;
+function runLDA() {
+    let p = parseMatrix(document.getElementById('ldaInput').value, true); if(!p) return alert("Data kosong");
+    let n = p.data.length, m = p.data[0].length;
+    let classes = [...new Set(p.groups)]; let cCount = classes.length;
+    if(cCount < 2) return alert("Butuh minimal 2 grup untuk didiskriminasi!");
+    
+    let globalMean = Array(m).fill(0);
+    for(let i=0; i<n; i++) for(let j=0; j<m; j++) globalMean[j] += p.data[i][j]/n;
+    
+    let SW = Array(m).fill(0).map(()=>Array(m).fill(0));
+    let SB = Array(m).fill(0).map(()=>Array(m).fill(0));
+    
+    classes.forEach(c => {
+        let cData = p.data.filter((_,i)=>p.groups[i]===c); let cn = cData.length;
+        let cMean = Array(m).fill(0);
+        cData.forEach(row => { for(let j=0; j<m; j++) cMean[j] += row[j]/cn; });
+        cData.forEach(row => { for(let i=0; i<m; i++) for(let j=0; j<m; j++) SW[i][j] += (row[i]-cMean[i])*(row[j]-cMean[j]); });
+        for(let i=0; i<m; i++) for(let j=0; j<m; j++) SB[i][j] += cn * (cMean[i]-globalMean[i])*(cMean[j]-globalMean[j]);
+    });
+    
+    for(let i=0; i<m; i++) SW[i][i] += 0.0001; 
+    let invSW = numeric.inv(SW); let mat = numeric.dot(invSW, SB);
+    let eig = numeric.eig(mat);
+    
+    let pairs = [];
+    for(let i=0; i<m; i++) { if(!eig.lambda.y || Math.abs(eig.lambda.y[i]) < 1e-10) pairs.push({ val: eig.lambda.x[i], vec: eig.E.x.map(r=>r[i]) }); }
+    pairs.sort((a,b)=>b.val-a.val);
+    
+    let ld1 = pairs[0].vec, ld2 = pairs.length>1 ? pairs[1].vec : Array(m).fill(0);
+    let scores = [];
+    for(let i=0; i<n; i++) {
+        let s1=0, s2=0;
+        for(let j=0; j<m; j++) { s1 += p.data[i][j]*ld1[j]; s2 += p.data[i][j]*ld2[j]; }
+        scores.push({x:s1, y:s2, grp: p.groups[i], lbl: p.labels[i]});
+    }
+    
+    document.getElementById('ldaOutput').style.display = 'block';
+    let {txt, grid, pal} = getChartColors();
+    let datasets = classes.map((c, i) => ({ label: c, data: scores.filter(s=>s.grp===c), backgroundColor: pal[i%pal.length], pointRadius: 6 }));
+    
+    if(ldaChart) ldaChart.destroy();
+    ldaChart = new Chart(document.getElementById('ldaChart'), { type: 'scatter', data: {datasets}, options:{maintainAspectRatio:false, plugins:{tooltip:{callbacks:{label:c=>c.raw.lbl}}, legend:{labels:{color:txt}}}, scales:{x:{grid:{color:grid},ticks:{color:txt},title:{display:true,text:'LD1',color:txt}}, y:{grid:{color:grid},ticks:{color:txt},title:{display:true,text:'LD2',color:txt}}}} });
+    
+    let tbl = `<table><thead><tr><th>Fungsi Diskriminan</th><th>Eigenvalue (Daya Pisah)</th></tr></thead><tbody>`;
+    pairs.slice(0, Math.min(cCount-1, m)).forEach((p,i) => tbl += `<tr><td>LD${i+1}</td><td style="font-family:var(--font-mono); color:var(--success); font-weight:bold;">${p.val.toFixed(4)}</td></tr>`);
+    document.getElementById('ldaTable').innerHTML = tbl + `</tbody></table>`;
+    
+    let interpretation = `<div class="r-note"><b>Interpretasi Diskriminan:</b><br>
+    Nilai Eigenvalue merepresentasikan "Daya Pisah". Semakin tinggi nilai Eigenvalue pada LD tertentu, semakin kuat komponen tersebut membedakan antar kelompok. Plot di samping memetakan pemisahan kelas (memaksimalkan varians antar-grup dan meminimalkan varians dalam-grup) secara simultan.</div>`;
+    document.getElementById('ldaInterpret').innerHTML = interpretation;
+}
+
+// Init view
+switchView('v-rapfish', document.querySelector('.menu-item.active'));
+</script>
+</body>
+</html>
