@@ -36,6 +36,8 @@ While several web-based scientific tools exist, they generally serve isolated do
 
 # Software Architecture & Algorithmic Implementations
 
+![AREs Client-Side PWA Architecture](architecture.png)
+
 AREs is engineered as a pure Progressive Web Application (PWA). The system operates through a client-side execution engine where all algorithms run entirely within the browser's JavaScript sandbox, guaranteeing data privacy. To ensure computational accuracy, AREs implements standard scientific algorithms across its four modules:
 
 **1. AquaLab Workspace (In Vivo Analytics):**
@@ -70,7 +72,7 @@ By leveraging these robust computational foundations within a modern web API fra
 
 # AI Usage Disclosure
 
-Generative AI tools, specifically Google Gemini and Anthropic Claude, were utilized during the development of AREs to assist with code generation, algorithmic debugging, and UI/UX component structuring. All AI-generated mathematical functions and algorithms were rigorously reviewed, tested, and validated against standard scientific software outputs (e.g., IBM SPSS and R) by the author prior to implementation.
+Generative AI tools, specifically Google Gemini [@gemini:2024] and Anthropic Claude [@claude:2024], were utilized during the development of AREs to assist with code generation, algorithmic debugging, and UI/UX component structuring. All AI-generated mathematical functions and algorithms were rigorously reviewed, tested, and validated against standard scientific software outputs (e.g., IBM SPSS and R) by the author prior to implementation.
 
 # Acknowledgements
 
