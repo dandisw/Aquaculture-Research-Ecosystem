@@ -26,17 +26,51 @@ The Aquaculture Research Ecosystem (AREs) is an open-source, browser-based scien
 
 Contemporary aquaculture and fisheries research routinely requires access to a diverse array of specialized software tools. Statistical analyses are typically performed in commercial platforms like IBM SPSS or environments like R; phylogenetic and sequence analyses rely on MEGA or NCBI web utilities; and multivariate ecological analyses depend on software such as PRIMER-e or RAPFISH. This fragmentation creates a discontinuous research workflow wherein data must be repeatedly exported, reformatted, and transferred between disparate applications, posing risks of data loss and version incompatibility.
 
-Access to professional-grade scientific software presents a particularly acute challenge for researchers and students in low- and middle-income countries (LMICs). Commercial licenses impose substantial financial barriers, while free and open-source alternatives (e.g., R, Python) require non-trivial technical competence in programming and dependency management. Furthermore, existing web portals that provide bioinformatics or statistical utilities are entirely server-dependent. This reliance on server-side processing introduces significant data privacy concerns—especially when handling unpublished genomic sequences or proprietary experimental datasets—and renders the tools unusable in offline field settings. 
+Access to professional-grade scientific software presents a particularly acute challenge for researchers and students in low- and middle-income countries (LMICs). Commercial licenses impose substantial financial barriers, while free and open-source alternatives require non-trivial technical competence in programming and dependency management. Furthermore, existing web portals that provide bioinformatics or statistical utilities are entirely server-dependent. This reliance on server-side processing introduces significant data privacy concerns—especially when handling unpublished genomic sequences or proprietary experimental datasets—and renders the tools unusable in offline field settings. 
 
 AREs addresses these critical gaps by democratizing access to high-level scientific computing. It provides a zero-infrastructure computational platform that requires no installation, server backend, or software licensing fees. 
 
-The software consolidates essential analytical workflows into four offline-capable domains:
-1. **AquaLab Workspace:** Provides structured laboratory data management, real-time water quality early warning systems, and hematological profiling.
-2. **StatWise:** Delivers a comprehensive suite of inferential statistics. Its mathematical engine is validated against IBM SPSS and R CRAN, implementing robust algorithms including normality testing (Shapiro-Wilk, Kolmogorov-Smirnov with Lilliefors correction), ANOVA with GLM Type III Sum of Squares, post hoc multiple comparisons with compact letter displays [@Piepho:2004], and non-parametric tests with exact p-values for small samples [@Royston:1992].
-3. **BioTools Suite:** Offers end-to-end molecular bioinformatics capable of processing FASTA-formatted inputs without server dependency. It features Smith-Waterman local alignment, Needleman-Wunsch-based Multiple Sequence Alignment (MSA) [@Notredame:2000], UPGMA phylogenetic reconstruction with Felsenstein Bootstrap [@Felsenstein:1985], ORF detection across six reading frames, and physicochemical protein analysis.
-4. **EcoMetrics Multivariat:** Equips ecologists with multivariate analytical tools including Principal Component Analysis (PCA) biplots [@Jolliffe:2016], Hierarchical Clustering Analysis (UPGMA), K-Means++ clustering, Analysis of Similarities (ANOSIM) with 999-permutation testing, and Rapfish multidimensional scaling for sustainability assessments [@Pitcher:2001].
+# State of the Field
 
-To our knowledge, AREs represents the first research software platform to combine laboratory data management, statistical analysis, molecular bioinformatics, and ecological modelling in a single, offline-capable, client-side web application specifically designed for the aquaculture research community.
+While several web-based scientific tools exist, they generally serve isolated domains and rely heavily on server-side processing. Statistical portals offer basic inferential procedures but lack integration with biological datasets. Bioinformatics platforms are robust but entirely server-dependent, preventing their use in offline field environments. Domain-specific ecological tools often require legacy software environments. AREs distinguishes itself by unifying these fragmented analytical utilities into a single, offline-capable ecosystem without requiring external computing infrastructure.
+
+# Software Architecture & Algorithmic Implementations
+
+AREs is engineered as a pure Progressive Web Application (PWA). The system operates through a client-side execution engine where all algorithms run entirely within the browser's JavaScript sandbox, guaranteeing data privacy. To ensure computational accuracy, AREs implements standard scientific algorithms across its four modules:
+
+**1. AquaLab Workspace (In Vivo Analytics):**
+Calculates standardized growth metrics from biomass data. For instance, the Specific Growth Rate (SGR) is computed as:
+
+$$SGR=\left(\frac{\ln(W_t)-\ln(W_0)}{t}\right)\times100$$
+
+where $W_t$ is the final weight, $W_0$ is the initial weight, and $t$ is the culture period in days [@Lugert:2016].
+
+**2. StatWise (Statistical Computing):**
+Executes comprehensive inferential statistics with algorithms validated against R CRAN. For robust variance homogeneity testing against outliers, it utilizes the median-based Levene's test [@Brown:1974]:
+
+$$W=\frac{(N-k)}{(k-1)}\frac{\sum_{i=1}^k N_i(\bar{Z}_{i\cdot}-\bar{Z}_{\cdot\cdot})^2}{\sum_{i=1}^k\sum_{j=1}^{N_i}(Z_{ij}-\bar{Z}_{i\cdot})^2}$$
+
+where $Z_{ij}=|Y_{ij}-\tilde{Y}_{i\cdot}|$ and $\tilde{Y}_{i\cdot}$ is the group median.
+
+**3. BioTools Suite (Molecular Bioinformatics):**
+Provides offline genomic capabilities including in-silico primer design. The melting temperature ($T_m$) for sequence primers is calculated using nearest-neighbor thermodynamics [@SantaLucia:1998]:
+
+$$T_m=\frac{\Delta H^{\circ}}{\Delta S^{\circ}+R\ln(C)}-273.15$$
+
+where $\Delta H^{\circ}$ and $\Delta S^{\circ}$ are enthalpy and entropy, $R$ is the gas constant, and $C$ is the oligonucleotide concentration.
+
+**4. EcoMetrics Multivariat (Ecological Analysis):**
+Facilitates unsupervised machine learning for spatial aquaculture data, such as K-Means++ clustering. The algorithm minimizes the Within-Cluster Sum of Squares (WCSS) [@Jain:2010]:
+
+$$WCSS=\sum_{j=1}^{k}\sum_{x_i\in C_j}||x_i-\mu_j||^2$$
+
+where $k$ is the number of clusters, $x_i$ is a data point in cluster $C_j$, and $\mu_j$ is the cluster centroid.
+
+By leveraging these robust computational foundations within a modern web API framework, AREs empowers fisheries and biology researchers to process multidimensional data securely, reproducibly, and efficiently.
+
+# AI Usage Disclosure
+
+Generative AI tools, specifically Google Gemini and Anthropic Claude, were utilized during the development of AREs to assist with code generation, algorithmic debugging, and UI/UX component structuring. All AI-generated mathematical functions and algorithms were rigorously reviewed, tested, and validated against standard scientific software outputs (e.g., IBM SPSS and R) by the author prior to implementation.
 
 # Acknowledgements
 
