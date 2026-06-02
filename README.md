@@ -541,6 +541,7 @@ Universitas Jenderal Soedirman, Purwokerto, Indonesia
 
 - Instagram: [@aquaculture.research](https://instagram.com/aquaculture.research)
 - GitHub: [github.com/dandisw](https://github.com/dandisw)
+- ORCID: 0009-0002-5337-499X
 
 ---
 
