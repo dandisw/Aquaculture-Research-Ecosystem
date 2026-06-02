@@ -111,6 +111,8 @@ specialized tools.
 
 # Software Design
 
+![AREs PWA Architecture](architecture.png)
+
 ## Architectural Trade-offs
 
 The central design decision in AREs is the commitment to a **zero-server,
