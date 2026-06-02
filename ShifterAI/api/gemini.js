@@ -16,9 +16,8 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'API Key tidak ditemukan di Vercel Environment.' });
     }
 
-    // 2. NATIVE FETCH: Berbicara langsung ke Google tanpa SDK/Library.
-    // Kita menggunakan ekstensi "-latest" agar selalu dicarikan server yang aktif
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+    // 2. NATIVE FETCH: Menghapus akhiran "-latest" sesuai aturan terbaru Google
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const apiResponse = await fetch(endpoint, {
       method: 'POST',
@@ -44,7 +43,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ result: responseText });
 
   } catch (error) {
-    // Tangkap jika terjadi server crash (seperti masalah jaringan)
+    // Tangkap jika terjadi server crash
     console.error("Terjadi kesalahan sistem di Vercel:", error);
     return res.status(500).json({ 
       error: `Kegagalan Server: ${error.message}` 
