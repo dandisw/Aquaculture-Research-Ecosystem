@@ -1,448 +1,700 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="dark">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ShifterAI by DSW</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%233B82F6%22>🤖</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- OMNI-READER & PYODIDE LIBRARIES -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
-<script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
 <style>
-/* ==========================================================================
-   UI/UX CONSISTENCY WITH AREs
-   ========================================================================== */
+/* ============================================================
+   AREs DESIGN
+   ============================================================ */
 :root {
   --bg: #F8FAFC; --surface: #FFFFFF; --surface-hover: #F1F5F9;
   --border: #E2E8F0; --border-focus: #94A3B8;
   --text: #0F172A; --text2: #475569; --text3: #94A3B8;
-  --primary: #3B82F6; --primary-light: #DBEAFE; --primary-dark: #2563EB; 
-  --success: #10B981; --success-light: #D1FAE5;
-  --danger: #EF4444; --danger-light: #FEE2E2;
-  --warning: #F59E0B; --warning-light: #FEF3C7;
-  --purple: #8B5CF6; --purple-light: #EDE9FE;
-  
-  --font-sans: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; --font-serif: 'Fraunces', serif;
-  --radius: 10px; --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+  --primary: #0284C7; --primary-light: #E0F2FE; --primary-dark: #0369A1;
+  --success: #16A34A; --success-light: #DCFCE7;
+  --danger: #DC2626; --danger-light: #FEE2E2;
+  --warning: #D97706; --warning-light: #FEF3C7;
+  --info: #0C4A6E; --info-light: #E0F2FE;
+  --font-sans: 'DM Sans', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-serif: 'Fraunces', serif;
+  --radius: 10px;
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
   --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -2px rgba(0,0,0,0.04);
 }
 [data-theme="dark"] {
   --bg: #0B1120; --surface: #1E293B; --surface-hover: #334155;
   --border: #334155; --border-focus: #475569;
-  --text: #F8FAFC; --text2: #CBD5E1; --text3: #94A3B8;
-  --primary: #3B82F6; --primary-light: #1E3A8A; --primary-dark: #60A5FA;
-  --success: #34D399; --success-light: #064E3B;
+  --text: #F8FAFC; --text2: #CBD5E1; --text3: #64748B;
+  --primary: #38BDF8; --primary-light: #0C4A6E; --primary-dark: #7DD3FC;
+  --success: #4ADE80; --success-light: #14532D;
   --danger: #F87171; --danger-light: #7F1D1D;
   --warning: #FBBF24; --warning-light: #78350F;
+  --info: #BAE6FD; --info-light: #0C4A6E;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 14px; transition: background 0.3s, color 0.3s; }
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans); background: var(--bg); color: var(--text);
+  height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+  font-size: 14px; transition: background 0.3s, color 0.3s;
+}
 
-.dsw-icon-styled { filter: grayscale(100%); display: inline-block; vertical-align: middle; margin-right: 5px; transition: filter 0.3s ease; }
-[data-theme="dark"] .dsw-icon-styled { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(190deg) saturate(4); }
-[data-theme="light"] .dsw-icon-styled { filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(190deg) saturate(3); }
+/* ── EMOJI ICON STYLE (AREs standard) ── */
+.dsw-icon-styled {
+  filter: grayscale(100%);
+  display: inline-block; vertical-align: middle;
+  margin-right: 4px; transition: filter 0.3s;
+}
+[data-theme="dark"] .dsw-icon-styled {
+  filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(190deg) saturate(4);
+}
+[data-theme="light"] .dsw-icon-styled {
+  filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(190deg) saturate(3);
+}
 
-header { background: var(--surface); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10; box-shadow: var(--shadow); transition: background 0.3s; }
-.brand { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
-.brand-top { display: flex; align-items: center; gap: 8px; }
-.brand-icon { font-size: 22px; }
-.brand-text { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
-.brand-text span { color: var(--primary); }
-.brand-sub { font-family: var(--font-sans); font-size: 11px; font-weight: 500; color: var(--text3); margin-left: 38px; margin-top: -3px; display: block;}
+/* ── HEADER ── */
+header {
+  background: var(--surface); padding: 0 24px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+  z-index: 10; box-shadow: var(--shadow); transition: background 0.3s;
+}
+.brand {
+  font-family: var(--font-serif); font-size: 22px; font-weight: 600;
+  color: var(--text); letter-spacing: -0.3px; display: flex; align-items: baseline; gap: 6px;
+}
+.brand span.accent { color: var(--primary); }
+.brand-sub {
+  font-family: var(--font-sans); font-size: 11px; font-weight: 400;
+  color: var(--text3); margin-left: 2px;
+}
+.header-actions { display: flex; gap: 10px; align-items: center; }
 
-.header-actions { display: flex; gap: 12px; align-items: center; }
-.engine-status { display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface-hover); color: var(--text2); }
-.engine-status.active { border-color: var(--success); color: var(--success); background: var(--success-light); }
-
-.btn { padding: 8px 16px; border-radius: 6px; font-family: var(--font-sans); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+/* ── BUTTONS (AREs standard) ── */
+.btn {
+  padding: 8px 16px; border-radius: 6px; font-family: var(--font-sans);
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  border: 1px solid transparent; display: inline-flex; align-items: center;
+  justify-content: center; gap: 6px; white-space: nowrap;
+}
 .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
-.btn-primary:hover { background: var(--primary-dark); }
+.btn-primary:hover:not(:disabled) { background: var(--primary-dark); border-color: var(--primary-dark); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn-outline { background: transparent; border-color: var(--border); color: var(--text2); }
 .btn-outline:hover { background: var(--surface-hover); color: var(--text); }
-.btn-icon { padding: 6px 8px; background: transparent; border: 1px solid var(--border); color: var(--text3); border-radius: 6px; cursor: pointer; transition: all 0.2s; font-size: 14px; }
-.btn-icon:hover { background: var(--surface-hover); color: var(--danger); border-color: var(--danger); }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
 
-.main-container { display: flex; flex: 1; overflow: hidden; }
-.sidebar { width: 260px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 16px 0 0; overflow-y: auto; flex-shrink: 0; transition: background 0.3s; }
-.menu-group { margin-bottom: 12px; }
-.menu-title { font-family: var(--font-sans); font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--text3); padding: 6px 20px 6px; letter-spacing: 0.5px; }
-.menu-item { padding: 9px 20px; font-size: 13px; color: var(--text2); cursor: pointer; transition: all 0.18s; display: flex; align-items: center; gap: 10px; font-weight: 500; border-left: 3px solid transparent; }
-.menu-item:hover, .menu-item.active { background: var(--primary-light); color: var(--primary); }
-.menu-item.active { border-left-color: var(--primary); font-weight: 600; }
-.sidebar-footer { margin-top: auto; padding: 16px; border-top: 1px solid var(--border); }
+/* ── LAYOUT ── */
+.main-container {
+  flex: 1; overflow: hidden; display: flex;
+  justify-content: center; background: var(--bg);
+}
+.workspace {
+  width: 100%; max-width: 860px; padding: 32px 24px 40px;
+  overflow-y: auto; display: flex; flex-direction: column; gap: 20px;
+}
+.workspace::-webkit-scrollbar { width: 6px; }
+.workspace::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius: 4px; }
 
-.content-area { flex: 1; overflow-y: auto; padding: 28px 36px; background: var(--bg); transition: background 0.3s; }
-.tab-pane { display: none; animation: fadeUp 0.25s ease; }
-.tab-pane.active { display: block; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+/* ── PAGE HEADER ── */
+.page-header { text-align: center; margin-bottom: 4px; }
+.page-title {
+  font-family: var(--font-serif); font-size: 26px; font-weight: 500;
+  color: var(--text); letter-spacing: -0.3px;
+}
+.page-desc { font-size: 13px; color: var(--text3); margin-top: 6px; line-height: 1.5; }
 
-.page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
-.page-title { font-family: var(--font-serif); font-size: 24px; font-weight: 600; color: var(--text); }
-.page-desc { font-family: var(--font-sans); font-size: 13px; color: var(--text3); margin-top: 5px; }
+/* ── STATUS PILL ── */
+.status-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  padding: 5px 12px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--surface-hover); color: var(--text3);
+}
+.status-pill.online {
+  border-color: var(--success); color: var(--success); background: var(--success-light);
+}
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+  animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-.card { background: var(--surface); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 18px; }
-.card-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; font-family: 'Syne', sans-serif; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+/* ── CARD ── */
+.card {
+  background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card-header {
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title {
+  font-size: 13px; font-weight: 600; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  font-family: var(--font-mono);
+}
+.card-body { padding: 20px; }
+.step-label {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  color: var(--primary); background: var(--primary-light);
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 2px 8px; flex-shrink: 0;
+}
 
-.info-box { padding: 14px 18px; border-radius: 8px; font-size: 13px; line-height: 1.6; margin-bottom: 20px; border-left: 4px solid; }
-.info-box.info { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
-.info-box.warning { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
+/* ── DROPZONE ── */
+.dropzone {
+  border: 2px dashed var(--border-focus); background: var(--surface-hover);
+  border-radius: var(--radius); padding: 28px 20px; text-align: center;
+  transition: all 0.25s; cursor: pointer; position: relative;
+}
+.dropzone:hover, .dropzone.dragover {
+  background: var(--primary-light); border-color: var(--primary);
+}
+.dropzone.ready {
+  border-color: var(--success); background: var(--success-light);
+  border-style: solid;
+}
+.dropzone input[type="file"] {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  opacity: 0; cursor: pointer;
+}
+.dz-icon { font-size: 28px; margin-bottom: 8px; }
+.dz-title {
+  font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 4px;
+}
+.dz-sub { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
+.dropzone.ready .dz-title { color: var(--success); }
+.dropzone.ready .dz-sub { color: var(--success); opacity: 0.8; }
 
-.stat-box { background: var(--bg); border: 1px solid var(--border); padding: 14px 12px; border-radius: 8px; text-align: center; }
-.stat-box .stat-label { font-size: 10px; text-transform: uppercase; color: var(--text3); font-weight: 700; margin-bottom: 6px; }
-.stat-box .stat-value { font-size: 24px; font-weight: 600; font-family: var(--font-mono); color: var(--text); }
+/* ── INPUT GRID ── */
+.input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+@media (max-width: 640px) { .input-grid { grid-template-columns: 1fr; } }
 
-.dropzone { border: 2px dashed var(--primary); background: var(--primary-light); border-radius: 12px; padding: 40px 20px; text-align: center; transition: all 0.3s ease; cursor: pointer; position: relative; overflow: hidden; }
-.dropzone:hover, .dropzone.dragover { background: rgba(59, 130, 246, 0.2); border-color: var(--primary-dark); }
-.dropzone-icon { font-size: 40px; margin-bottom: 15px; color: var(--primary); }
-.dropzone-text { font-family: var(--font-sans); font-size: 14px; color: var(--text); font-weight: 600; }
-.dropzone-subtext { font-size: 11px; color: var(--text3); margin-top: 8px; font-family: var(--font-mono); }
-#fileInput { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+/* ── TEXTAREA ── */
+.prompt-textarea {
+  width: 100%; min-height: 90px; padding: 12px 14px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg); color: var(--text);
+  font-family: var(--font-sans); font-size: 13px;
+  resize: vertical; outline: none; line-height: 1.5;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.prompt-textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+}
+.prompt-textarea::placeholder { color: var(--text3); }
+label.field-label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--text2); margin-bottom: 6px; font-family: var(--font-mono);
+}
 
-.ai-manuscript-box { background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--primary); padding: 24px; border-radius: 8px; font-family: 'Times New Roman', Times, serif; line-height: 1.8; color: var(--text); font-size: 15px; text-align: justify; white-space: pre-wrap; box-shadow: var(--shadow); position: relative; min-height: 150px;}
-.ai-typing { border-right: 2px solid var(--primary); animation: blink-caret 0.75s step-end infinite; }
-@keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: var(--primary); } }
-.badge { padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: var(--primary-light); color: var(--primary); font-family: var(--font-mono); border: 1px solid var(--border); }
+/* ── MODE SELECTOR ── */
+.mode-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.mode-chip {
+  padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--border); background: var(--surface-hover);
+  color: var(--text2); font-family: var(--font-mono); transition: all 0.15s;
+}
+.mode-chip.active {
+  background: var(--primary); border-color: var(--primary); color: #fff;
+}
+.mode-chip:hover:not(.active) { background: var(--border); }
 
-/* Modals & Toasts */
-.toast-container { position: fixed; bottom: 20px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-.toast { background: var(--surface); border: 1px solid var(--border); padding: 12px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px; pointer-events: all; animation: slideIn 0.3s ease; }
-@keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-.toast.hide { animation: slideOut 0.3s ease forwards; }
-@keyframes slideOut { to { opacity: 0; transform: translateX(20px); } }
+/* ── OUTPUT SECTION ── */
+.output-card { display: none; }
+.output-card.visible { display: block; }
+.output-topbar {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.output-meta { display: flex; align-items: center; gap: 10px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 5px;
+  font-size: 11px; font-weight: 600; font-family: var(--font-mono);
+  background: var(--primary-light); color: var(--info); border: 1px solid var(--border);
+}
+.output-type-label { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
 
-.overlay { position: fixed; inset: 0; background: rgba(11,17,32,0.8); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 200; }
-.overlay.active { display: flex; }
-.dialog { background: var(--surface); width: 680px; max-width: 95vw; border-radius: 12px; box-shadow: var(--shadow-md); overflow: hidden; display:flex; flex-direction:column; max-height:90vh; }
-.dialog-header { padding: 18px 24px; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 18px; font-family: var(--font-serif); color: var(--text); display: flex; justify-content: space-between; align-items: center; }
-.dialog-body { padding: 24px; overflow-y:auto; font-family: var(--font-sans); line-height: 1.6; font-size:13px; }
-.dialog-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; background: var(--surface-hover); }
+.manuscript-box {
+  padding: 24px; font-family: 'Times New Roman', Times, serif;
+  font-size: 16px; line-height: 1.85; color: var(--text);
+  text-align: justify; white-space: pre-wrap; min-height: 160px;
+  text-indent: 2em;
+}
+.manuscript-box.ai-typing {
+  border-right: 2px solid var(--primary);
+  animation: blink 0.75s step-end infinite;
+}
+@keyframes blink { from, to { border-color: transparent } 50% { border-color: var(--primary); } }
+
+/* ── INFO BANNER ── */
+.info-banner {
+  display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px;
+  background: var(--info-light); border: 1px solid var(--primary-light);
+  border-radius: 8px; font-size: 12px; color: var(--info); line-height: 1.5;
+}
+.info-banner .dsw-icon-styled { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── PROGRESS BAR ── */
+.progress-wrap { display: none; padding: 0 20px 16px; }
+.progress-wrap.visible { display: block; }
+.progress-label {
+  font-size: 11px; color: var(--text3); font-family: var(--font-mono);
+  margin-bottom: 6px;
+}
+.progress-bar-track {
+  height: 4px; background: var(--border); border-radius: 4px; overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; background: var(--primary); border-radius: 4px;
+  width: 0%; transition: width 0.4s ease;
+  animation: progress-shimmer 1.5s infinite linear;
+  background-image: linear-gradient(
+    90deg, var(--primary) 25%, var(--primary-dark) 50%, var(--primary) 75%
+  );
+  background-size: 200% 100%;
+}
+@keyframes progress-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.divider { height: 1px; background: var(--border); }
+
+/* ── TOAST ── */
+.toast-container {
+  position: fixed; bottom: 20px; right: 24px; z-index: 9999;
+  display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+.toast {
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 12px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; gap: 10px; pointer-events: all;
+  box-shadow: var(--shadow-md);
+  animation: toast-in 0.25s ease;
+}
+@keyframes toast-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
+.toast.hide { animation: toast-out 0.25s forwards; }
+@keyframes toast-out { to { opacity: 0; transform: translateX(16px); } }
+.toast-icon { font-size: 15px; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius: 4px; }
 </style>
 </head>
 <body>
 
 <header>
   <div class="brand">
-    <div class="brand-top"><span class="brand-icon dsw-icon-styled">🤖</span><span class="brand-text">Shifter<span>AI</span></span></div>
+    <span class="dsw-icon-styled">🤖</span>Shifter<span class="accent">AI</span>
     <span class="brand-sub">by DSW</span>
   </div>
   <div class="header-actions">
-      <div id="aiEngineStatus" class="engine-status active"><span class="dsw-icon-styled">⚡</span> Engine: Vercel Proxy</div>
-      <button class="btn btn-outline" id="theme-btn" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> Tema</button>
+    <div class="status-pill online" id="engineStatus">
+      <span class="status-dot"></span>
+      <span id="engineLabel">Vercel Proxy · Gemini AI</span>
+    </div>
+    <button class="btn btn-outline btn-sm" onclick="toggleTheme()">
+      <span class="dsw-icon-styled" id="themeIcon">🌗</span>
+      <span class="btn-text">Tema</span>
+    </button>
   </div>
 </header>
 
 <div class="main-container">
-  <nav class="sidebar">
-    <div class="menu-group">
-      <div class="menu-title">Data & Ekstraksi</div>
-      <div class="menu-item active" onclick="switchView('v-omni', this)"><span class="dsw-icon-styled">📥</span> Omni-Reader (Input)</div>
-    </div>
-    <div class="menu-group">
-      <div class="menu-title">Sintesis Ilmiah</div>
-      <div class="menu-item" id="navManuscript" onclick="switchView('v-manuscript', this)"><span class="dsw-icon-styled">📄</span> Generator Manuskrip</div>
-    </div>
-    <div class="sidebar-footer">
-      <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="openDialog('dlgHelp')"><span class="dsw-icon-styled">❓</span> Bantuan & Panduan</button>
-    </div>
-  </nav>
+  <div class="workspace">
 
-  <main class="content-area">
-
-    <!-- TAB 1: OMNI-READER -->
-    <div id="v-omni" class="tab-pane active">
-      <div class="page-header">
-        <div>
-            <div class="page-title">Mesin Input Universal Terpadu</div>
-            <div class="page-desc">Ekstraksi data lokal (Pyodide & PDF.js), ditenagai oleh mesin penalaran Gemini via Vercel.</div>
-        </div>
+    <div class="page-header">
+      <div class="page-title">Generator Draf Akademik</div>
+      <div class="page-desc">
+        Unggah data riset Anda, berikan instruksi, dan biarkan AI menyusun naskah<br>
+        ilmiah yang siap diintegrasikan ke jurnal Anda.
       </div>
+    </div>
 
-      <div class="card">
-        <div class="dropzone" id="omniDropzone">
-            <input type="file" id="fileInput" accept=".csv, .tsv, .xlsx, .txt, .fasta, .pdf, .docx, .sav">
-            <div class="dropzone-icon dsw-icon-styled">📂</div>
-            <div class="dropzone-text" id="dropzoneText">Tarik & Lepas File Eksperimen di Sini</div>
-            <div class="dropzone-subtext">Format Didukung: CSV, XLSX, PDF, DOCX, TXT, FASTA, SAV</div>
-        </div>
+    <div class="info-banner">
+      <span class="dsw-icon-styled">🔒</span>
+      <span>
+        Ekstraksi data dilakukan sepenuhnya di perangkat Anda (<strong>client-side</strong>).
+        File tidak pernah diunggah ke server web, hanya teks terstruktur yang dikirim ke API Gemini untuk disintesis.
+      </span>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="step-label">01</span>
+        <span class="card-title">Sumber Data &amp; Instruksi Khusus</span>
       </div>
-      
-      <div class="grid-2" id="metaCard" style="display:none;">
-          <div class="card">
-              <div class="card-title">Metrik File</div>
-              <div style="display:flex; gap:10px;">
-                  <div class="stat-box" style="flex:1;"><div class="stat-label">Format</div><div class="stat-value" id="metaExt" style="color:var(--primary);">—</div></div>
-                  <div class="stat-box" style="flex:1;"><div class="stat-label">Volume Data</div><div class="stat-value" id="metaSize">—</div></div>
-              </div>
+      <div class="card-body">
+
+        <label class="field-label">Mode Penyusunan</label>
+        <div class="mode-row">
+          <div class="mode-chip active" onclick="selectMode(this, 'results')" data-mode="results">📄 Results &amp; Discussion</div>
+          <div class="mode-chip" onclick="selectMode(this, 'intro')" data-mode="intro">📖 Introduction</div>
+          <div class="mode-chip" onclick="selectMode(this, 'conclusion')" data-mode="conclusion">✅ Conclusion</div>
+          <div class="mode-chip" onclick="selectMode(this, 'abstract')" data-mode="abstract">📋 Abstract</div>
+        </div>
+
+        <div class="divider" style="margin-bottom:16px;"></div>
+
+        <div class="input-grid">
+          <div>
+            <label class="field-label">Lampiran Data (Mendukung semua format populer)</label>
+            <div class="dropzone" id="omniDropzone" onclick="document.getElementById('fileInput').click()">
+              <input type="file" id="fileInput" accept=".csv,.tsv,.xlsx,.xls,.pdf,.docx,.txt,.fasta,.sav" onclick="event.stopPropagation()">
+              <div class="dz-icon dsw-icon-styled" id="dzIcon">📂</div>
+              <div class="dz-title" id="dropzoneText">Tarik &amp; Lepas File Data Riset</div>
+              <div class="dz-sub" id="dzSub">CSV · XLSX · PDF · DOCX · TXT · FASTA</div>
+            </div>
           </div>
-          <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
-              <h4 style="margin-bottom:10px;">Data Terekstrak</h4>
-              <p style="font-size:12px; color:var(--text3); margin-bottom:15px;">Meneruskan matriks/teks terstruktur ke mesin penalaran (Backend).</p>
-              <button class="btn btn-primary" onclick="document.getElementById('navManuscript').click()"><span class="dsw-icon-styled">🧠</span> Buka Proses AI</button>
+
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <div>
+              <label class="field-label" for="customPrompt">Instruksi Spesifik <span style="font-weight:400;color:var(--text3)">(opsional)</span></label>
+              <textarea id="customPrompt" class="prompt-textarea"
+                placeholder="Contoh: Fokuskan pembahasan pada pengaruh probiotik terhadap kelangsungan hidup. Sertakan interpretasi nilai p dan bandingkan dengan literatur terkini."></textarea>
+            </div>
+            <button id="btnGenerate" class="btn btn-primary" style="width:100%; padding:11px;" onclick="startAnalysis()" disabled>
+              <span class="dsw-icon-styled">🧠</span> Mulai Sintesis AI
+            </button>
           </div>
-      </div>
-    </div>
+        </div>
 
-    <!-- TAB 2: MANUSCRIPT GENERATOR -->
-    <div id="v-manuscript" class="tab-pane">
-      <div class="page-header">
-        <div>
-            <div class="page-title">Generator Draf Akademik</div>
-            <div class="page-desc">Naskah disusun secara cerdas berdasarkan instruksi spesifik sains dan konteks data.</div>
-        </div>
-        <div>
-            <button class="btn btn-outline" onclick="copyText('aiManuskripArea')"><span class="dsw-icon-styled">📋</span> Salin Teks ke Word</button>
-        </div>
-      </div>
-      
-      <div class="card">
-          <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;">
-              <span class="badge" id="badgeTopic">Topik: Menunggu Data</span>
-              <span id="badgeEngine" style="font-size:12px; color:var(--text3); font-family:var(--font-mono);">Engine: Standby</span>
+        <div class="progress-wrap" id="progressWrap" style="margin-top:16px; padding:0;">
+          <div class="progress-label" id="progressLabel">Mengekstrak data...</div>
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" id="progressFill"></div>
           </div>
-          <div class="ai-manuscript-box" id="aiManuskripArea">Sistem bersiaga. Silakan unggah data penelitian (CSV, XLSX, PDF, atau SAV) di Omni-Reader untuk memulai proses generasi naskah secara dinamis.</div>
+        </div>
+
       </div>
     </div>
 
-  </main>
-</div>
+    <div class="card output-card" id="outputCard">
+      <div class="output-topbar">
+        <div class="output-meta">
+          <span class="badge" id="badgeTopic">Memproses…</span>
+          <span class="output-type-label" id="badgeSection">Results and Discussion</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="copyText('aiManuskripArea')">
+            <span class="dsw-icon-styled">📋</span> Salin Teks
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="resetAll()">
+            <span class="dsw-icon-styled">🔄</span> Reset
+          </button>
+        </div>
+      </div>
+      <div class="manuscript-box" id="aiManuskripArea"></div>
+    </div>
 
-<!-- HELP DIALOG -->
-<div class="overlay" id="dlgHelp">
-  <div class="dialog">
-    <div class="dialog-header">
-        <span><span class="dsw-icon-styled">ℹ️</span> Informasi ShifterAI by DSW</span>
-        <button class="btn-icon" onclick="closeDialog('dlgHelp')" style="font-size:18px; border:none;">×</button>
-    </div>
-    <div class="dialog-body">
-      <h4 style="color:var(--primary); margin-bottom:8px;">Tentang ShifterAI</h4>
-      <p style="margin-bottom:15px;">ShifterAI adalah "Otak Sintesis" dari <strong>Aquaculture Research Ecosystem (AREs)</strong>[cite: 2]. Aplikasi ini dirancang untuk membaca keluaran format tabular atau teks dari aplikasi saudara (seperti StatWise, BioTools, dan EcoMetrics) dan mengubahnya menjadi narasi akademik yang koheren.</p>
-      
-      <h4 style="color:var(--primary); margin-bottom:8px;">Cara Kerja Serverless Proxy</h4>
-      <ul style="padding-left:20px; margin-bottom:15px; color:var(--text2);">
-          <li><strong>CSV/XLSX (Data Tabular):</strong> Mengekstrak baris data dan menugaskan Python (Pyodide) secara lokal untuk melakukan fungsi aglomerasi dan korelasi guna menghemat beban pemrosesan ke AI server.</li>
-          <li><strong>PDF/DOCX/TXT (Teks Dokumen):</strong> Sistem mengekstrak layer teks menggunakan <code>pdf.js</code>[cite: 2], kemudian mengirimkan kerangka teks ke mesin <em>backend</em> Vercel untuk disusun menjadi paragraf ringkasan <em>(executive summary)</em> melalui Gemini API.</li>
-          <li><strong>SPSS (.SAV):</strong> Mesin ini dapat mendeteksi file SPSS secara cerdas dan memberikan panduan konversi ke format yang dapat diurai sistem (CSV/XLSX).</li>
-      </ul>
-      <p style="font-size:11px; color:var(--text3); background:var(--surface-hover); padding:10px; border-radius:6px; font-family:var(--font-mono);">Note: Versi ini mengeksekusi integrasi <em>Client-Server</em> secara aman melalui Vercel API Gateway yang melindungi kerahasiaan kunci akses LLM.</p>
-    </div>
-    <div class="dialog-footer"><button class="btn btn-primary" onclick="closeDialog('dlgHelp')">Tutup Mengerti</button></div>
   </div>
 </div>
 
-<!-- TOAST SYSTEM -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// ===================================================================
-// UTILITIES & UI
-// ===================================================================
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+let pendingData     = null;
+let pendingExt      = '';
+let pendingFileName = '';
+let selectedMode    = 'results';
+
 function toggleTheme() {
-  const h = document.documentElement; h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  const h = document.documentElement;
+  const next = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  h.setAttribute('data-theme', next);
+  document.getElementById('themeIcon').textContent = next === 'dark' ? '☀️' : '🌗';
 }
-function switchView(viewId, el) {
-  document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-  document.getElementById(viewId).classList.add('active'); el.classList.add('active');
-}
-function toast(msg) {
-  const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<span style="color:var(--primary); font-size:16px;">✓</span> ${msg}`;
+
+function toast(msg, type = 'success') {
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  const colors = { success: 'var(--success)', error: 'var(--danger)', info: 'var(--primary)' };
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span class="toast-icon" style="color:${colors[type]}">${icons[type]}</span> ${msg}`;
   document.getElementById('toastContainer').appendChild(t);
-  setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 2500);
+  setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 2800);
 }
-function copyText(elementId) {
-    const el = document.getElementById(elementId);
-    const range = document.createRange(); range.selectNodeContents(el);
-    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
-    document.execCommand('copy'); sel.removeAllRanges();
-    toast("Naskah berhasil disalin ke Clipboard (Word).");
-}
-function typeEffect(elementId, text, speed = 5) {
-    const el = document.getElementById(elementId); el.innerHTML = ""; let i = 0; el.classList.add('ai-typing');
-    function type() { if (i < text.length) { el.innerHTML += text.charAt(i); i++; setTimeout(type, speed); } else { el.classList.remove('ai-typing'); } }
-    type();
-}
-function openDialog(id) { document.getElementById(id).classList.add('active'); }
-function closeDialog(id) { document.getElementById(id).classList.remove('active'); }
 
-// ===================================================================
-// PYODIDE (PYTHON LOCAL ENGINE) - Untuk memproses Matriks CSV
-// ===================================================================
-let pyodideInstance = null;
-async function initPyodide() {
-    if(!pyodideInstance) {
-        pyodideInstance = await loadPyodide();
-        await pyodideInstance.loadPackage("pandas");
+function copyText(id) {
+  const el = document.getElementById(id);
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges(); sel.addRange(range);
+  document.execCommand('copy');
+  sel.removeAllRanges();
+  toast('Naskah berhasil disalin ke Clipboard.');
+}
+
+function typeEffect(id, text, speed = 6) {
+  const el = document.getElementById(id);
+  el.textContent = ''; let i = 0;
+  el.classList.add('ai-typing');
+  function type() {
+    if (i < text.length) {
+      el.textContent += text.charAt(i); i++;
+      setTimeout(type, speed);
+    } else {
+      el.classList.remove('ai-typing');
     }
-    return pyodideInstance;
+  }
+  type();
 }
 
-// ===================================================================
-// OMNI-READER LOGIC
-// ===================================================================
+function selectMode(el, mode) {
+  document.querySelectorAll('.mode-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selectedMode = mode;
+  const labels = {
+    results:    'Results and Discussion',
+    intro:      'Introduction',
+    conclusion: 'Conclusion',
+    abstract:   'Abstract',
+  };
+  document.getElementById('badgeSection').textContent = labels[mode] || mode;
+}
+
+function showProgress(label, pct) {
+  const wrap = document.getElementById('progressWrap');
+  wrap.style.display = 'block';
+  document.getElementById('progressLabel').textContent = label;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function hideProgress() {
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('progressFill').style.width = '0%';
+}
+
 const dropzone = document.getElementById('omniDropzone');
 const fileInput = document.getElementById('fileInput');
-const dropText = document.getElementById('dropzoneText');
 
-dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
 dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
-dropzone.addEventListener('drop', (e) => {
-    e.preventDefault(); dropzone.classList.remove('dragover');
-    if (e.dataTransfer.files.length > 0) processFile(e.dataTransfer.files[0]);
+dropzone.addEventListener('drop', e => {
+  e.preventDefault(); dropzone.classList.remove('dragover');
+  if (e.dataTransfer.files.length > 0) processFile(e.dataTransfer.files[0]);
 });
-fileInput.addEventListener('change', (e) => { if (e.target.files.length > 0) processFile(e.target.files[0]); });
+fileInput.addEventListener('change', e => {
+  if (e.target.files.length > 0) processFile(e.target.files[0]);
+});
+
+function setDropzoneState(state, filename, sub) {
+  const icon  = document.getElementById('dzIcon');
+  const title = document.getElementById('dropzoneText');
+  const dsub  = document.getElementById('dzSub');
+  const states = {
+    idle:    { cls: '',       iconText: '📂', titleText: 'Tarik & Lepas File Data Riset', subText: 'CSV · XLSX · PDF · DOCX · TXT · FASTA' },
+    loading: { cls: '',       iconText: '⏳', titleText: `Mengekstrak: ${filename}…`, subText: 'Mohon tunggu…' },
+    ready:   { cls: 'ready', iconText: '✅', titleText: filename,               subText: sub },
+    error:   { cls: '',       iconText: '⚠️', titleText: 'Gagal membaca file',   subText: 'Coba format lain' },
+  };
+  const s = states[state];
+  dropzone.className = `dropzone ${s.cls}`;
+  if (!dropzone.querySelector('input')) dropzone.prepend(fileInput);
+  icon.textContent  = s.iconText;
+  title.textContent = s.titleText;
+  dsub.textContent  = s.subText;
+}
 
 async function processFile(file) {
-    const ext = file.name.split('.').pop().toLowerCase();
-    dropText.textContent = `Ekstraksi Lokal: ${file.name}...`;
-    
-    try {
-        if (ext === 'csv' || ext === 'tsv') {
-            Papa.parse(file, {
-                header: true, skipEmptyLines: true, dynamicTyping: true,
-                complete: function(results) { processDataMatrix(results.data, ext, file.name); }
-            });
-        } 
-        else if (ext === 'xlsx' || ext === 'xls') {
-            const arrayBuffer = await file.arrayBuffer();
-            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-            const firstSheet = workbook.SheetNames[0];
-            const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-            processDataMatrix(jsonData, ext, file.name);
-        } 
-        else if (ext === 'pdf') {
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-            let extractedText = "";
-            for (let i = 1; i <= Math.min(pdf.numPages, 10); i++) { // Ekstrak max 10 halaman
-                const page = await pdf.getPage(i);
-                const textContent = await page.getTextContent();
-                extractedText += textContent.items.map(item => item.str).join(" ") + " ";
-            }
-            callGeminiAPI(extractedText, ext, file.name, "Sintesis Literatur / Analisis Laporan");
+  pendingExt      = file.name.split('.').pop().toLowerCase();
+  pendingFileName = file.name;
+  setDropzoneState('loading', file.name, '');
+  document.getElementById('btnGenerate').disabled = true;
+  showProgress('Mengekstrak data dari file…', 30);
+
+  try {
+    if (['csv', 'tsv'].includes(pendingExt)) {
+      Papa.parse(file, {
+        header: true, skipEmptyLines: true, dynamicTyping: true,
+        complete(results) {
+          onExtractionComplete(results.data, `${results.data.length} baris · Data Tabular`);
         }
-        else if (ext === 'sav') {
-            toast("SPSS Biner (.sav) terdeteksi. Silakan konversi ke CSV/XLSX terlebih dahulu.");
-            document.getElementById('metaCard').style.display = 'grid';
-            document.getElementById('metaExt').textContent = "SPSS (.SAV)";
-            document.getElementById('metaSize').textContent = "Biner (Unparsed)";
-            
-            document.getElementById('navManuscript').click();
-            document.getElementById('badgeTopic').textContent = "Topik: Deteksi File Biner SPSS";
-            
-            const spssMessage = "ShifterAI mendeteksi format biner IBM SPSS (.sav). Pada arsitektur client-side saat ini, modul WebAssembly (Pyodide) untuk ekstraksi file .sav sedang dalam tahap integrasi.\n\nUntuk melakukan interpretasi data statistik dan pembuatan manuskrip instan saat ini, silakan gunakan fitur 'Save As' atau 'Export' di aplikasi SPSS Anda dan simpan data tersebut dalam format CSV (Comma Delimited) atau Excel (.xlsx), lalu unggah kembali ke mesin Omni-Reader.";
-            typeEffect('aiManuskripArea', spssMessage, 10);
-            dropText.textContent = "Tarik & Lepas File Eksperimen di Sini";
-        }
-        else {
-            alert("Format belum didukung oleh sistem.");
-            dropText.textContent = "Tarik & Lepas File Eksperimen di Sini";
-        }
-    } catch (error) {
-        console.error(error); alert("Terjadi kesalahan komputasi/ekstraksi.");
-        dropText.textContent = "Tarik & Lepas File Eksperimen di Sini";
+      });
+    } else if (['xlsx', 'xls'].includes(pendingExt)) {
+      const buf = await file.arrayBuffer();
+      const wb  = XLSX.read(buf, { type: 'array' });
+      const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+      onExtractionComplete(data, `${data.length} baris · Matriks Excel`);
+    } else if (pendingExt === 'pdf') {
+      const buf = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+      let text = '';
+      const maxPages = Math.min(pdf.numPages, 12);
+      for (let i = 1; i <= maxPages; i++) {
+        showProgress(`Membaca halaman ${i}/${maxPages}…`, 30 + (i / maxPages) * 50);
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map(it => it.str).join(' ') + '\n';
+      }
+      onExtractionComplete(text.trim(), `${pdf.numPages} halaman · Teks PDF`);
+    } else if (pendingExt === 'docx') {
+      const buf = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer: buf });
+      onExtractionComplete(result.value.trim(), `Dokumen Word · ${result.value.split(/\\s+/).length} kata`);
+    } else if (['txt', 'fasta'].includes(pendingExt)) {
+      const text = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = e => reject(e);
+        reader.readAsText(file);
+      });
+      onExtractionComplete(text.trim(), `Teks murni · ${text.split(/\\s+/).length} kata`);
+    } else if (pendingExt === 'sav') {
+      toast('File SPSS (.sav) terdeteksi. Silakan Export tabel datanya ke CSV/Excel (.xlsx) terlebih dahulu melalui aplikasi SPSS Anda.', 'info');
+      setDropzoneState('idle', '', '');
+      hideProgress();
+    } else {
+      toast('Format tidak didukung. Mohon gunakan format dokumen/tabel yang umum.', 'error');
+      setDropzoneState('idle', '', '');
+      hideProgress();
     }
+  } catch (err) {
+    console.error(err);
+    toast('Gagal mengekstrak file. Pastikan file tidak rusak atau dienkripsi.', 'error');
+    setDropzoneState('error', '', '');
+    hideProgress();
+  }
 }
 
-// ===================================================================
-// DATA MATRIX PREPARATION (PYTHON) -> VERCEL BACKEND
-// ===================================================================
-async function processDataMatrix(jsonData, ext, fileName) {
-    if(jsonData.length === 0) return alert("Dataset kosong!");
-    
-    document.getElementById('metaCard').style.display = 'grid';
-    document.getElementById('metaExt').textContent = ext.toUpperCase();
-    document.getElementById('metaSize').textContent = `${jsonData.length} Baris`;
-    dropText.textContent = "Python mengagregasi matriks data untuk dikirim ke AI...";
-
-    try {
-        const py = await initPyodide();
-        window.tempData = JSON.stringify(jsonData);
-        
-        // Gunakan Python lokal untuk menghitung statistik deskriptif dan korelasi guna menghemat token saat dikirim ke Vercel/Gemini
-        const pythonCode = `
-import pandas as pd
-import json, js
-df = pd.DataFrame(json.loads(js.tempData))
-num_df = df.select_dtypes(include=['number'])
-if not num_df.empty:
-    desc = num_df.describe().to_dict()
-    corr = num_df.corr().to_dict()
-    res = f"Ringkasan Parameter Numerik:\\n{json.dumps(desc, indent=2)}\\n\\nMatriks Korelasi:\\n{json.dumps(corr, indent=2)}"
-else:
-    res = "Dataset ini dominan kategorikal tanpa nilai ukur kuantitatif rasio/interval."
-res
-        `;
-        let aggregatedData = await py.runPythonAsync(pythonCode);
-        
-        // Teruskan data hasil agregasi Python ke Vercel Proxy
-        callGeminiAPI(aggregatedData, ext, fileName, "Analisis Kuantitatif Eksperimen");
-        
-    } catch(e) {
-        console.error("Gagal mengeksekusi Python lokal:", e);
-        // Fallback jika Python error, kirim raw (dibatasi barisnya)
-        const fallbackData = JSON.stringify(jsonData.slice(0, 100)); 
-        callGeminiAPI(fallbackData, ext, fileName, "Analisis Kuantitatif Eksperimen (Fallback)");
-    }
+function onExtractionComplete(data, sub) {
+  pendingData = data;
+  setDropzoneState('ready', pendingFileName, sub);
+  document.getElementById('btnGenerate').disabled = false;
+  hideProgress();
+  toast('File terlampir. Tulis instruksi lalu klik Mulai Sintesis.');
 }
 
-// ===================================================================
-// VERCEL API COMMUNICATION MODULE (GEMINI)
-// ===================================================================
-async function callGeminiAPI(content, ext, fileName, topic) {
-    document.getElementById('navManuscript').click();
-    document.getElementById('badgeTopic').textContent = `Topik: ${topic}`;
-    document.getElementById('badgeEngine').textContent = `Engine: Vercel Proxy (Gemini)`;
-    
-    document.getElementById('aiManuskripArea').innerHTML = `<span class="dsw-icon-styled">⚙️</span> Sistem AI sedang menyusun naskah (Mohon tunggu beberapa detik)...`;
+function resetAll() {
+  pendingData = null; pendingExt = ''; pendingFileName = '';
+  setDropzoneState('idle', '', '');
+  document.getElementById('btnGenerate').disabled = true;
+  document.getElementById('customPrompt').value = '';
+  document.getElementById('outputCard').classList.remove('visible');
+  hideProgress();
+  fileInput.value = '';
+}
 
-    // Sistem Prompt Khusus Riset
-    const promptText = `Anda adalah asisten peneliti senior di bidang Akuakultur, Bioteknologi, dan Ekologi Perairan.
-Saya akan memberikan Anda hasil ekstraksi data dari sebuah file bernama "${fileName}" (${ext.toUpperCase()}).
+async function startAnalysis() {
+  if (!pendingData) return;
 
-Jika datanya berupa matriks angka/statistik (korelasi, regresi, kualitas air, parameter pertumbuhan):
-Buatkan 2-3 paragraf akademik dengan gaya penulisan bab 'Results and Discussion' (Hasil dan Pembahasan) berbahasa Indonesia yang sangat formal, menginterpretasikan makna biologis dari angka tersebut, dan merumuskan kesimpulannya secara empiris. Jangan menyebutkan proses "Python" yang mengolahnya, fokus saja pada data.
+  const outputCard = document.getElementById('outputCard');
+  outputCard.classList.add('visible');
+  outputCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-Jika datanya berupa teks literatur/jurnal panjang:
-Buatkan ringkasan komprehensif, temukan metodologi utama yang digunakan, dan jelaskan implikasi hasil riset tersebut terhadap manajemen atau kajian sains secara umum.
+  const sectionLabels = {
+    results:    'Results and Discussion',
+    intro:      'Introduction',
+    conclusion: 'Conclusion',
+    abstract:   'Abstract',
+  };
+  document.getElementById('badgeSection').textContent = sectionLabels[selectedMode];
+  document.getElementById('aiManuskripArea').textContent = 'Sistem AI sedang menyusun naskah…';
+  document.getElementById('aiManuskripArea').classList.remove('ai-typing');
 
-Berikut adalah ekstraksi datanya:
+  showProgress('Mengirim data ke AI…', 80);
+  document.getElementById('btnGenerate').disabled = true;
+
+  try {
+    if (Array.isArray(pendingData)) {
+      const cols = Object.keys(pendingData[0] || {});
+      const numCols = cols.filter(k => typeof pendingData[0][k] === 'number');
+
+      let summary = `Sumber file: ${pendingFileName}\nJumlah observasi: ${pendingData.length}\nVariabel: ${cols.join(', ')}\n\n`;
+
+      numCols.forEach(col => {
+        const vals = pendingData.map(r => r[col]).filter(v => v !== null && !isNaN(v));
+        if (vals.length === 0) return;
+        const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+        
+        // Memperbaiki error pembagian nol saat N = 1
+        const sd = vals.length > 1 ? Math.sqrt(vals.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (vals.length - 1)) : 0;
+        
+        const min = Math.min(...vals), max = Math.max(...vals);
+        summary += `${col}: n=${vals.length}, mean=${mean.toFixed(3)}, SD=${sd.toFixed(3)}, min=${min}, max=${max}\n`;
+      });
+
+      document.getElementById('badgeTopic').textContent = 'Analisis Matriks Kuantitatif';
+      callGeminiAPI(summary);
+    } else {
+      document.getElementById('badgeTopic').textContent = 'Sintesis Data Literatur/Sekuens';
+      callGeminiAPI(String(pendingData).slice(0, 12000));
+    }
+  } catch (err) {
+    console.error(err);
+    toast('Gagal menyusun ringkasan matriks data.', 'error');
+    hideProgress();
+    document.getElementById('btnGenerate').disabled = false;
+  }
+}
+
+async function callGeminiAPI(content) {
+  const sectionMap = {
+    results:    'Results and Discussion (Hasil dan Pembahasan)',
+    intro:      'Introduction (Pendahuluan)',
+    conclusion: 'Conclusion (Kesimpulan)',
+    abstract:   'Abstract (Abstrak)',
+  };
+  const instruction = document.getElementById('customPrompt').value.trim();
+  const extra = instruction
+    ? `\n\nINSTRUKSI KHUSUS DARI PENELITI:\n"${instruction}"\n(Patuhi instruksi ini dalam penyusunan naskah.)`
+    : '';
+
+  const prompt = `Anda adalah asisten peneliti senior di bidang Akuakultur, Bioteknologi, dan Ekologi Perairan.
+Berdasarkan data dari file "${pendingFileName}" di bawah ini, susunlah 2–3 paragraf akademik yang merupakan bab "${sectionMap[selectedMode]}" berbahasa Indonesia yang sangat formal dan saintifik.
+Interpretasikan makna biologis/ekologis/teknis dari data secara komprehensif, jangan pernah membahas tentang proses web ekstraksi data.${extra}
+
+DATA/RINGKASAN DATA:
 """
 ${content}
 """`;
 
-    try {
-        // Melakukan Fetch ke Vercel Serverless Function Anda
-        const response = await fetch('/api/gemini', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: promptText })
-        });
+  try {
+    const response = await fetch('/api/gemini', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
 
-        const data = await response.json();
-        
-        if (data.error) throw new Error(data.error);
-        
-        dropText.textContent = "Tarik & Lepas File Eksperimen di Sini";
-        
-        // Hapus Markdown Bold (**) agar sesuai dengan gaya jurnal font Times New Roman
-        const cleanText = data.result.replace(/\*\*/g, ''); 
-        typeEffect('aiManuskripArea', cleanText, 5);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-    } catch (error) {
-        console.error("Vercel API Error:", error);
-        document.getElementById('aiManuskripArea').textContent = `Gagal terhubung ke Server AI Vercel: ${error.message}. Pastikan Anda sedang menjalankannya dari Vercel (bukan sekadar membuka file HTML lokal).`;
-        dropText.textContent = "Tarik & Lepas File Eksperimen di Sini";
-    }
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+
+    hideProgress();
+    document.getElementById('btnGenerate').disabled = false;
+
+    const cleanText = data.result.replace(/\*\*/g, '');
+    typeEffect('aiManuskripArea', cleanText, 5);
+    toast('Naskah berhasil dibuat!');
+
+  } catch (err) {
+    console.error(err);
+    hideProgress();
+    document.getElementById('btnGenerate').disabled = false;
+    document.getElementById('aiManuskripArea').textContent =
+      `⚠️ Gagal menghubungi server AI: ${err.message}\n\nPastikan Vercel proxy aktif dan API key sudah dikonfigurasi.`;
+    toast('Gagal terhubung ke server AI.', 'error');
+  }
 }
 </script>
 </body>
