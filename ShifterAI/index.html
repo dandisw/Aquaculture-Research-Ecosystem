@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="light">
+<html lang="id" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ShifterAI by DSW</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%230284C7%22>✨</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
+<!-- OMNI-READER LIBRARIES -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -14,7 +16,7 @@
 
 <style>
 /* ============================================================
-   AREs DESIGN
+   AREs DESIGN SYSTEM — Consistent with StatWise / AquaLab
    ============================================================ */
 :root {
   --bg: #F8FAFC; --surface: #FFFFFF; --surface-hover: #F1F5F9;
@@ -43,26 +45,21 @@
   --info: #BAE6FD; --info-light: #0C4A6E;
 }
 
-/* ── RESET ── */
+/* ── RESET & MOBILE OPTIMIZATION ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: var(--font-sans); background: var(--bg); color: var(--text);
-  height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+  height: 100dvh; 
+  display: flex; flex-direction: column; overflow: hidden;
   font-size: 14px; transition: background 0.3s, color 0.3s;
 }
 
-/* ── EMOJI ICON STYLE (AREs standard) ── */
+/* ── EMOJI ICON STYLE ── */
 .dsw-icon-styled {
-  filter: grayscale(100%);
   display: inline-block; vertical-align: middle;
-  margin-right: 4px; transition: filter 0.3s;
+  transition: filter 0.3s;
 }
-[data-theme="dark"] .dsw-icon-styled {
-  filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(190deg) saturate(4);
-}
-[data-theme="light"] .dsw-icon-styled {
-  filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(190deg) saturate(3);
-}
+[data-theme="dark"] .dsw-icon-styled { filter: drop-shadow(0 0 2px rgba(56,189,248,0.5)); }
 
 /* ── HEADER ── */
 header {
@@ -75,6 +72,9 @@ header {
   font-family: var(--font-serif); font-size: 22px; font-weight: 600;
   color: var(--text); letter-spacing: -0.3px; display: flex; align-items: baseline; gap: 6px;
 }
+.brand-name {
+  display: inline-flex;
+}
 .brand span.accent { color: var(--primary); }
 .brand-sub {
   font-family: var(--font-sans); font-size: 11px; font-weight: 400;
@@ -82,7 +82,7 @@ header {
 }
 .header-actions { display: flex; gap: 10px; align-items: center; }
 
-/* ── BUTTONS (AREs standard) ── */
+/* ── BUTTONS ── */
 .btn {
   padding: 8px 16px; border-radius: 6px; font-family: var(--font-sans);
   font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
@@ -98,15 +98,20 @@ header {
 
 /* ── LAYOUT ── */
 .main-container {
-  flex: 1; overflow: hidden; display: flex;
-  justify-content: center; background: var(--bg);
+  flex: 1; display: flex; justify-content: center; background: var(--bg);
+  overflow-y: auto; overflow-x: hidden;
 }
 .workspace {
-  width: 100%; max-width: 860px; padding: 32px 24px 40px;
-  overflow-y: auto; display: flex; flex-direction: column; gap: 20px;
+  width: 100%; max-width: 860px; padding: 32px 24px 120px 24px;
+  display: flex; flex-direction: column; gap: 20px;
 }
-.workspace::-webkit-scrollbar { width: 6px; }
-.workspace::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius: 4px; }
+
+@media (max-width: 640px) {
+  .workspace { padding: 16px 16px 120px 16px; }
+  header { padding: 0 16px; }
+  .brand { font-size: 18px; }
+  .status-pill { display: none; }
+}
 
 /* ── PAGE HEADER ── */
 .page-header { text-align: center; margin-bottom: 4px; }
@@ -229,7 +234,8 @@ label.field-label {
   font-size: 11px; font-weight: 600; font-family: var(--font-mono);
   background: var(--primary-light); color: var(--info); border: 1px solid var(--border);
 }
-.output-type-label { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
+.output-type-label { font-size: 11px; color: var(--text3); font-family: var(--font-mono); display: inline-block;}
+@media (max-width: 480px) { .output-type-label { display: none; } }
 
 .manuscript-box {
   padding: 24px; font-family: 'Times New Roman', Times, serif;
@@ -299,9 +305,12 @@ label.field-label {
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
   <div class="brand">
-    <span class="dsw-icon-styled">🤖</span>Shifter<span class="accent">AI</span>
+    <span class="dsw-icon-styled">✨</span>
+    <!-- Teks ShifterAI disatukan dalam satu span agar flexbox tidak memberinya jarak -->
+    <span class="brand-name">Shifter<span class="accent">AI</span></span>
     <span class="brand-sub">by DSW</span>
   </div>
   <div class="header-actions">
@@ -310,12 +319,13 @@ label.field-label {
       <span id="engineLabel">Vercel Proxy · Gemini AI</span>
     </div>
     <button class="btn btn-outline btn-sm" onclick="toggleTheme()">
-      <span class="dsw-icon-styled" id="themeIcon">🌗</span>
+      <span class="dsw-icon-styled" id="themeIcon">☀️</span>
       <span class="btn-text">Tema</span>
     </button>
   </div>
 </header>
 
+<!-- WORKSPACE -->
 <div class="main-container">
   <div class="workspace">
 
@@ -335,6 +345,7 @@ label.field-label {
       </span>
     </div>
 
+    <!-- CARD 1: Input -->
     <div class="card">
       <div class="card-header">
         <span class="step-label">01</span>
@@ -370,7 +381,7 @@ label.field-label {
                 placeholder="Contoh: Fokuskan pembahasan pada pengaruh probiotik terhadap kelangsungan hidup. Sertakan interpretasi nilai p dan bandingkan dengan literatur terkini."></textarea>
             </div>
             <button id="btnGenerate" class="btn btn-primary" style="width:100%; padding:11px;" onclick="startAnalysis()" disabled>
-              <span class="dsw-icon-styled">🧠</span> Mulai Sintesis AI
+              <span class="dsw-icon-styled">✨</span> Mulai Sintesis AI
             </button>
           </div>
         </div>
@@ -385,6 +396,7 @@ label.field-label {
       </div>
     </div>
 
+    <!-- CARD 2: Output -->
     <div class="card output-card" id="outputCard">
       <div class="output-topbar">
         <div class="output-meta">
@@ -408,6 +420,7 @@ label.field-label {
 
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- SCRIPTS -->
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
@@ -550,7 +563,7 @@ async function processFile(file) {
     } else if (pendingExt === 'docx') {
       const buf = await file.arrayBuffer();
       const result = await mammoth.extractRawText({ arrayBuffer: buf });
-      onExtractionComplete(result.value.trim(), `Dokumen Word · ${result.value.split(/\\s+/).length} kata`);
+      onExtractionComplete(result.value.trim(), `Dokumen Word · ${result.value.split(/\s+/).length} kata`);
     } else if (['txt', 'fasta'].includes(pendingExt)) {
       const text = await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -558,7 +571,7 @@ async function processFile(file) {
         reader.onerror = e => reject(e);
         reader.readAsText(file);
       });
-      onExtractionComplete(text.trim(), `Teks murni · ${text.split(/\\s+/).length} kata`);
+      onExtractionComplete(text.trim(), `Teks murni · ${text.split(/\s+/).length} kata`);
     } else if (pendingExt === 'sav') {
       toast('File SPSS (.sav) terdeteksi. Silakan Export tabel datanya ke CSV/Excel (.xlsx) terlebih dahulu melalui aplikasi SPSS Anda.', 'info');
       setDropzoneState('idle', '', '');
@@ -599,7 +612,10 @@ async function startAnalysis() {
 
   const outputCard = document.getElementById('outputCard');
   outputCard.classList.add('visible');
-  outputCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  
+  setTimeout(() => {
+    outputCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
 
   const sectionLabels = {
     results:    'Results and Discussion',
@@ -625,10 +641,7 @@ async function startAnalysis() {
         const vals = pendingData.map(r => r[col]).filter(v => v !== null && !isNaN(v));
         if (vals.length === 0) return;
         const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
-        
-        // Memperbaiki error pembagian nol saat N = 1
         const sd = vals.length > 1 ? Math.sqrt(vals.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (vals.length - 1)) : 0;
-        
         const min = Math.min(...vals), max = Math.max(...vals);
         summary += `${col}: n=${vals.length}, mean=${mean.toFixed(3)}, SD=${sd.toFixed(3)}, min=${min}, max=${max}\n`;
       });
