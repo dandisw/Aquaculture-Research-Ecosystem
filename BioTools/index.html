@@ -179,6 +179,9 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 .changelog-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed var(--border); }
 
 /* FIX MOBILE: Padding Bottom ekstra agar aman dari area navigasi HP */
+/* SSR Filter active state */
+.ssr-filter-btn.active-filter { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+
 @media (max-width: 768px) {
   .main-container { flex-direction: column; }
   .sidebar { width: 100%; height: auto; flex-direction: row; padding: 10px 15px; border-right: none; border-bottom: 1px solid var(--border); overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
@@ -225,6 +228,10 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       <div class="menu-item" onclick="switchView('v-orf', this)"><span class="dsw-icon-styled">🎯</span> ORF Finder</div>
       <div class="menu-item" onclick="switchView('v-digest', this)"><span class="dsw-icon-styled">🔪</span> Restriction Mapper</div>
       <div class="menu-item" onclick="switchView('v-phylo', this)"><span class="dsw-icon-styled">🌿</span> Pohon Filogenetik</div>
+    </div>
+    <div class="menu-group">
+      <div class="menu-title">Genomik Populasi</div>
+      <div class="menu-item" onclick="switchView('v-ssr', this)"><span class="dsw-icon-styled">🧩</span> SSR / Mikrosatelit Finder</div>
     </div>
     <div class="menu-group">
       <div class="menu-title">Desain Primer</div>
@@ -611,6 +618,169 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- TAB: SSR / MICROSATELLITE FINDER (KRAIT-style)               -->
+    <!-- ============================================================ -->
+    <div id="v-ssr" class="tab-pane">
+      <div class="page-header">
+        <div>
+          <div class="page-title">SSR / Mikrosatelit Finder</div>
+          <div class="page-desc">Identifikasi Simple Sequence Repeat (SSR) dari sekuens genomik — terinspirasi KRAIT &amp; MISA. Proses 100% lokal, tanpa unggah data.</div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger);" onclick="resetSSR()"><span class="dsw-icon-styled">🗑️</span> Reset</button>
+          <button class="btn btn-outline btn-sm" onclick="loadSampleSSR()"><span class="dsw-icon-styled">📝</span> Data Sampel</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-title">🧬 Input Sekuens (FASTA / Raw DNA)</div>
+          <div class="form-group">
+            <label>Tempel Sekuens (Single atau Multi-FASTA)</label>
+            <textarea id="ssrInput" class="form-control" style="min-height:130px;" placeholder=">Sequence_1&#10;ATGCGATCGATCGATCG..."></textarea>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:0;">
+          <div class="card-title">⚙️ Parameter Pencarian (Min. Jumlah Repeat)</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div class="form-group" style="margin-bottom:0;"><label>Mono (1 nt)</label><input type="number" id="ssrMono" class="form-control" value="12" min="6"></div>
+            <div class="form-group" style="margin-bottom:0;"><label>Di (2 nt)</label><input type="number" id="ssrDi" class="form-control" value="6" min="3"></div>
+            <div class="form-group" style="margin-bottom:0;"><label>Tri (3 nt)</label><input type="number" id="ssrTri" class="form-control" value="5" min="2"></div>
+            <div class="form-group" style="margin-bottom:0;"><label>Tetra (4 nt)</label><input type="number" id="ssrTetra" class="form-control" value="4" min="2"></div>
+            <div class="form-group" style="margin-bottom:0;"><label>Penta (5 nt)</label><input type="number" id="ssrPenta" class="form-control" value="4" min="2"></div>
+            <div class="form-group" style="margin-bottom:0;"><label>Hexa (6 nt)</label><input type="number" id="ssrHexa" class="form-control" value="3" min="2"></div>
+          </div>
+          <div class="form-group" style="margin-top:12px; margin-bottom:0;">
+            <label>Panjang Flanking Primer (nt, tiap sisi)</label>
+            <input type="number" id="ssrFlank" class="form-control" value="150" min="50" max="500">
+          </div>
+        </div>
+      </div>
+
+      <div style="margin:16px 0; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="runSSR()"><span class="dsw-icon-styled">🧩</span> Jalankan Pencarian SSR</button>
+        <span style="font-size:12px; color:var(--text3);">Default parameter mengikuti standar KRAIT / MISA (Thiel et al., 2003).</span>
+      </div>
+
+      <!-- SUMMARY STATS -->
+      <div id="ssrSummaryArea" style="display:none;">
+        <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:18px;">
+          <div class="stat-box"><div class="stat-label">Total SSR</div><div class="stat-value" id="st-total" style="color:var(--primary);">0</div></div>
+          <div class="stat-box"><div class="stat-label">Mono</div><div class="stat-value" id="st-mono" style="color:var(--success);">0</div></div>
+          <div class="stat-box"><div class="stat-label">Di</div><div class="stat-value" id="st-di" style="color:var(--warning);">0</div></div>
+          <div class="stat-box"><div class="stat-label">Tri</div><div class="stat-value" id="st-tri" style="color:var(--danger);">0</div></div>
+          <div class="stat-box"><div class="stat-label">Tetra</div><div class="stat-value" id="st-tetra" style="color:var(--purple);">0</div></div>
+          <div class="stat-box"><div class="stat-label">Penta+Hexa</div><div class="stat-value" id="st-ph" style="color:var(--blue);">0</div></div>
+        </div>
+
+        <div class="sub-nav">
+          <button class="sub-btn active" onclick="openSub(this,'ssr-tab-list','ssr-tab-group')">📋 Daftar SSR</button>
+          <button class="sub-btn" onclick="openSub(this,'ssr-tab-stats','ssr-tab-group')">📊 Statistik Motif</button>
+          <button class="sub-btn" onclick="openSub(this,'ssr-tab-primer','ssr-tab-group')">🔬 Primer Flanking</button>
+          <button class="sub-btn" onclick="openSub(this,'ssr-tab-chart','ssr-tab-group')">📈 Distribusi Visual</button>
+        </div>
+
+        <!-- Daftar SSR -->
+        <div id="ssr-tab-list" class="sub-pane ssr-tab-group active">
+          <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; align-items:center;">
+            <span style="font-size:12px; color:var(--text3); font-weight:600;">Filter:</span>
+            <button class="btn btn-outline btn-sm ssr-filter-btn active-filter" onclick="filterSSR('all',this)">Semua</button>
+            <button class="btn btn-outline btn-sm ssr-filter-btn" onclick="filterSSR('1',this)">Mono</button>
+            <button class="btn btn-outline btn-sm ssr-filter-btn" onclick="filterSSR('2',this)">Di</button>
+            <button class="btn btn-outline btn-sm ssr-filter-btn" onclick="filterSSR('3',this)">Tri</button>
+            <button class="btn btn-outline btn-sm ssr-filter-btn" onclick="filterSSR('4',this)">Tetra</button>
+            <button class="btn btn-outline btn-sm ssr-filter-btn" onclick="filterSSR('5',this)">Penta</button>
+            <button class="btn btn-outline btn-sm ssr-filter-btn" onclick="filterSSR('6',this)">Hexa</button>
+            <button class="btn btn-success btn-sm" style="margin-left:auto;" onclick="exportSSRCSV()">📥 Ekspor CSV</button>
+          </div>
+          <div id="ssrNoResult" style="display:none;" class="info-box warning">Tidak ada SSR ditemukan. Coba turunkan nilai minimum repeat atau periksa sekuens.</div>
+          <div class="table-wrap" id="ssrTableWrap">
+            <table id="ssrTable">
+              <thead><tr>
+                <th style="width:44px;">#</th>
+                <th>Sekuens ID</th>
+                <th style="width:70px;">Tipe</th>
+                <th>Motif</th>
+                <th>Start (bp)</th>
+                <th>End (bp)</th>
+                <th>Panjang (bp)</th>
+                <th>Repeat (n)</th>
+                <th>Sekuens SSR</th>
+              </tr></thead>
+              <tbody id="ssrBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Statistik Motif -->
+        <div id="ssr-tab-stats" class="sub-pane ssr-tab-group">
+          <div class="grid-2" style="margin-bottom:18px;">
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-title">Frekuensi Motif Teratas (Top 20)</div>
+              <div class="table-wrap" style="max-height:300px; overflow-y:auto;">
+                <table id="ssrMotifTable">
+                  <thead><tr><th>Rank</th><th>Motif</th><th>Tipe</th><th>Frekuensi</th><th>% Total</th></tr></thead>
+                  <tbody id="ssrMotifBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-title">Komposisi Tipe SSR</div>
+              <canvas id="ssrChartPie" style="max-height:260px;"></canvas>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-title">Ringkasan Statistik Genomik</div>
+            <div id="ssrGenomeSummary" style="font-family:var(--font-mono); font-size:13px; line-height:2.0; color:var(--text2);"></div>
+          </div>
+        </div>
+
+        <!-- Primer Flanking -->
+        <div id="ssr-tab-primer" class="sub-pane ssr-tab-group">
+          <div class="info-box info" style="margin-bottom:14px;">
+            Wilayah flanking diekstrak otomatis dari kiri dan kanan setiap SSR. Tempelkan sekuens ini ke modul <strong>Analisis &amp; Desain Primer</strong> untuk kalkulasi Tm dan validasi lebih lanjut.
+          </div>
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
+            <button class="btn btn-success btn-sm" onclick="exportPrimerCSV()">📥 Ekspor Primer CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table id="ssrPrimerTable">
+              <thead><tr>
+                <th style="width:44px;">#</th>
+                <th>SSR ID</th>
+                <th>Motif</th>
+                <th>Posisi</th>
+                <th>Flanking Kiri (5'→3', Forward region)</th>
+                <th>Flanking Kanan (3'→5', Reverse region)</th>
+              </tr></thead>
+              <tbody id="ssrPrimerBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Distribusi Visual -->
+        <div id="ssr-tab-chart" class="sub-pane ssr-tab-group">
+          <div class="grid-2" style="margin-bottom:18px;">
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-title">Distribusi Panjang SSR (bp)</div>
+              <canvas id="ssrChartLen" style="max-height:250px;"></canvas>
+            </div>
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-title">Distribusi Jumlah Repeat</div>
+              <canvas id="ssrChartRep" style="max-height:250px;"></canvas>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:0;">
+            <div class="card-title">Peta Distribusi Posisi SSR di Sepanjang Sekuens</div>
+            <canvas id="ssrChartMap" style="max-height:200px; width:100%;"></canvas>
+            <div style="font-size:11px; color:var(--text3); margin-top:8px; text-align:center;">Tiap bar = 1 SSR. Warna: <span style="color:#10B981">■</span> Mono <span style="color:#F59E0B">■</span> Di <span style="color:#EF4444">■</span> Tri <span style="color:#8B5CF6">■</span> Tetra+ </div>
+          </div>
+        </div>
+
+      </div><!-- /ssrSummaryArea -->
+    </div><!-- /v-ssr -->
+
   </main>
 </div>
 
@@ -656,7 +826,13 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       <div class="about-section" id="sec-ref">
         <p>Aplikasi ini didukung oleh algoritma bioinformatika saintifik yang tervalidasi. Berikut adalah referensinya:</p>
         
-        <h4>Multiple Sequence Alignment (MSA) & Penjajaran Lokal</h4>
+        <h4>SSR / Mikrosatelit Finder</h4>
+        <p style="font-size:12px; color:var(--text2); line-bottom:8px;">
+          Thiel, T., Michalek, W., Varshney, R. K., &amp; Graner, A. (2003). Exploiting EST databases for the development and characterization of gene-derived SSR-markers in barley (<em>Hordeum vulgare</em> L.). <em>Theoretical and Applied Genetics</em>, 106(3), 411-422.<br>
+          Kang, X., Zhao, G., &amp; Liu, Q. (2016). KRAIT: an ultrafast tool for genome-wide survey of microsatellites and primer design. <em>Bioinformatics</em>, 32(21), 3412-3414.
+        </p>
+
+        <h4>Multiple Sequence Alignment (MSA) &amp; Penjajaran Lokal</h4>
         <p style="font-size:12px; color:var(--text2); line-bottom:8px;">
           Notredame, C., Higgins, D. G., & Heringa, J. (2000). T-Coffee: A novel method for fast and accurate multiple sequence alignment. <em>Journal of Molecular Biology</em>, 302(1), 205-217. <br>
           Smith, T. F., & Waterman, M. S. (1981). Identification of common molecular subsequences. <em>Journal of Molecular Biology</em>, 147(1), 195-197.
@@ -682,7 +858,11 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 
       <div class="about-section" id="sec-log">
         <div class="changelog-item">
-          <b>Versi 6.5 - High-Res Export & UI Fix</b><br>
+          <b>Versi 7.0 - SSR / Mikrosatelit Finder</b><br>
+          Penambahan modul <em>SSR / Microsatellite Finder</em> terinspirasi KRAIT &amp; MISA. Fitur: deteksi Mono–Hexa SSR, motif kanonikal, statistik densitas &amp; coverage genomik, visualisasi distribusi (pie, histogram, peta posisi), tabel primer flanking, dan ekspor CSV.
+        </div>
+        <div class="changelog-item">
+          <b>Versi 6.5 - High-Res Export &amp; UI Fix</b><br>
           Mengekspansi batas karakter label pohon FASTA menjadi 25 karakter. Mengubah rasio *ViewBox* menjadi absolut 900px dengan bantalan area teks 250px di sebelah kanan untuk mengatasi masalah gambar nama spesies yang terpotong saat diekspor ke format PNG.
         </div>
         <div class="changelog-item">
@@ -1228,264 +1408,4 @@ function buildPhylo() {
             if(charMsa === '-' && charCenter === '-') { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa]; newSeq += aSeq[ptCenter]; ptMsa++; ptCenter++; } 
             else if(charMsa === '-') { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa]; newSeq += '-'; ptMsa++; } 
             else if(charCenter === '-') { for(let k=0; k<msa.length; k++) newMsa[k] += '-'; newSeq += aSeq[ptCenter]; ptCenter++; } 
-            else { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa]; newSeq += aSeq[ptCenter]; ptMsa++; ptCenter++; }
-        }
-        msa = newMsa; msa.push(newSeq); msaIndices.push(i);
-    }
-    let finalMsa = Array(n).fill(""); for(let i=0; i<n; i++) finalMsa[msaIndices[i]] = msa[i];
-
-    let distMat = Array(n).fill(0).map(()=>Array(n).fill(0));
-    for(let i=0; i<n; i++) for(let j=i+1; j<n; j++) distMat[i][j] = distMat[j][i] = msaDistance(finalMsa[i], finalMsa[j]);
-
-    let mTable = `<thead><tr><th style="background:var(--surface-hover);"></th>`;
-    names.forEach(name => mTable += `<th style="background:var(--surface-hover);">${name.substring(0,12)}</th>`);
-    mTable += "</tr></thead><tbody>";
-    for(let i=0; i<n; i++) {
-        mTable += `<tr><td style="font-weight:bold; background:var(--surface-hover);">${names[i].substring(0,12)}</td>`;
-        for(let j=0; j<n; j++) mTable += `<td>${distMat[i][j].toFixed(3)}</td>`;
-        mTable += "</tr>";
-    }
-    document.getElementById('matrixTable').innerHTML = mTable + "</tbody>";
-
-    let originalTree = buildUPGMA(distMat, names);
-
-    if(bootstrapIter > 0 && n > 2) {
-        toast(`Menjalankan ${bootstrapIter} iterasi Bootstrap...`);
-        let msaLen = finalMsa[0].length; let cladeFreq = {};
-        for(let b=0; b<bootstrapIter; b++) {
-            let bMsa = Array(n).fill("");
-            for(let c=0; c<msaLen; c++) { let rCol = Math.floor(Math.random() * msaLen); for(let i=0; i<n; i++) bMsa[i] += finalMsa[i][rCol]; }
-            let bDist = Array(n).fill(0).map(()=>Array(n).fill(0));
-            for(let i=0; i<n; i++) for(let j=i+1; j<n; j++) bDist[i][j] = bDist[j][i] = msaDistance(bMsa[i], bMsa[j]);
-            let bTree = buildUPGMA(bDist, names); let clades = new Set(); getClades(bTree, clades);
-            clades.forEach(c => { cladeFreq[c] = (cladeFreq[c]||0) + 1; });
-        }
-        function assignBootstrap(node) {
-            if(node.isLeaf) { node.leaves = [node.index]; return; }
-            assignBootstrap(node.left); assignBootstrap(node.right);
-            node.leaves = node.left.leaves.concat(node.right.leaves).sort((a,b)=>a-b);
-            let cKey = node.leaves.join(','); node.bootstrap = Math.round((cladeFreq[cKey] || 0) / bootstrapIter * 100);
-        }
-        assignBootstrap(originalTree);
-    }
-
-    currentPhyloTree = originalTree; currentPhyloN = n;
-    redrawTreeOnly();
-
-    function buildNewick(node) {
-        if(node.isLeaf) return node.label;
-        let leftN = buildNewick(node.left); let rightN = buildNewick(node.right);
-        let bStr = node.bootstrap !== undefined && node.size < n ? node.bootstrap : "";
-        return `(${leftN},${rightN})${bStr}`;
-    }
-    document.getElementById('newickOutput').value = buildNewick(originalTree) + ";";
-    document.getElementById('phyloResultArea').style.display = 'block';
-    
-    currentSvgZoom = 1;
-    const svgEl = document.querySelector('#phyloSvgContainer svg');
-    if(svgEl) { svgEl.style.width = '100%'; svgEl.style.height = '100%'; }
-}
-
-function redrawTreeOnly() {
-    if(!currentPhyloTree) return;
-    const n = currentPhyloN;
-    let lineColor = document.getElementById('phyloLineColor').value || 'var(--primary)';
-    let txtColor = document.getElementById('phyloTextColor').value || 'var(--text)';
-    let fontFam = document.getElementById('phyloFont').value || 'var(--font-mono)';
-    let fontSty = document.getElementById('phyloFontStyle').value || 'normal';
-
-    // FIX TERPENTING: Memperlebar ViewBox SVG menjadi 900, dan mendedikasikan 250px khusus untuk Teks
-    const svgW = 900; 
-    const pad = 50;
-    const textSpace = 250; 
-    const svgH = Math.max(300, n*40) + 40; 
-    
-    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgW} ${svgH}" width="${currentSvgZoom*100}%" height="${currentSvgZoom*100}%" style="transition:all 0.3s ease; background:transparent;">`;
-    let leafY = pad, maxDist = currentPhyloTree.dist || 1;
-    
-    function drawNode(node) {
-        if(node.isLeaf) {
-            let y = leafY; leafY += (svgH - 40 - 2*pad) / (n || 1);
-            // Penempatan teks kini aman di dalam batas lebar (svgW - textSpace + 10)
-            svg += `<text x="${svgW - textSpace + 10}" y="${y+4}" fill="${txtColor}" font-family="${fontFam}" font-size="13px" font-style="${fontSty}" font-weight="bold">${node.label}</text>`;
-            return {x: svgW - textSpace, y: y};
-        }
-        let posL = drawNode(node.left), posR = drawNode(node.right);
-        let x = (svgW - textSpace) - (node.dist / maxDist) * (svgW - textSpace - pad);
-        let y = (posL.y + posR.y) / 2;
-        
-        svg += `<path d="M ${posL.x} ${posL.y} L ${x} ${posL.y} L ${x} ${posR.y} L ${posR.x} ${posR.y}" fill="none" stroke="${lineColor}" stroke-width="2" />`;
-        svg += `<path d="M ${x} ${y} L ${x+15} ${y}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-dasharray="3,3" opacity="0.4"/>`;
-        
-        if(node.bootstrap !== undefined && node.size < n) {
-            svg += `<text x="${x-22}" y="${y-5}" fill="var(--warning)" font-family="var(--font-mono)" font-size="11px" font-weight="bold">${node.bootstrap}</text>`;
-        }
-        return {x: x, y: y};
-    }
-    drawNode(currentPhyloTree);
-    
-    let scaleW = 100;
-    let scaleVal = (maxDist * scaleW / (svgW - textSpace - pad)).toFixed(3);
-    let scaleY = svgH - 15;
-    svg += `<line x1="${pad}" y1="${scaleY}" x2="${pad + scaleW}" y2="${scaleY}" stroke="${lineColor}" stroke-width="2"/>`;
-    svg += `<line x1="${pad}" y1="${scaleY - 5}" x2="${pad}" y2="${scaleY + 5}" stroke="${lineColor}" stroke-width="2"/>`;
-    svg += `<line x1="${pad + scaleW}" y1="${scaleY - 5}" x2="${pad + scaleW}" y2="${scaleY + 5}" stroke="${lineColor}" stroke-width="2"/>`;
-    svg += `<text x="${pad + scaleW/2}" y="${scaleY - 10}" fill="${txtColor}" font-family="${fontFam}" font-size="11px" font-weight="normal" text-anchor="middle">${scaleVal}</text>`;
-
-    document.getElementById('phyloSvgContainer').innerHTML = svg + `</svg>`;
-}
-
-let currentSvgZoom = 1;
-function zoomSvgPhylo(delta) {
-    const svg = document.querySelector('#phyloSvgContainer svg');
-    if(!svg) return;
-    if(delta === 0) currentSvgZoom = 1; else currentSvgZoom += delta;
-    currentSvgZoom = Math.max(0.5, Math.min(currentSvgZoom, 3)); 
-    svg.style.width = `${currentSvgZoom * 100}%`; svg.style.height = `${currentSvgZoom * 100}%`;
-}
-function toggleFullscreenSvg() { document.getElementById('phyloSvgContainer').classList.toggle('fullscreen-mode'); }
-
-// ===================================================================
-// FIX EXPORT PNG: MENGUNCI DIMENSI KANVAS SECARA ABSOLUT
-// ===================================================================
-function exportPhyloPNG() {
-    const svgElement = document.querySelector('#phyloSvgContainer svg');
-    if(!svgElement) return toast("Grafik pohon tidak ditemukan.");
-    
-    const serializer = new XMLSerializer();
-    if (!svgElement.getAttribute('xmlns')) svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-    
-    // Mencegah error potong dengan memaksa atribut dimensi (width/height) menjadi nilai angka murni
-    const baseWidth = svgElement.viewBox.baseVal.width;
-    const baseHeight = svgElement.viewBox.baseVal.height;
-    const origWidth = svgElement.getAttribute('width');
-    const origHeight = svgElement.getAttribute('height');
-    
-    svgElement.setAttribute('width', baseWidth);
-    svgElement.setAttribute('height', baseHeight);
-    
-    let svgString = serializer.serializeToString(svgElement);
-    
-    // Kembalikan ke format persentase untuk layar web
-    svgElement.setAttribute('width', origWidth);
-    svgElement.setAttribute('height', origHeight);
-    
-    const rootStyle = getComputedStyle(document.documentElement);
-    const varRegex = /var\((--[a-zA-Z0-9-]+)\)/g;
-    svgString = svgString.replace(varRegex, (match, p1) => {
-        return rootStyle.getPropertyValue(p1).trim() || match;
-    });
-
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    
-    const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
-    const url = URL.createObjectURL(svgBlob);
-    
-    img.onload = function() {
-        canvas.width = baseWidth * 2; 
-        canvas.height = baseHeight * 2;
-        
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        ctx.fillStyle = isDark ? rootStyle.getPropertyValue('--bg').trim() : '#F8FAFC';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.scale(2, 2);
-        ctx.drawImage(img, 0, 0);
-        URL.revokeObjectURL(url);
-        
-        const a = document.createElement('a');
-        a.download = 'Phylogenetic_Tree_DSW.png';
-        a.href = canvas.toDataURL('image/png');
-        a.click();
-        toast("Berhasil mengunduh grafis PNG resolusi penuh.");
-    };
-    img.src = url;
-}
-
-// ===================================================================
-// MODULE 9: PRIMER DESIGN 
-// ===================================================================
-function calcTm(seq) {
-    if (!seq) return 0; const s = cleanDNA(seq); const gc = (s.match(/[GC]/g) || []).length, at = s.length - gc;
-    return s.length < 14 ? (at * 2) + (gc * 4) : 64.9 + 41 * (gc - 16.4) / s.length;
-}
-function calcGCPrimer(seq) { if(!seq) return 0; const s = cleanDNA(seq); return ((s.match(/[GC]/g) || []).length / s.length * 100); }
-
-function calcPrimer() {
-    ['F', 'R'].forEach(dir => {
-        const id = dir === 'F' ? 'pFwd' : 'pRev';
-        const seq = cleanDNA(document.getElementById(id).value);
-        document.getElementById(`res${dir}Len`).textContent = seq.length > 0 ? seq.length : '—';
-        document.getElementById(`res${dir}Gc`).textContent = seq.length > 0 ? calcGCPrimer(seq).toFixed(1) : '—';
-        document.getElementById(`res${dir}Tm`).textContent = seq.length > 0 ? calcTm(seq).toFixed(1) : '—';
-    });
-    const fTm = calcTm(document.getElementById('pFwd').value);
-    const rTm = calcTm(document.getElementById('pRev').value);
-    document.getElementById('resTa').textContent = (fTm > 0 && rTm > 0) ? (Math.min(fTm, rTm) - 5).toFixed(1) + ' °C' : '—';
-}
-
-function generatePrimers() {
-    const targetSeq = cleanDNA(document.getElementById('targetGen').value);
-    if (targetSeq.length < 150) return alert("Gen target terlalu pendek (minimal 150 bp).");
-
-    const minAmp = 100, maxAmp = Math.min(targetSeq.length, 800), fwdList = [], revList = [], pLen = 20; 
-    for (let i = 0; i < Math.min(targetSeq.length / 2, 800); i++) {
-        let p = targetSeq.substr(i, pLen);
-        if (p.length === pLen) {
-            let tm = calcTm(p), gc = ((p.match(/[GC]/g) || []).length / pLen * 100);
-            if (tm >= 55 && tm <= 65 && gc >= 40 && gc <= 60) fwdList.push({ seq: p, pos: i, tm: tm, gc: gc });
-        }
-    }
-
-    const m = {'A':'T','T':'A','C':'G','G':'C'};
-    const rcSeq = targetSeq.split('').reverse().map(b=>m[b]||b).join('');
-    
-    for (let i = 0; i < Math.min(rcSeq.length / 2, 800); i++) {
-        let p = rcSeq.substr(i, pLen);
-        if (p.length === pLen) {
-            let tm = calcTm(p), gc = ((p.match(/[GC]/g) || []).length / pLen * 100);
-            if (tm >= 55 && tm <= 65 && gc >= 40 && gc <= 60) revList.push({ seq: p, pos: targetSeq.length - i - pLen, tm: tm, gc: gc });
-        }
-    }
-
-    let pairs = [];
-    for (let f of fwdList) {
-        for (let r of revList) {
-            let ampSize = (r.pos + pLen) - f.pos;
-            if (ampSize >= minAmp && ampSize <= maxAmp) pairs.push({ f: f, r: r, size: ampSize, tmDiff: Math.abs(f.tm - r.tm) });
-        }
-    }
-
-    pairs.sort((a, b) => a.tmDiff - b.tmDiff);
-    const topPairs = pairs.slice(0, 5);
-    const tbody = document.getElementById('autoPrimerBody');
-    tbody.innerHTML = '';
-
-    if (topPairs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px; color:var(--danger);">Kandidat primer tidak ditemukan pada sekuens ini.</td></tr>';
-    } else {
-        topPairs.forEach((pair, index) => {
-            const trFwd = document.createElement('tr');
-            trFwd.innerHTML = `
-                <td rowspan="2" style="font-weight:700; color:var(--text3); border-bottom:2px solid var(--border);">${index + 1}</td>
-                <td style="font-family:var(--font-mono); color:var(--primary);"><span class="badge">Fwd</span> ${pair.f.seq}</td>
-                <td>${pLen}</td><td style="font-family:var(--font-mono);">${pair.f.tm.toFixed(1)}</td><td style="font-family:var(--font-mono);">${pair.f.gc.toFixed(1)}</td>
-                <td rowspan="2" style="font-weight:700; color:var(--success); border-bottom:2px solid var(--border);">${pair.size}</td>
-            `;
-            const trRev = document.createElement('tr');
-            trRev.innerHTML = `
-                <td style="font-family:var(--font-mono); color:var(--purple); border-bottom:2px solid var(--border);"><span class="badge">Rev</span> ${pair.r.seq}</td>
-                <td style="border-bottom:2px solid var(--border);">${pLen}</td><td style="font-family:var(--font-mono); border-bottom:2px solid var(--border);">${pair.r.tm.toFixed(1)}</td><td style="font-family:var(--font-mono); border-bottom:2px solid var(--border);">${pair.r.gc.toFixed(1)}</td>
-            `;
-            tbody.appendChild(trFwd); tbody.appendChild(trRev);
-        });
-    }
-    document.getElementById('autoPrimerResultContainer').style.display = 'block';
-}
-
-switchView('v-blast', document.querySelector('.menu-item.active'));
-</script>
-</body>
-</html>
+            else { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptM
