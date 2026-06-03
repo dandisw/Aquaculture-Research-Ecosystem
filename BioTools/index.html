@@ -1408,4 +1408,646 @@ function buildPhylo() {
             if(charMsa === '-' && charCenter === '-') { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa]; newSeq += aSeq[ptCenter]; ptMsa++; ptCenter++; } 
             else if(charMsa === '-') { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa]; newSeq += '-'; ptMsa++; } 
             else if(charCenter === '-') { for(let k=0; k<msa.length; k++) newMsa[k] += '-'; newSeq += aSeq[ptCenter]; ptCenter++; } 
-            else { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptM
+            else { for(let k=0; k<msa.length; k++) newMsa[k] += msa[k][ptMsa]; newSeq += aSeq[ptCenter]; ptMsa++; ptCenter++; }
+        }
+        msa = newMsa; msa.push(newSeq); msaIndices.push(i);
+    }
+    let finalMsa = Array(n).fill(""); for(let i=0; i<n; i++) finalMsa[msaIndices[i]] = msa[i];
+
+    let distMat = Array(n).fill(0).map(()=>Array(n).fill(0));
+    for(let i=0; i<n; i++) for(let j=i+1; j<n; j++) distMat[i][j] = distMat[j][i] = msaDistance(finalMsa[i], finalMsa[j]);
+
+    let mTable = `<thead><tr><th style="background:var(--surface-hover);"></th>`;
+    names.forEach(name => mTable += `<th style="background:var(--surface-hover);">${name.substring(0,12)}</th>`);
+    mTable += "</tr></thead><tbody>";
+    for(let i=0; i<n; i++) {
+        mTable += `<tr><td style="font-weight:bold; background:var(--surface-hover);">${names[i].substring(0,12)}</td>`;
+        for(let j=0; j<n; j++) mTable += `<td>${distMat[i][j].toFixed(3)}</td>`;
+        mTable += "</tr>";
+    }
+    document.getElementById('matrixTable').innerHTML = mTable + "</tbody>";
+
+    let originalTree = buildUPGMA(distMat, names);
+
+    if(bootstrapIter > 0 && n > 2) {
+        toast(`Menjalankan ${bootstrapIter} iterasi Bootstrap...`);
+        let msaLen = finalMsa[0].length; let cladeFreq = {};
+        for(let b=0; b<bootstrapIter; b++) {
+            let bMsa = Array(n).fill("");
+            for(let c=0; c<msaLen; c++) { let rCol = Math.floor(Math.random() * msaLen); for(let i=0; i<n; i++) bMsa[i] += finalMsa[i][rCol]; }
+            let bDist = Array(n).fill(0).map(()=>Array(n).fill(0));
+            for(let i=0; i<n; i++) for(let j=i+1; j<n; j++) bDist[i][j] = bDist[j][i] = msaDistance(bMsa[i], bMsa[j]);
+            let bTree = buildUPGMA(bDist, names); let clades = new Set(); getClades(bTree, clades);
+            clades.forEach(c => { cladeFreq[c] = (cladeFreq[c]||0) + 1; });
+        }
+        function assignBootstrap(node) {
+            if(node.isLeaf) { node.leaves = [node.index]; return; }
+            assignBootstrap(node.left); assignBootstrap(node.right);
+            node.leaves = node.left.leaves.concat(node.right.leaves).sort((a,b)=>a-b);
+            let cKey = node.leaves.join(','); node.bootstrap = Math.round((cladeFreq[cKey] || 0) / bootstrapIter * 100);
+        }
+        assignBootstrap(originalTree);
+    }
+
+    currentPhyloTree = originalTree; currentPhyloN = n;
+    redrawTreeOnly();
+
+    function buildNewick(node) {
+        if(node.isLeaf) return node.label;
+        let leftN = buildNewick(node.left); let rightN = buildNewick(node.right);
+        let bStr = node.bootstrap !== undefined && node.size < n ? node.bootstrap : "";
+        return `(${leftN},${rightN})${bStr}`;
+    }
+    document.getElementById('newickOutput').value = buildNewick(originalTree) + ";";
+    document.getElementById('phyloResultArea').style.display = 'block';
+    
+    currentSvgZoom = 1;
+    const svgEl = document.querySelector('#phyloSvgContainer svg');
+    if(svgEl) { svgEl.style.width = '100%'; svgEl.style.height = '100%'; }
+}
+
+function redrawTreeOnly() {
+    if(!currentPhyloTree) return;
+    const n = currentPhyloN;
+    let lineColor = document.getElementById('phyloLineColor').value || 'var(--primary)';
+    let txtColor = document.getElementById('phyloTextColor').value || 'var(--text)';
+    let fontFam = document.getElementById('phyloFont').value || 'var(--font-mono)';
+    let fontSty = document.getElementById('phyloFontStyle').value || 'normal';
+
+    // FIX TERPENTING: Memperlebar ViewBox SVG menjadi 900, dan mendedikasikan 250px khusus untuk Teks
+    const svgW = 900; 
+    const pad = 50;
+    const textSpace = 250; 
+    const svgH = Math.max(300, n*40) + 40; 
+    
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgW} ${svgH}" width="${currentSvgZoom*100}%" height="${currentSvgZoom*100}%" style="transition:all 0.3s ease; background:transparent;">`;
+    let leafY = pad, maxDist = currentPhyloTree.dist || 1;
+    
+    function drawNode(node) {
+        if(node.isLeaf) {
+            let y = leafY; leafY += (svgH - 40 - 2*pad) / (n || 1);
+            // Penempatan teks kini aman di dalam batas lebar (svgW - textSpace + 10)
+            svg += `<text x="${svgW - textSpace + 10}" y="${y+4}" fill="${txtColor}" font-family="${fontFam}" font-size="13px" font-style="${fontSty}" font-weight="bold">${node.label}</text>`;
+            return {x: svgW - textSpace, y: y};
+        }
+        let posL = drawNode(node.left), posR = drawNode(node.right);
+        let x = (svgW - textSpace) - (node.dist / maxDist) * (svgW - textSpace - pad);
+        let y = (posL.y + posR.y) / 2;
+        
+        svg += `<path d="M ${posL.x} ${posL.y} L ${x} ${posL.y} L ${x} ${posR.y} L ${posR.x} ${posR.y}" fill="none" stroke="${lineColor}" stroke-width="2" />`;
+        svg += `<path d="M ${x} ${y} L ${x+15} ${y}" fill="none" stroke="${lineColor}" stroke-width="2" stroke-dasharray="3,3" opacity="0.4"/>`;
+        
+        if(node.bootstrap !== undefined && node.size < n) {
+            svg += `<text x="${x-22}" y="${y-5}" fill="var(--warning)" font-family="var(--font-mono)" font-size="11px" font-weight="bold">${node.bootstrap}</text>`;
+        }
+        return {x: x, y: y};
+    }
+    drawNode(currentPhyloTree);
+    
+    let scaleW = 100;
+    let scaleVal = (maxDist * scaleW / (svgW - textSpace - pad)).toFixed(3);
+    let scaleY = svgH - 15;
+    svg += `<line x1="${pad}" y1="${scaleY}" x2="${pad + scaleW}" y2="${scaleY}" stroke="${lineColor}" stroke-width="2"/>`;
+    svg += `<line x1="${pad}" y1="${scaleY - 5}" x2="${pad}" y2="${scaleY + 5}" stroke="${lineColor}" stroke-width="2"/>`;
+    svg += `<line x1="${pad + scaleW}" y1="${scaleY - 5}" x2="${pad + scaleW}" y2="${scaleY + 5}" stroke="${lineColor}" stroke-width="2"/>`;
+    svg += `<text x="${pad + scaleW/2}" y="${scaleY - 10}" fill="${txtColor}" font-family="${fontFam}" font-size="11px" font-weight="normal" text-anchor="middle">${scaleVal}</text>`;
+
+    document.getElementById('phyloSvgContainer').innerHTML = svg + `</svg>`;
+}
+
+let currentSvgZoom = 1;
+function zoomSvgPhylo(delta) {
+    const svg = document.querySelector('#phyloSvgContainer svg');
+    if(!svg) return;
+    if(delta === 0) currentSvgZoom = 1; else currentSvgZoom += delta;
+    currentSvgZoom = Math.max(0.5, Math.min(currentSvgZoom, 3)); 
+    svg.style.width = `${currentSvgZoom * 100}%`; svg.style.height = `${currentSvgZoom * 100}%`;
+}
+function toggleFullscreenSvg() { document.getElementById('phyloSvgContainer').classList.toggle('fullscreen-mode'); }
+
+// ===================================================================
+// FIX EXPORT PNG: MENGUNCI DIMENSI KANVAS SECARA ABSOLUT
+// ===================================================================
+function exportPhyloPNG() {
+    const svgElement = document.querySelector('#phyloSvgContainer svg');
+    if(!svgElement) return toast("Grafik pohon tidak ditemukan.");
+    
+    const serializer = new XMLSerializer();
+    if (!svgElement.getAttribute('xmlns')) svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+    
+    // Mencegah error potong dengan memaksa atribut dimensi (width/height) menjadi nilai angka murni
+    const baseWidth = svgElement.viewBox.baseVal.width;
+    const baseHeight = svgElement.viewBox.baseVal.height;
+    const origWidth = svgElement.getAttribute('width');
+    const origHeight = svgElement.getAttribute('height');
+    
+    svgElement.setAttribute('width', baseWidth);
+    svgElement.setAttribute('height', baseHeight);
+    
+    let svgString = serializer.serializeToString(svgElement);
+    
+    // Kembalikan ke format persentase untuk layar web
+    svgElement.setAttribute('width', origWidth);
+    svgElement.setAttribute('height', origHeight);
+    
+    const rootStyle = getComputedStyle(document.documentElement);
+    const varRegex = /var\((--[a-zA-Z0-9-]+)\)/g;
+    svgString = svgString.replace(varRegex, (match, p1) => {
+        return rootStyle.getPropertyValue(p1).trim() || match;
+    });
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+    const url = URL.createObjectURL(svgBlob);
+    
+    img.onload = function() {
+        canvas.width = baseWidth * 2; 
+        canvas.height = baseHeight * 2;
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        ctx.fillStyle = isDark ? rootStyle.getPropertyValue('--bg').trim() : '#F8FAFC';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.scale(2, 2);
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        
+        const a = document.createElement('a');
+        a.download = 'Phylogenetic_Tree_DSW.png';
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+        toast("Berhasil mengunduh grafis PNG resolusi penuh.");
+    };
+    img.src = url;
+}
+
+// ===================================================================
+// MODULE 9: PRIMER DESIGN 
+// ===================================================================
+function calcTm(seq) {
+    if (!seq) return 0; const s = cleanDNA(seq); const gc = (s.match(/[GC]/g) || []).length, at = s.length - gc;
+    return s.length < 14 ? (at * 2) + (gc * 4) : 64.9 + 41 * (gc - 16.4) / s.length;
+}
+function calcGCPrimer(seq) { if(!seq) return 0; const s = cleanDNA(seq); return ((s.match(/[GC]/g) || []).length / s.length * 100); }
+
+function calcPrimer() {
+    ['F', 'R'].forEach(dir => {
+        const id = dir === 'F' ? 'pFwd' : 'pRev';
+        const seq = cleanDNA(document.getElementById(id).value);
+        document.getElementById(`res${dir}Len`).textContent = seq.length > 0 ? seq.length : '—';
+        document.getElementById(`res${dir}Gc`).textContent = seq.length > 0 ? calcGCPrimer(seq).toFixed(1) : '—';
+        document.getElementById(`res${dir}Tm`).textContent = seq.length > 0 ? calcTm(seq).toFixed(1) : '—';
+    });
+    const fTm = calcTm(document.getElementById('pFwd').value);
+    const rTm = calcTm(document.getElementById('pRev').value);
+    document.getElementById('resTa').textContent = (fTm > 0 && rTm > 0) ? (Math.min(fTm, rTm) - 5).toFixed(1) + ' °C' : '—';
+}
+
+function generatePrimers() {
+    const targetSeq = cleanDNA(document.getElementById('targetGen').value);
+    if (targetSeq.length < 150) return alert("Gen target terlalu pendek (minimal 150 bp).");
+
+    const minAmp = 100, maxAmp = Math.min(targetSeq.length, 800), fwdList = [], revList = [], pLen = 20; 
+    for (let i = 0; i < Math.min(targetSeq.length / 2, 800); i++) {
+        let p = targetSeq.substr(i, pLen);
+        if (p.length === pLen) {
+            let tm = calcTm(p), gc = ((p.match(/[GC]/g) || []).length / pLen * 100);
+            if (tm >= 55 && tm <= 65 && gc >= 40 && gc <= 60) fwdList.push({ seq: p, pos: i, tm: tm, gc: gc });
+        }
+    }
+
+    const m = {'A':'T','T':'A','C':'G','G':'C'};
+    const rcSeq = targetSeq.split('').reverse().map(b=>m[b]||b).join('');
+    
+    for (let i = 0; i < Math.min(rcSeq.length / 2, 800); i++) {
+        let p = rcSeq.substr(i, pLen);
+        if (p.length === pLen) {
+            let tm = calcTm(p), gc = ((p.match(/[GC]/g) || []).length / pLen * 100);
+            if (tm >= 55 && tm <= 65 && gc >= 40 && gc <= 60) revList.push({ seq: p, pos: targetSeq.length - i - pLen, tm: tm, gc: gc });
+        }
+    }
+
+    let pairs = [];
+    for (let f of fwdList) {
+        for (let r of revList) {
+            let ampSize = (r.pos + pLen) - f.pos;
+            if (ampSize >= minAmp && ampSize <= maxAmp) pairs.push({ f: f, r: r, size: ampSize, tmDiff: Math.abs(f.tm - r.tm) });
+        }
+    }
+
+    pairs.sort((a, b) => a.tmDiff - b.tmDiff);
+    const topPairs = pairs.slice(0, 5);
+    const tbody = document.getElementById('autoPrimerBody');
+    tbody.innerHTML = '';
+
+    if (topPairs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px; color:var(--danger);">Kandidat primer tidak ditemukan pada sekuens ini.</td></tr>';
+    } else {
+        topPairs.forEach((pair, index) => {
+            const trFwd = document.createElement('tr');
+            trFwd.innerHTML = `
+                <td rowspan="2" style="font-weight:700; color:var(--text3); border-bottom:2px solid var(--border);">${index + 1}</td>
+                <td style="font-family:var(--font-mono); color:var(--primary);"><span class="badge">Fwd</span> ${pair.f.seq}</td>
+                <td>${pLen}</td><td style="font-family:var(--font-mono);">${pair.f.tm.toFixed(1)}</td><td style="font-family:var(--font-mono);">${pair.f.gc.toFixed(1)}</td>
+                <td rowspan="2" style="font-weight:700; color:var(--success); border-bottom:2px solid var(--border);">${pair.size}</td>
+            `;
+            const trRev = document.createElement('tr');
+            trRev.innerHTML = `
+                <td style="font-family:var(--font-mono); color:var(--purple); border-bottom:2px solid var(--border);"><span class="badge">Rev</span> ${pair.r.seq}</td>
+                <td style="border-bottom:2px solid var(--border);">${pLen}</td><td style="font-family:var(--font-mono); border-bottom:2px solid var(--border);">${pair.r.tm.toFixed(1)}</td><td style="font-family:var(--font-mono); border-bottom:2px solid var(--border);">${pair.r.gc.toFixed(1)}</td>
+            `;
+            tbody.appendChild(trFwd); tbody.appendChild(trRev);
+        });
+    }
+    document.getElementById('autoPrimerResultContainer').style.display = 'block';
+}
+
+switchView('v-blast', document.querySelector('.menu-item.active'));
+
+// ===================================================================
+// MODULE SSR: MICROSATELLITE / SSR FINDER (KRAIT / MISA Style)
+// ===================================================================
+
+// Global SSR storage
+let ssrResults = [];    // all found SSRs
+let ssrSequences = [];  // parsed {id, seq} array
+let ssrChartPieInst = null, ssrChartLenInst = null, ssrChartRepInst = null, ssrChartMapInst = null;
+
+// --- Canonical motif: find lexicographically smallest rotation of motif and its RC
+function canonicalMotif(motif) {
+    const rc = m => m.split('').reverse().map(b=>({'A':'T','T':'A','C':'G','G':'C'}[b]||b)).join('');
+    const allForms = [];
+    for (let i = 0; i < motif.length; i++) {
+        allForms.push(motif.slice(i) + motif.slice(0, i));
+    }
+    const rcMotif = rc(motif);
+    for (let i = 0; i < rcMotif.length; i++) {
+        allForms.push(rcMotif.slice(i) + rcMotif.slice(0, i));
+    }
+    return allForms.sort()[0];
+}
+
+// --- Parse FASTA or raw DNA
+function parseFASTA(raw) {
+    raw = raw.trim();
+    const seqs = [];
+    if (raw.startsWith('>')) {
+        const entries = raw.split(/\n(?=>)/);
+        for (const entry of entries) {
+            const lines = entry.trim().split('\n');
+            const id = lines[0].replace('>', '').trim().split(/\s+/)[0];
+            const seq = lines.slice(1).join('').replace(/\s/g, '').toUpperCase().replace(/[^ATCGN]/g, '');
+            if (seq.length > 0) seqs.push({ id, seq });
+        }
+    } else {
+        const seq = raw.replace(/\s/g, '').toUpperCase().replace(/[^ATCGN]/g, '');
+        if (seq.length > 0) seqs.push({ id: 'Sequence_1', seq });
+    }
+    return seqs;
+}
+
+// --- Core SSR search for one sequence
+function findSSRInSeq(seqObj, minRepeats) {
+    const { id, seq } = seqObj;
+    const results = [];
+    const typeNames = ['', 'Mono', 'Di', 'Tri', 'Tetra', 'Penta', 'Hexa'];
+    const typeColors = ['', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#3B82F6', '#EC4899'];
+
+    for (let motifLen = 1; motifLen <= 6; motifLen++) {
+        const minRep = minRepeats[motifLen];
+        const minSSRLen = motifLen * minRep;
+
+        // Build regex: (motif){minRep,} — we scan manually for accuracy
+        for (let start = 0; start <= seq.length - minSSRLen; start++) {
+            const motif = seq.substr(start, motifLen);
+            // Skip motifs with N
+            if (motif.includes('N')) continue;
+            // Skip homopolymer-like for di+ (avoid AAAAAA matching as 'AA' 3x)
+            if (motifLen > 1) {
+                let allSame = true;
+                for (let c of motif) { if (c !== motif[0]) { allSame = false; break; } }
+                if (allSame) continue;
+            }
+
+            // Count how many times motif repeats from this position
+            let repCount = 0;
+            let pos = start;
+            while (pos + motifLen <= seq.length && seq.substr(pos, motifLen) === motif) {
+                repCount++;
+                pos += motifLen;
+            }
+
+            if (repCount >= minRep) {
+                const end = start + repCount * motifLen;
+                const ssrSeq = seq.substring(start, end);
+                const canon = canonicalMotif(motif);
+                results.push({
+                    seqId: id,
+                    type: motifLen,
+                    typeName: typeNames[motifLen],
+                    typeColor: typeColors[motifLen],
+                    motif: motif,
+                    canonMotif: canon,
+                    start: start + 1,  // 1-based
+                    end: end,
+                    length: end - start,
+                    repeats: repCount,
+                    ssrSeq: ssrSeq,
+                    fullSeq: seq  // store for flanking extraction
+                });
+                // Advance past this SSR to avoid overlap
+                start = end - 1;
+            }
+        }
+    }
+    // Sort by start position
+    results.sort((a, b) => a.start - b.start);
+    return results;
+}
+
+// --- Main run function
+function runSSR() {
+    const raw = document.getElementById('ssrInput').value.trim();
+    if (!raw) { alert('Masukkan sekuens terlebih dahulu.'); return; }
+
+    const minRepeats = {
+        1: parseInt(document.getElementById('ssrMono').value) || 12,
+        2: parseInt(document.getElementById('ssrDi').value) || 6,
+        3: parseInt(document.getElementById('ssrTri').value) || 5,
+        4: parseInt(document.getElementById('ssrTetra').value) || 4,
+        5: parseInt(document.getElementById('ssrPenta').value) || 4,
+        6: parseInt(document.getElementById('ssrHexa').value) || 3,
+    };
+
+    ssrSequences = parseFASTA(raw);
+    if (ssrSequences.length === 0) { alert('Format sekuens tidak dikenali. Gunakan FASTA atau DNA mentah.'); return; }
+
+    ssrResults = [];
+    for (const seqObj of ssrSequences) {
+        ssrResults.push(...findSSRInSeq(seqObj, minRepeats));
+    }
+
+    document.getElementById('ssrSummaryArea').style.display = 'block';
+    renderSSRStats();
+    renderSSRTable(ssrResults);
+    renderSSRMotifTable();
+    renderSSRPrimerTable();
+    renderSSRCharts();
+
+    // Reset sub-nav to first tab
+    const pane = document.getElementById('v-ssr');
+    pane.querySelectorAll('.sub-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+    pane.querySelectorAll('.ssr-tab-group').forEach((p,i) => p.classList.toggle('active', i===0));
+
+    toast(`Ditemukan ${ssrResults.length} SSR dari ${ssrSequences.length} sekuens.`);
+}
+
+// --- Render summary counts
+function renderSSRStats() {
+    const counts = {1:0,2:0,3:0,4:0,5:0,6:0};
+    ssrResults.forEach(r => counts[r.type]++);
+    document.getElementById('st-total').textContent = ssrResults.length;
+    document.getElementById('st-mono').textContent = counts[1];
+    document.getElementById('st-di').textContent = counts[2];
+    document.getElementById('st-tri').textContent = counts[3];
+    document.getElementById('st-tetra').textContent = counts[4];
+    document.getElementById('st-ph').textContent = counts[5] + counts[6];
+}
+
+// --- Render SSR table
+function renderSSRTable(data) {
+    const tbody = document.getElementById('ssrBody');
+    tbody.innerHTML = '';
+    document.getElementById('ssrNoResult').style.display = data.length === 0 ? 'block' : 'none';
+    document.getElementById('ssrTableWrap').style.display = data.length === 0 ? 'none' : 'block';
+    const typeColors = ['','#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
+    data.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        tr.dataset.type = r.type;
+        tr.innerHTML = `
+            <td style="color:var(--text3); font-size:11px;">${i+1}</td>
+            <td style="font-family:var(--font-mono); font-size:12px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.seqId}">${r.seqId}</td>
+            <td><span class="badge" style="background:${typeColors[r.type]}22; color:${typeColors[r.type]}; border-color:${typeColors[r.type]};">${r.typeName}</span></td>
+            <td style="font-family:var(--font-mono); font-weight:700; color:${typeColors[r.type]}; letter-spacing:1px;">${r.motif}</td>
+            <td style="font-family:var(--font-mono);">${r.start}</td>
+            <td style="font-family:var(--font-mono);">${r.end}</td>
+            <td style="font-family:var(--font-mono); font-weight:600;">${r.length}</td>
+            <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary);">${r.repeats}</td>
+            <td style="font-family:var(--font-mono); font-size:11px; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.ssrSeq}">${r.ssrSeq.length>28 ? r.ssrSeq.slice(0,28)+'…' : r.ssrSeq}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// --- Filter SSR table
+function filterSSR(type, btn) {
+    document.querySelectorAll('.ssr-filter-btn').forEach(b => b.classList.remove('active-filter'));
+    if(btn) btn.classList.add('active-filter');
+    const rows = document.querySelectorAll('#ssrBody tr');
+    rows.forEach(r => {
+        r.style.display = (type === 'all' || r.dataset.type == type) ? '' : 'none';
+    });
+}
+
+// --- Render motif frequency table
+function renderSSRMotifTable() {
+    const freq = {};
+    ssrResults.forEach(r => {
+        const k = r.canonMotif + '|' + r.type;
+        if (!freq[k]) freq[k] = { motif: r.canonMotif, type: r.typeName, count: 0 };
+        freq[k].count++;
+    });
+    const sorted = Object.values(freq).sort((a,b) => b.count - a.count).slice(0, 20);
+    const total = ssrResults.length;
+    const tbody = document.getElementById('ssrMotifBody');
+    tbody.innerHTML = '';
+    const typeColors = {'Mono':'#10B981','Di':'#F59E0B','Tri':'#EF4444','Tetra':'#8B5CF6','Penta':'#3B82F6','Hexa':'#EC4899'};
+    sorted.forEach((m, i) => {
+        const pct = total > 0 ? (m.count / total * 100).toFixed(1) : '0';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-weight:700; color:var(--text3);">${i+1}</td>
+            <td style="font-family:var(--font-mono); font-weight:700; color:${typeColors[m.type]||'var(--text)'}; letter-spacing:2px;">${m.motif}</td>
+            <td><span class="badge" style="background:${typeColors[m.type]||'var(--surface-hover)'}22; color:${typeColors[m.type]||'var(--text3)'}; border-color:${typeColors[m.type]||'var(--border)'};">${m.type}</span></td>
+            <td style="font-family:var(--font-mono); font-weight:700; color:var(--primary);">${m.count}</td>
+            <td style="font-family:var(--font-mono);">${pct}%</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    // Genome summary
+    const totalLen = ssrSequences.reduce((s,x) => s + x.seq.length, 0);
+    const totalSSRLen = ssrResults.reduce((s,r) => s + r.length, 0);
+    const density = totalLen > 0 ? (ssrResults.length / (totalLen / 1000)).toFixed(4) : '—';
+    const coverage = totalLen > 0 ? (totalSSRLen / totalLen * 100).toFixed(3) : '—';
+    const avgLen = ssrResults.length > 0 ? (totalSSRLen / ssrResults.length).toFixed(1) : '—';
+    document.getElementById('ssrGenomeSummary').innerHTML = `
+        Total Panjang Sekuens: <b style="color:var(--primary);">${totalLen.toLocaleString()} bp</b><br>
+        Total SSR Ditemukan: <b style="color:var(--primary);">${ssrResults.length}</b><br>
+        Total Panjang SSR: <b style="color:var(--success);">${totalSSRLen.toLocaleString()} bp</b><br>
+        Rata-rata Panjang SSR: <b style="color:var(--success);">${avgLen} bp</b><br>
+        Densitas SSR: <b style="color:var(--warning);">${density} SSR/Kbp</b><br>
+        Coverage SSR: <b style="color:var(--warning);">${coverage}% dari total panjang sekuens</b>
+    `;
+}
+
+// --- Render primer flanking table
+function renderSSRPrimerTable() {
+    const flankLen = parseInt(document.getElementById('ssrFlank').value) || 150;
+    const tbody = document.getElementById('ssrPrimerBody');
+    tbody.innerHTML = '';
+    const typeColors = ['','#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
+    ssrResults.forEach((r, i) => {
+        const seq = r.fullSeq;
+        const s0 = r.start - 1; // 0-based
+        const e0 = r.end;       // 0-based exclusive
+        const leftStart = Math.max(0, s0 - flankLen);
+        const rightEnd = Math.min(seq.length, e0 + flankLen);
+        const leftFlank = seq.substring(leftStart, s0);
+        const rightFlank = seq.substring(e0, rightEnd);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="color:var(--text3); font-size:11px;">${i+1}</td>
+            <td style="font-size:12px; font-family:var(--font-mono); max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.seqId}_SSR${i+1}">${r.seqId}_SSR${i+1}</td>
+            <td><span class="badge" style="background:${typeColors[r.type]}22; color:${typeColors[r.type]}; border-color:${typeColors[r.type]};">${r.motif}</span></td>
+            <td style="font-family:var(--font-mono); font-size:11px;">${r.start}–${r.end}</td>
+            <td style="font-family:var(--font-mono); font-size:11px; color:var(--primary); max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${leftFlank}">${leftFlank || '<span style="color:var(--text3);">—</span>'}</td>
+            <td style="font-family:var(--font-mono); font-size:11px; color:var(--purple); max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${rightFlank}">${rightFlank || '<span style="color:var(--text3);">—</span>'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// --- Render charts
+function renderSSRCharts() {
+    const typeLabels = ['Mono','Di','Tri','Tetra','Penta','Hexa'];
+    const typeColors = ['#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
+    const counts = [0,0,0,0,0,0];
+    ssrResults.forEach(r => counts[r.type-1]++);
+
+    // Destroy old charts
+    [ssrChartPieInst, ssrChartLenInst, ssrChartRepInst, ssrChartMapInst].forEach(c => { if(c) c.destroy(); });
+
+    // Pie chart
+    const ctxPie = document.getElementById('ssrChartPie').getContext('2d');
+    ssrChartPieInst = new Chart(ctxPie, {
+        type: 'doughnut',
+        data: {
+            labels: typeLabels,
+            datasets: [{ data: counts, backgroundColor: typeColors, borderWidth: 2, borderColor: getComputedStyle(document.documentElement).getPropertyValue('--surface') }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'right', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text'), font: { family: "'DM Sans', sans-serif", size: 12 }, boxWidth: 14 } },
+                tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${counts.reduce((a,b)=>a+b,0)>0?(ctx.raw/counts.reduce((a,b)=>a+b,0)*100).toFixed(1):0}%)` } }
+            }
+        }
+    });
+
+    // Length distribution
+    const lenBuckets = {};
+    ssrResults.forEach(r => { lenBuckets[r.length] = (lenBuckets[r.length]||0)+1; });
+    const lenSorted = Object.keys(lenBuckets).map(Number).sort((a,b)=>a-b);
+    const ctxLen = document.getElementById('ssrChartLen').getContext('2d');
+    ssrChartLenInst = new Chart(ctxLen, {
+        type: 'bar',
+        data: { labels: lenSorted, datasets: [{ label: 'Jumlah SSR', data: lenSorted.map(k=>lenBuckets[k]), backgroundColor: '#10B98155', borderColor: '#10B981', borderWidth: 1 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Panjang (bp)', color: '#94A3B8' }, ticks: { color: '#94A3B8' } }, y: { title: { display: true, text: 'Jumlah', color: '#94A3B8' }, ticks: { color: '#94A3B8', stepSize: 1 }, beginAtZero: true } } }
+    });
+
+    // Repeat distribution
+    const repBuckets = {};
+    ssrResults.forEach(r => { repBuckets[r.repeats] = (repBuckets[r.repeats]||0)+1; });
+    const repSorted = Object.keys(repBuckets).map(Number).sort((a,b)=>a-b);
+    const ctxRep = document.getElementById('ssrChartRep').getContext('2d');
+    ssrChartRepInst = new Chart(ctxRep, {
+        type: 'bar',
+        data: { labels: repSorted, datasets: [{ label: 'Jumlah SSR', data: repSorted.map(k=>repBuckets[k]), backgroundColor: '#F59E0B55', borderColor: '#F59E0B', borderWidth: 1 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Jumlah Repeat (n)', color: '#94A3B8' }, ticks: { color: '#94A3B8' } }, y: { title: { display: true, text: 'Jumlah', color: '#94A3B8' }, ticks: { color: '#94A3B8', stepSize: 1 }, beginAtZero: true } } }
+    });
+
+    // Position map
+    const totalLen = ssrSequences[0] ? ssrSequences[0].seq.length : 1;
+    const mapColors = ['','#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
+    const ctxMap = document.getElementById('ssrChartMap').getContext('2d');
+    ssrChartMapInst = new Chart(ctxMap, {
+        type: 'bar',
+        data: {
+            labels: ssrResults.map((r,i) => `${r.motif}@${r.start}`),
+            datasets: [{
+                label: 'Posisi SSR',
+                data: ssrResults.map(r => r.start),
+                backgroundColor: ssrResults.map(r => mapColors[r.type] + '99'),
+                borderColor: ssrResults.map(r => mapColors[r.type]),
+                borderWidth: 1,
+                barThickness: 6
+            }]
+        },
+        options: {
+            indexAxis: 'x',
+            responsive: true,
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => { const r = ssrResults[ctx.dataIndex]; return ` ${r.typeName}: ${r.motif}×${r.repeats} @ pos ${r.start}–${r.end}`; } } } },
+            scales: {
+                x: { display: false },
+                y: { title: { display: true, text: 'Posisi (bp)', color: '#94A3B8' }, ticks: { color: '#94A3B8' }, beginAtZero: true, max: totalLen }
+            }
+        }
+    });
+}
+
+// --- Export CSV (SSR list)
+function exportSSRCSV() {
+    if (ssrResults.length === 0) { alert('Tidak ada data untuk diekspor.'); return; }
+    const header = ['#','Sequence_ID','Type','Motif','Canonical_Motif','Start_bp','End_bp','Length_bp','Repeats','SSR_Sequence'];
+    const rows = ssrResults.map((r,i) => [i+1, r.seqId, r.typeName, r.motif, r.canonMotif, r.start, r.end, r.length, r.repeats, r.ssrSeq]);
+    const csv = [header, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
+    a.download = 'SSR_Result.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    toast('SSR_Result.csv berhasil diunduh.');
+}
+
+// --- Export primer flanking CSV
+function exportPrimerCSV() {
+    if (ssrResults.length === 0) { alert('Tidak ada data untuk diekspor.'); return; }
+    const flankLen = parseInt(document.getElementById('ssrFlank').value) || 150;
+    const header = ['#','SSR_ID','Motif','Type','Position','Left_Flank_5to3','Right_Flank_5to3'];
+    const rows = ssrResults.map((r,i) => {
+        const seq = r.fullSeq;
+        const s0 = r.start - 1;
+        const leftFlank = seq.substring(Math.max(0, s0 - flankLen), s0);
+        const rightFlank = seq.substring(r.end, Math.min(seq.length, r.end + flankLen));
+        return [i+1, `${r.seqId}_SSR${i+1}`, r.motif, r.typeName, `${r.start}-${r.end}`, leftFlank, rightFlank];
+    });
+    const csv = [header, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
+    a.download = 'SSR_Flanking_Primers.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    toast('SSR_Flanking_Primers.csv berhasil diunduh.');
+}
+
+// --- Reset
+function resetSSR() {
+    document.getElementById('ssrInput').value = '';
+    document.getElementById('ssrSummaryArea').style.display = 'none';
+    ssrResults = []; ssrSequences = [];
+    [ssrChartPieInst, ssrChartLenInst, ssrChartRepInst, ssrChartMapInst].forEach(c => { if(c) c.destroy(); });
+    toast('SSR Finder direset.');
+}
+
+// --- Sample data
+function loadSampleSSR() {
+    // Synthetic sequence with embedded SSRs of various types
+    const synthetic = `>Oreochromis_niloticus_Chr1_region
+ATGCGATCGATCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGGCATCGATCGATCGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGCTCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCAGTCGATCGATCGATCGATCGATCGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAAATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGCGATCGATCGATCGATCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG`;
+    document.getElementById('ssrInput').value = synthetic;
+    toast('Data sampel SSR dimuat. Klik Jalankan Pencarian.');
+}
+
+</script>
+</body>
+</html>
