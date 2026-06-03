@@ -45,12 +45,17 @@
   --info: #BAE6FD; --info-light: #0C4A6E;
 }
 
-/* ── RESET & MOBILE OPTIMIZATION ── */
+/* ── SCROLL FIX & RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Menghapus overflow:hidden agar body dapat melakukan scroll alami ke bawah */
+html, body {
+  min-height: 100vh;
+}
 body {
   font-family: var(--font-sans); background: var(--bg); color: var(--text);
-  height: 100dvh; 
-  display: flex; flex-direction: column; overflow: hidden;
+  display: flex; flex-direction: column; 
+  overflow-y: auto; overflow-x: hidden;
   font-size: 14px; transition: background 0.3s, color 0.3s;
 }
 
@@ -61,20 +66,19 @@ body {
 }
 [data-theme="dark"] .dsw-icon-styled { filter: drop-shadow(0 0 2px rgba(56,189,248,0.5)); }
 
-/* ── HEADER ── */
+/* ── STICKY HEADER ── */
 header {
   background: var(--surface); padding: 0 24px; height: 64px;
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid var(--border); flex-shrink: 0;
-  z-index: 10; box-shadow: var(--shadow); transition: background 0.3s;
+  position: sticky; top: 0; z-index: 50; /* Memastikan header tetap di atas saat di-scroll */
+  box-shadow: var(--shadow); transition: background 0.3s;
 }
 .brand {
   font-family: var(--font-serif); font-size: 22px; font-weight: 600;
   color: var(--text); letter-spacing: -0.3px; display: flex; align-items: baseline; gap: 6px;
 }
-.brand-name {
-  display: inline-flex;
-}
+.brand-name { display: inline-flex; }
 .brand span.accent { color: var(--primary); }
 .brand-sub {
   font-family: var(--font-sans); font-size: 11px; font-weight: 400;
@@ -98,16 +102,15 @@ header {
 
 /* ── LAYOUT ── */
 .main-container {
-  flex: 1; display: flex; justify-content: center; background: var(--bg);
-  overflow-y: auto; overflow-x: hidden;
+  flex: 1; display: flex; justify-content: center; width: 100%;
 }
 .workspace {
-  width: 100%; max-width: 860px; padding: 32px 24px 120px 24px;
+  width: 100%; max-width: 860px; padding: 32px 24px 80px 24px;
   display: flex; flex-direction: column; gap: 20px;
 }
 
 @media (max-width: 640px) {
-  .workspace { padding: 16px 16px 120px 16px; }
+  .workspace { padding: 20px 16px 80px 16px; }
   header { padding: 0 16px; }
   .brand { font-size: 18px; }
   .status-pill { display: none; }
@@ -141,7 +144,7 @@ header {
 .card {
   background: var(--surface); border-radius: var(--radius);
   border: 1px solid var(--border); box-shadow: var(--shadow);
-  overflow: hidden;
+  overflow: hidden; flex-shrink: 0;
 }
 .card-header {
   padding: 16px 20px; border-bottom: 1px solid var(--border);
@@ -278,7 +281,7 @@ label.field-label {
 }
 @keyframes progress-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-.divider { height: 1px; background: var(--border); }
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
 
 /* ── TOAST ── */
 .toast-container {
@@ -298,7 +301,7 @@ label.field-label {
 .toast-icon { font-size: 15px; }
 
 /* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius: 4px; }
 </style>
@@ -309,7 +312,6 @@ label.field-label {
 <header>
   <div class="brand">
     <span class="dsw-icon-styled">✨</span>
-    <!-- Teks ShifterAI disatukan dalam satu span agar flexbox tidak memberinya jarak -->
     <span class="brand-name">Shifter<span class="accent">AI</span></span>
     <span class="brand-sub">by DSW</span>
   </div>
@@ -332,17 +334,9 @@ label.field-label {
     <div class="page-header">
       <div class="page-title">Generator Draf Akademik</div>
       <div class="page-desc">
-        Unggah data riset Anda, berikan instruksi, dan biarkan AI menyusun naskah<br>
-        ilmiah yang siap diintegrasikan ke jurnal Anda.
+        Sistem akan otomatis menyusun draf saat data berhasil diekstrak.<br>
+        Isi kolom instruksi khusus jika Anda ingin merevisi atau menyesuaikan hasilnya.
       </div>
-    </div>
-
-    <div class="info-banner">
-      <span class="dsw-icon-styled">🔒</span>
-      <span>
-        Ekstraksi data dilakukan sepenuhnya di perangkat Anda (<strong>client-side</strong>).
-        File tidak pernah diunggah ke server web, hanya teks terstruktur yang dikirim ke API Gemini untuk disintesis.
-      </span>
     </div>
 
     <!-- CARD 1: Input -->
@@ -361,11 +355,11 @@ label.field-label {
           <div class="mode-chip" onclick="selectMode(this, 'abstract')" data-mode="abstract">📋 Abstract</div>
         </div>
 
-        <div class="divider" style="margin-bottom:16px;"></div>
+        <div class="divider"></div>
 
         <div class="input-grid">
           <div>
-            <label class="field-label">Lampiran Data (Mendukung semua format populer)</label>
+            <label class="field-label">Lampiran Data (Pemicu Otomatis)</label>
             <div class="dropzone" id="omniDropzone" onclick="document.getElementById('fileInput').click()">
               <input type="file" id="fileInput" accept=".csv,.tsv,.xlsx,.xls,.pdf,.docx,.txt,.fasta,.sav" onclick="event.stopPropagation()">
               <div class="dz-icon dsw-icon-styled" id="dzIcon">📂</div>
@@ -376,12 +370,12 @@ label.field-label {
 
           <div style="display:flex; flex-direction:column; gap:10px;">
             <div>
-              <label class="field-label" for="customPrompt">Instruksi Spesifik <span style="font-weight:400;color:var(--text3)">(opsional)</span></label>
+              <label class="field-label" for="customPrompt">Revisi Khusus <span style="font-weight:400;color:var(--text3)">(opsional)</span></label>
               <textarea id="customPrompt" class="prompt-textarea"
-                placeholder="Contoh: Fokuskan pembahasan pada pengaruh probiotik terhadap kelangsungan hidup. Sertakan interpretasi nilai p dan bandingkan dengan literatur terkini."></textarea>
+                placeholder="Jika hasil otomatis kurang sesuai, ketik instruksi tambahan di sini lalu klik tombol Perbarui..."></textarea>
             </div>
             <button id="btnGenerate" class="btn btn-primary" style="width:100%; padding:11px;" onclick="startAnalysis()" disabled>
-              <span class="dsw-icon-styled">✨</span> Mulai Sintesis AI
+              <span class="dsw-icon-styled">✨</span> Perbarui Naskah
             </button>
           </div>
         </div>
@@ -396,11 +390,11 @@ label.field-label {
       </div>
     </div>
 
-    <!-- CARD 2: Output -->
+    <!-- CARD 2: Output (Akan muncul di bawah Card 1 dan terus tumbuh ke bawah) -->
     <div class="card output-card" id="outputCard">
       <div class="output-topbar">
         <div class="output-meta">
-          <span class="badge" id="badgeTopic">Memproses…</span>
+          <span class="badge" id="badgeTopic">Sistem Bersiaga…</span>
           <span class="output-type-label" id="badgeSection">Results and Discussion</span>
         </div>
         <div style="display:flex;gap:8px;">
@@ -408,7 +402,7 @@ label.field-label {
             <span class="dsw-icon-styled">📋</span> Salin Teks
           </button>
           <button class="btn btn-outline btn-sm" onclick="resetAll()">
-            <span class="dsw-icon-styled">🔄</span> Reset
+            <span class="dsw-icon-styled">🔄</span> Reset File
           </button>
         </div>
       </div>
@@ -594,7 +588,13 @@ function onExtractionComplete(data, sub) {
   setDropzoneState('ready', pendingFileName, sub);
   document.getElementById('btnGenerate').disabled = false;
   hideProgress();
-  toast('File terlampir. Tulis instruksi lalu klik Mulai Sintesis.');
+  
+  toast('Data siap! Memulai sintesis AI otomatis...', 'info');
+  
+  // PEMICU OTOMATIS: Memanggil Gemini langsung setelah file siap
+  setTimeout(() => {
+    startAnalysis();
+  }, 500);
 }
 
 function resetAll() {
@@ -613,8 +613,9 @@ async function startAnalysis() {
   const outputCard = document.getElementById('outputCard');
   outputCard.classList.add('visible');
   
+  // Karena body sudah menggunakan scroll normal, ini akan menggulir layar dengan sangat mulus
   setTimeout(() => {
-    outputCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    outputCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, 100);
 
   const sectionLabels = {
@@ -624,10 +625,9 @@ async function startAnalysis() {
     abstract:   'Abstract',
   };
   document.getElementById('badgeSection').textContent = sectionLabels[selectedMode];
-  document.getElementById('aiManuskripArea').textContent = 'Sistem AI sedang menyusun naskah…';
+  document.getElementById('aiManuskripArea').innerHTML = '<span class="dsw-icon-styled">✨</span> AI sedang menyusun naskah akademik (Mohon tunggu)...';
   document.getElementById('aiManuskripArea').classList.remove('ai-typing');
 
-  showProgress('Mengirim data ke AI…', 80);
   document.getElementById('btnGenerate').disabled = true;
 
   try {
@@ -646,16 +646,15 @@ async function startAnalysis() {
         summary += `${col}: n=${vals.length}, mean=${mean.toFixed(3)}, SD=${sd.toFixed(3)}, min=${min}, max=${max}\n`;
       });
 
-      document.getElementById('badgeTopic').textContent = 'Analisis Matriks Kuantitatif';
+      document.getElementById('badgeTopic').textContent = 'Sintesis Matriks Data';
       callGeminiAPI(summary);
     } else {
-      document.getElementById('badgeTopic').textContent = 'Sintesis Data Literatur/Sekuens';
+      document.getElementById('badgeTopic').textContent = 'Sintesis Literatur / Sekuens';
       callGeminiAPI(String(pendingData).slice(0, 12000));
     }
   } catch (err) {
     console.error(err);
     toast('Gagal menyusun ringkasan matriks data.', 'error');
-    hideProgress();
     document.getElementById('btnGenerate').disabled = false;
   }
 }
@@ -693,16 +692,14 @@ ${content}
     const data = await response.json();
     if (data.error) throw new Error(data.error);
 
-    hideProgress();
     document.getElementById('btnGenerate').disabled = false;
 
     const cleanText = data.result.replace(/\*\*/g, '');
     typeEffect('aiManuskripArea', cleanText, 5);
-    toast('Naskah berhasil dibuat!');
+    toast('Sintesis selesai!');
 
   } catch (err) {
     console.error(err);
-    hideProgress();
     document.getElementById('btnGenerate').disabled = false;
     document.getElementById('aiManuskripArea').textContent =
       `⚠️ Gagal menghubungi server AI: ${err.message}\n\nPastikan Vercel proxy aktif dan API key sudah dikonfigurasi.`;
