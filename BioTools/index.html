@@ -182,6 +182,58 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 /* SSR Filter active state */
 .ssr-filter-btn.active-filter { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
 
+/* ===== FASTA UPLOADER COMPONENT ===== */
+.fasta-uploader {
+  margin-bottom: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.fasta-uploader-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 12px;
+  background: var(--surface-hover);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px; font-weight: 700; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.fasta-drop-zone {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--surface);
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+.fasta-drop-zone:hover { background: var(--primary-light); }
+.fasta-drop-zone.dragover { background: var(--primary-light); border-color: var(--primary); }
+.fasta-drop-icon { font-size: 22px; flex-shrink: 0; }
+.fasta-drop-text { flex: 1; }
+.fasta-drop-text strong { font-size: 13px; color: var(--text); display: block; }
+.fasta-drop-text span { font-size: 11px; color: var(--text3); }
+.fasta-file-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.fasta-file-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 20px;
+  background: var(--success-light); color: var(--success);
+  font-size: 11px; font-weight: 700; border: 1px solid var(--success);
+  white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis;
+}
+.fasta-file-badge.warn { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
+.fasta-progress-wrap {
+  height: 3px; background: var(--border); display: none;
+}
+.fasta-progress-bar {
+  height: 100%; width: 0%; background: var(--primary);
+  transition: width 0.1s linear;
+}
+.fasta-stats-row {
+  display: flex; gap: 10px; padding: 6px 14px;
+  background: var(--bg); border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text3); flex-wrap: wrap;
+}
+.fasta-stats-row b { color: var(--primary); }
+
 @media (max-width: 768px) {
   .main-container { flex-direction: column; }
   .sidebar { width: 100%; height: auto; flex-direction: row; padding: 10px 15px; border-right: none; border-bottom: 1px solid var(--border); overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
@@ -256,6 +308,17 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
           <strong>Format Input:</strong> Jika input berupa <strong>TEKS</strong> (misal nama spesies), sistem akan melakukan pencarian database (E-Search). Jika input berupa <strong>SEKUENS DNA (>20bp)</strong>, sistem otomatis memanggil server NCBI QBlast.
       </div>
       <div class="card">
+        <div class="fasta-uploader" id="fu-blast">
+          <div class="fasta-uploader-header">📂 Unggah File FASTA / TXT (opsional)</div>
+          <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-blast')" ondragleave="fuDragLeave('fu-blast')" ondrop="fuDrop(event,'queryInput','fu-blast')">
+            <span class="fasta-drop-icon">📄</span>
+            <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .fna · .txt · .seq — Maks 50 MB</span></div>
+            <span class="fasta-file-badge" id="fu-blast-badge" style="display:none;"></span>
+            <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq" onchange="fuRead(this,'queryInput','fu-blast')">
+          </div>
+          <div class="fasta-progress-wrap" id="fu-blast-prog"><div class="fasta-progress-bar" id="fu-blast-bar"></div></div>
+          <div class="fasta-stats-row" id="fu-blast-stats" style="display:none;"></div>
+        </div>
         <div class="form-group"><label>Kata Kunci Spesies ATAU Sekuens Target DNA</label><textarea id="queryInput" class="form-control" placeholder="Contoh: Poecilia reticulata COI (ATAU) ATGCGTACGTAGCTA..."></textarea></div>
         <div class="grid-2" style="margin-top: 15px;">
           <div class="form-group">
@@ -290,6 +353,17 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       </div>
       <div class="grid-2">
         <div class="card">
+          <div class="fasta-uploader" id="fu-manip">
+            <div class="fasta-uploader-header">📂 Unggah File FASTA / TXT (opsional)</div>
+            <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-manip')" ondragleave="fuDragLeave('fu-manip')" ondrop="fuDrop(event,'rawSeq','fu-manip')">
+              <span class="fasta-drop-icon">📄</span>
+              <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .fna · .txt — Single sekuens direkomendasikan</span></div>
+              <span class="fasta-file-badge" id="fu-manip-badge" style="display:none;"></span>
+              <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq" onchange="fuRead(this,'rawSeq','fu-manip',true)">
+            </div>
+            <div class="fasta-progress-wrap" id="fu-manip-prog"><div class="fasta-progress-bar" id="fu-manip-bar"></div></div>
+            <div class="fasta-stats-row" id="fu-manip-stats" style="display:none;"></div>
+          </div>
           <div class="form-group"><label>Input DNA</label><textarea id="rawSeq" class="form-control" oninput="liveSeqStats()"></textarea></div>
           <div style="display:flex; gap:10px; margin: 15px 0;">
             <div class="stat-box"><div class="stat-label">Panjang (bp)</div><div class="stat-value" id="statLen">0</div></div>
@@ -321,9 +395,31 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       <div class="info-box info">Algoritma penjajaran ini disertai perhitungan <strong>Sequence Identity and Similarity (SIAS)</strong>. Batas rekomendasi input adalah 3000 bp per sekuens agar RAM browser bekerja optimal.</div>
       <div class="grid-2">
         <div class="card">
+          <div class="fasta-uploader" id="fu-pw-a">
+            <div class="fasta-uploader-header">📂 Unggah Sekuens A</div>
+            <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-pw-a')" ondragleave="fuDragLeave('fu-pw-a')" ondrop="fuDrop(event,'alignSeqA','fu-pw-a',true)">
+              <span class="fasta-drop-icon">📄</span>
+              <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .txt — Sekuens pertama (Query)</span></div>
+              <span class="fasta-file-badge" id="fu-pw-a-badge" style="display:none;"></span>
+              <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq" onchange="fuRead(this,'alignSeqA','fu-pw-a',true)">
+            </div>
+            <div class="fasta-progress-wrap" id="fu-pw-a-prog"><div class="fasta-progress-bar" id="fu-pw-a-bar"></div></div>
+            <div class="fasta-stats-row" id="fu-pw-a-stats" style="display:none;"></div>
+          </div>
           <div class="form-group"><label>Sekuens A (Query)</label><textarea id="alignSeqA" class="form-control" placeholder="ATGC..."></textarea></div>
         </div>
         <div class="card">
+          <div class="fasta-uploader" id="fu-pw-b">
+            <div class="fasta-uploader-header">📂 Unggah Sekuens B</div>
+            <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-pw-b')" ondragleave="fuDragLeave('fu-pw-b')" ondrop="fuDrop(event,'alignSeqB','fu-pw-b',true)">
+              <span class="fasta-drop-icon">📄</span>
+              <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .txt — Sekuens kedua (Subject)</span></div>
+              <span class="fasta-file-badge" id="fu-pw-b-badge" style="display:none;"></span>
+              <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq" onchange="fuRead(this,'alignSeqB','fu-pw-b',true)">
+            </div>
+            <div class="fasta-progress-wrap" id="fu-pw-b-prog"><div class="fasta-progress-bar" id="fu-pw-b-bar"></div></div>
+            <div class="fasta-stats-row" id="fu-pw-b-stats" style="display:none;"></div>
+          </div>
           <div class="form-group"><label>Sekuens B (Subject)</label><textarea id="alignSeqB" class="form-control" placeholder="ATGC..."></textarea></div>
         </div>
       </div>
@@ -349,6 +445,17 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       </div>
       <div class="info-box info">Algoritma mengeksekusi iterasi matriks <em>Needleman-Wunsch</em> pada sekumpulan sekuens FASTA untuk membangun blok penjajaran murni secara <em>client-side</em>. (Maksimal 20 Sekuens).</div>
       <div class="card">
+        <div class="fasta-uploader" id="fu-msa">
+          <div class="fasta-uploader-header">📂 Unggah File Multi-FASTA</div>
+          <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-msa')" ondragleave="fuDragLeave('fu-msa')" ondrop="fuDrop(event,'msaInput','fu-msa')">
+            <span class="fasta-drop-icon">📄</span>
+            <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .fna — Multi-FASTA, maks 20 sekuens</span></div>
+            <span class="fasta-file-badge" id="fu-msa-badge" style="display:none;"></span>
+            <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq" onchange="fuRead(this,'msaInput','fu-msa')">
+          </div>
+          <div class="fasta-progress-wrap" id="fu-msa-prog"><div class="fasta-progress-bar" id="fu-msa-bar"></div></div>
+          <div class="fasta-stats-row" id="fu-msa-stats" style="display:none;"></div>
+        </div>
         <label style="font-weight:bold; font-size:12px; margin-bottom:10px; display:block;">Masukkan Sekuens (Multi-FASTA)</label>
         <textarea id="msaInput" class="form-control" style="min-height:150px; font-family:var(--font-mono);" placeholder=">Seq1&#10;ATGC...&#10;>Seq2&#10;ATGC..."></textarea>
         <button class="btn btn-primary" style="margin-top:15px;" onclick="runMSA()"><span class="dsw-icon-styled">🧬</span> Jalankan MSA</button>
@@ -376,6 +483,17 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       </div>
       <div class="info-box info">Masukkan sekuens Asam Amino (format protein satu huruf). Algoritma menghitung estimasi pI menggunakan nilai pK EMBOSS dan berat molekul isotop rata-rata.</div>
       <div class="card">
+        <div class="fasta-uploader" id="fu-prot">
+          <div class="fasta-uploader-header">📂 Unggah File Protein (FASTA / TXT)</div>
+          <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-prot')" ondragleave="fuDragLeave('fu-prot')" ondrop="fuDrop(event,'proteinInput','fu-prot',true)">
+            <span class="fasta-drop-icon">🧬</span>
+            <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .txt — Sekuens asam amino satu huruf</span></div>
+            <span class="fasta-file-badge" id="fu-prot-badge" style="display:none;"></span>
+            <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq" onchange="fuRead(this,'proteinInput','fu-prot',true)">
+          </div>
+          <div class="fasta-progress-wrap" id="fu-prot-prog"><div class="fasta-progress-bar" id="fu-prot-bar"></div></div>
+          <div class="fasta-stats-row" id="fu-prot-stats" style="display:none;"></div>
+        </div>
         <div class="form-group">
           <label>Sekuens Protein / Peptida</label>
           <textarea id="proteinInput" class="form-control" style="min-height:120px;" placeholder="Cth: MGLSDGEWQLVLNVWGKVEADIPGHGQEVLIRLFKGHPET..."></textarea>
@@ -407,6 +525,17 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
         </div>
       </div>
       <div class="card">
+        <div class="fasta-uploader" id="fu-orf">
+          <div class="fasta-uploader-header">📂 Unggah File Sekuens Genomik</div>
+          <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-orf')" ondragleave="fuDragLeave('fu-orf')" ondrop="fuDrop(event,'orfInput','fu-orf',true)">
+            <span class="fasta-drop-icon">📄</span>
+            <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .fna · .txt — DNA genomik, maks 200 KB direkomendasikan</span></div>
+            <span class="fasta-file-badge" id="fu-orf-badge" style="display:none;"></span>
+            <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq" onchange="fuRead(this,'orfInput','fu-orf',true)">
+          </div>
+          <div class="fasta-progress-wrap" id="fu-orf-prog"><div class="fasta-progress-bar" id="fu-orf-bar"></div></div>
+          <div class="fasta-stats-row" id="fu-orf-stats" style="display:none;"></div>
+        </div>
         <div class="form-group">
           <label>Sekuens Genom Mentah (DNA)</label>
           <textarea id="orfInput" class="form-control" style="min-height:100px;" placeholder="Tempelkan data sekuens dari alat sekuensing di sini..."></textarea>
@@ -434,6 +563,17 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       </div>
       <div class="info-box info">Terintegrasi dengan pustaka situs pengenalan enzim restriksi utama dari standar klasifikasi kloning <strong>New England Biolabs (NEB)</strong>.</div>
       <div class="card">
+        <div class="fasta-uploader" id="fu-digest">
+          <div class="fasta-uploader-header">📂 Unggah File Sekuens DNA</div>
+          <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-digest')" ondragleave="fuDragLeave('fu-digest')" ondrop="fuDrop(event,'digestInput','fu-digest',true)">
+            <span class="fasta-drop-icon">📄</span>
+            <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .txt — Plasmid atau gen target</span></div>
+            <span class="fasta-file-badge" id="fu-digest-badge" style="display:none;"></span>
+            <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq" onchange="fuRead(this,'digestInput','fu-digest',true)">
+          </div>
+          <div class="fasta-progress-wrap" id="fu-digest-prog"><div class="fasta-progress-bar" id="fu-digest-bar"></div></div>
+          <div class="fasta-stats-row" id="fu-digest-stats" style="display:none;"></div>
+        </div>
         <div class="form-group">
           <label>Sekuens DNA (Plasmid/Gen Target)</label>
           <textarea id="digestInput" class="form-control" style="min-height:100px;"></textarea>
@@ -469,7 +609,18 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       </div>
       <div class="info-box info">Maksimal 20 Sekuens untuk menjaga stabilitas RAM browser Anda. Semakin besar nilai Bootstrap, semakin lama proses komputasinya.</div>
       <div class="card">
-        <label style="font-weight:bold; font-size:12px; display:block;">Masukkan Sekuens (Multi-FASTA)</label>
+        <div class="fasta-uploader" id="fu-phylo">
+          <div class="fasta-uploader-header">📂 Unggah File Multi-FASTA</div>
+          <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-phylo')" ondragleave="fuDragLeave('fu-phylo')" ondrop="fuDrop(event,'fastaInput','fu-phylo')">
+            <span class="fasta-drop-icon">📄</span>
+            <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .fna · .txt — Multi-FASTA, maks 20 isolat</span></div>
+            <span class="fasta-file-badge" id="fu-phylo-badge" style="display:none;"></span>
+            <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq" onchange="fuRead(this,'fastaInput','fu-phylo')">
+          </div>
+          <div class="fasta-progress-wrap" id="fu-phylo-prog"><div class="fasta-progress-bar" id="fu-phylo-bar"></div></div>
+          <div class="fasta-stats-row" id="fu-phylo-stats" style="display:none;"></div>
+        </div>
+        <label style="font-weight:bold; font-size:12px; display:block; margin-top:10px;">Masukkan Sekuens (Multi-FASTA)</label>
         <textarea id="fastaInput" class="form-control" style="min-height:150px; font-family:var(--font-mono); margin-bottom:15px;" placeholder=">Isolat_A&#10;ATGCGTAGC..."></textarea>
         
         <div style="display:flex; gap:15px; align-items:center;">
@@ -600,6 +751,17 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
             <button class="btn btn-outline btn-sm" onclick="loadSampleBioTools('primer-auto')"><span class="dsw-icon-styled">📝</span> Isi Data Sampel</button>
         </div>
         <div class="card">
+          <div class="fasta-uploader" id="fu-primer-auto">
+            <div class="fasta-uploader-header">📂 Unggah File Gen Target</div>
+            <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-primer-auto')" ondragleave="fuDragLeave('fu-primer-auto')" ondrop="fuDrop(event,'targetGen','fu-primer-auto',true)">
+              <span class="fasta-drop-icon">📄</span>
+              <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .txt — Sekuens gen target single, min 150 bp</span></div>
+              <span class="fasta-file-badge" id="fu-primer-auto-badge" style="display:none;"></span>
+              <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq" onchange="fuRead(this,'targetGen','fu-primer-auto',true)">
+            </div>
+            <div class="fasta-progress-wrap" id="fu-primer-auto-prog"><div class="fasta-progress-bar" id="fu-primer-auto-bar"></div></div>
+            <div class="fasta-stats-row" id="fu-primer-auto-stats" style="display:none;"></div>
+          </div>
           <div class="form-group"><label>Sekuens Gen Target DNA (Minimal 150 bp)</label><textarea id="targetGen" class="form-control" style="min-height:100px;"></textarea></div>
           <button class="btn btn-primary" onclick="generatePrimers()"><span class="dsw-icon-styled">🧬</span> Hasilkan Pasangan Optimal</button>
         </div>
@@ -636,9 +798,20 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       <div class="grid-2">
         <div class="card" style="margin-bottom:0;">
           <div class="card-title">🧬 Input Sekuens (FASTA / Raw DNA)</div>
-          <div class="form-group">
-            <label>Tempel Sekuens (Single atau Multi-FASTA)</label>
-            <textarea id="ssrInput" class="form-control" style="min-height:130px;" placeholder=">Sequence_1&#10;ATGCGATCGATCGATCG..."></textarea>
+          <div class="fasta-uploader" id="fu-ssr">
+            <div class="fasta-uploader-header">📂 Unggah File FASTA / WGS Scaffold</div>
+            <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-ssr')" ondragleave="fuDragLeave('fu-ssr')" ondrop="fuDrop(event,'ssrInput','fu-ssr')">
+              <span class="fasta-drop-icon">🧩</span>
+              <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .fna · .txt — Single/Multi-FASTA, WGS scaffold diperbolehkan</span></div>
+              <span class="fasta-file-badge" id="fu-ssr-badge" style="display:none;"></span>
+              <input class="fasta-file-input" type="file" accept=".fasta,.fa,.fna,.txt,.seq,.gz" onchange="fuRead(this,'ssrInput','fu-ssr')">
+            </div>
+            <div class="fasta-progress-wrap" id="fu-ssr-prog"><div class="fasta-progress-bar" id="fu-ssr-bar"></div></div>
+            <div class="fasta-stats-row" id="fu-ssr-stats" style="display:none;"></div>
+          </div>
+          <div class="form-group" style="margin-top:10px;">
+            <label>Atau Tempel Sekuens (Single atau Multi-FASTA)</label>
+            <textarea id="ssrInput" class="form-control" style="min-height:100px;" placeholder=">Sequence_1&#10;ATGCGATCGATCGATCG..."></textarea>
           </div>
         </div>
         <div class="card" style="margin-bottom:0;">
@@ -857,6 +1030,10 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       </div>
 
       <div class="about-section" id="sec-log">
+        <div class="changelog-item">
+          <b>Versi 8.0 - Universal FASTA File Upload</b><br>
+          Penambahan komponen <em>FASTA File Uploader</em> di semua modul (BLAST, Manipulasi, Pairwise, MSA, Protein, ORF, Restriction Mapper, Filogenetik, Desain Primer, SSR). Mendukung drag-and-drop, progress bar chunked reading hingga 50 MB, statistik ringkas (jumlah sekuens, total bp), badge peringatan file besar, dan validasi format otomatis.
+        </div>
         <div class="changelog-item">
           <b>Versi 7.0 - SSR / Mikrosatelit Finder</b><br>
           Penambahan modul <em>SSR / Microsatellite Finder</em> terinspirasi KRAIT &amp; MISA. Fitur: deteksi Mono–Hexa SSR, motif kanonikal, statistik densitas &amp; coverage genomik, visualisasi distribusi (pie, histogram, peta posisi), tabel primer flanking, dan ekspor CSV.
@@ -1663,6 +1840,155 @@ function generatePrimers() {
         });
     }
     document.getElementById('autoPrimerResultContainer').style.display = 'block';
+}
+
+// ===================================================================
+// FASTA FILE UPLOADER ENGINE — Universal for all modules
+// ===================================================================
+
+const FU_SIZE_WARN  = 5  * 1024 * 1024;  // 5 MB → show warning
+const FU_SIZE_LIMIT = 50 * 1024 * 1024;  // 50 MB → hard limit
+
+// Drag-and-drop helpers
+function fuDragOver(e, fuId) {
+    e.preventDefault();
+    document.querySelector(`#${fuId} .fasta-drop-zone`).classList.add('dragover');
+}
+function fuDragLeave(fuId) {
+    document.querySelector(`#${fuId} .fasta-drop-zone`).classList.remove('dragover');
+}
+function fuDrop(e, targetId, fuId, firstSeqOnly) {
+    e.preventDefault();
+    fuDragLeave(fuId);
+    const file = e.dataTransfer.files[0];
+    if (file) fuProcess(file, targetId, fuId, firstSeqOnly);
+}
+
+// Triggered by <input type="file">
+function fuRead(input, targetId, fuId, firstSeqOnly) {
+    const file = input.files[0];
+    if (file) fuProcess(file, targetId, fuId, firstSeqOnly);
+}
+
+// Core processing function — chunked FileReader with progress bar
+function fuProcess(file, targetId, fuId, firstSeqOnly) {
+    const badgeEl  = document.getElementById(`${fuId}-badge`);
+    const progWrap = document.getElementById(`${fuId}-prog`);
+    const progBar  = document.getElementById(`${fuId}-bar`);
+    const statsEl  = document.getElementById(`${fuId}-stats`);
+
+    // Validate size
+    if (file.size > FU_SIZE_LIMIT) {
+        fuSetBadge(badgeEl, `⚠ File terlalu besar (${(file.size/1048576).toFixed(1)} MB > 50 MB)`, true);
+        toast(`File terlalu besar. Maks 50 MB. Gunakan subsekuens.`);
+        return;
+    }
+
+    // Show progress bar
+    progWrap.style.display = 'block';
+    progBar.style.width = '0%';
+    statsEl.style.display = 'none';
+    badgeEl.style.display = 'none';
+
+    const CHUNK = 2 * 1024 * 1024; // 2 MB chunks
+    let offset = 0;
+    let rawText = '';
+
+    function readChunk() {
+        const slice = file.slice(offset, offset + CHUNK);
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            rawText += e.target.result;
+            offset += CHUNK;
+            const pct = Math.min(100, Math.round(offset / file.size * 100));
+            progBar.style.width = pct + '%';
+
+            if (offset < file.size) {
+                readChunk(); // next chunk
+            } else {
+                // Done reading — process content
+                progBar.style.width = '100%';
+                setTimeout(() => { progWrap.style.display = 'none'; progBar.style.width = '0%'; }, 600);
+
+                const content = fuParseContent(rawText, firstSeqOnly);
+                document.getElementById(targetId).value = content.text;
+
+                // Trigger live listeners if present
+                const ta = document.getElementById(targetId);
+                ta.dispatchEvent(new Event('input', { bubbles: true }));
+
+                // Stats row
+                fuSetBadge(badgeEl, `✓ ${file.name} (${(file.size/1024).toFixed(1)} KB)`, file.size > FU_SIZE_WARN);
+                statsEl.style.display = 'flex';
+                statsEl.innerHTML = fuBuildStats(content, file);
+
+                if (file.size > FU_SIZE_WARN) {
+                    toast(`⚠ File besar (${(file.size/1048576).toFixed(1)} MB) — proses mungkin membutuhkan waktu lebih lama.`);
+                } else {
+                    toast(`✓ ${file.name} berhasil dimuat — ${content.seqCount} sekuens, ${content.totalBp.toLocaleString()} bp`);
+                }
+            }
+        };
+        reader.readAsText(slice);
+    }
+
+    readChunk();
+}
+
+// Parse FASTA raw text → clean output for textarea
+function fuParseContent(raw, firstSeqOnly) {
+    raw = raw.trim();
+    let seqCount = 0, totalBp = 0, text = '';
+
+    if (raw.startsWith('>')) {
+        // Multi-FASTA
+        const entries = raw.split(/(?=^>)/m).filter(e => e.trim());
+        seqCount = entries.length;
+
+        const toProcess = firstSeqOnly ? [entries[0]] : entries;
+        const processed = toProcess.map(entry => {
+            const lines = entry.trim().split('\n');
+            const header = lines[0].trim();
+            const seq = lines.slice(1).join('').replace(/\s/g, '').toUpperCase();
+            totalBp += seq.length;
+            return header + '\n' + seq;
+        });
+        text = processed.join('\n');
+
+        if (firstSeqOnly && entries.length > 1) {
+            text += `\n\n; ⚠ Modul ini hanya menggunakan sekuens pertama dari ${entries.length} entri.`;
+        }
+    } else {
+        // Raw DNA / plain text
+        const seq = raw.replace(/\s/g, '').toUpperCase().replace(/[^ATCGN]/g, '');
+        text = seq;
+        totalBp = seq.length;
+        seqCount = 1;
+    }
+
+    return { text, seqCount, totalBp };
+}
+
+// Build stats row HTML
+function fuBuildStats({ seqCount, totalBp }, file) {
+    const sizeStr = file.size >= 1048576 ? `${(file.size/1048576).toFixed(2)} MB` : `${(file.size/1024).toFixed(1)} KB`;
+    const warnTag = file.size > FU_SIZE_WARN
+        ? `<span style="color:var(--warning); font-weight:700;">⚠ File besar — analisis mungkin lambat</span>`
+        : `<span style="color:var(--success); font-weight:700;">✓ Siap dianalisis</span>`;
+    return `
+        <span>📄 <b>${file.name}</b></span>
+        <span>Ukuran: <b>${sizeStr}</b></span>
+        <span>Sekuens: <b>${seqCount}</b></span>
+        <span>Total bp: <b>${totalBp.toLocaleString()}</b></span>
+        ${warnTag}
+    `;
+}
+
+// Set badge text + color
+function fuSetBadge(el, text, isWarn) {
+    el.style.display = 'inline-flex';
+    el.textContent = text;
+    el.className = 'fasta-file-badge' + (isWarn ? ' warn' : '');
 }
 
 switchView('v-blast', document.querySelector('.menu-item.active'));
