@@ -47,23 +47,14 @@
 
 /* ── SCROLL FIX & RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-/* Menghapus overflow:hidden agar body dapat melakukan scroll alami ke bawah */
-html, body {
-  min-height: 100vh;
-}
+html, body { min-height: 100vh; }
 body {
   font-family: var(--font-sans); background: var(--bg); color: var(--text);
-  display: flex; flex-direction: column; 
-  overflow-y: auto; overflow-x: hidden;
+  display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden;
   font-size: 14px; transition: background 0.3s, color 0.3s;
 }
 
-/* ── EMOJI ICON STYLE ── */
-.dsw-icon-styled {
-  display: inline-block; vertical-align: middle;
-  transition: filter 0.3s;
-}
+.dsw-icon-styled { display: inline-block; vertical-align: middle; transition: filter 0.3s; }
 [data-theme="dark"] .dsw-icon-styled { filter: drop-shadow(0 0 2px rgba(56,189,248,0.5)); }
 
 /* ── STICKY HEADER ── */
@@ -71,8 +62,7 @@ header {
   background: var(--surface); padding: 0 24px; height: 64px;
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid var(--border); flex-shrink: 0;
-  position: sticky; top: 0; z-index: 50; /* Memastikan header tetap di atas saat di-scroll */
-  box-shadow: var(--shadow); transition: background 0.3s;
+  position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow); transition: background 0.3s;
 }
 .brand {
   font-family: var(--font-serif); font-size: 22px; font-weight: 600;
@@ -80,11 +70,8 @@ header {
 }
 .brand-name { display: inline-flex; }
 .brand span.accent { color: var(--primary); }
-.brand-sub {
-  font-family: var(--font-sans); font-size: 11px; font-weight: 400;
-  color: var(--text3); margin-left: 2px;
-}
-.header-actions { display: flex; gap: 10px; align-items: center; }
+.brand-sub { font-family: var(--font-sans); font-size: 11px; font-weight: 400; color: var(--text3); margin-left: 2px; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
 
 /* ── BUTTONS ── */
 .btn {
@@ -98,92 +85,59 @@ header {
 .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn-outline { background: transparent; border-color: var(--border); color: var(--text2); }
 .btn-outline:hover { background: var(--surface-hover); color: var(--text); }
-.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-sm { padding: 6px 10px; font-size: 12px; }
 
 /* ── LAYOUT ── */
-.main-container {
-  flex: 1; display: flex; justify-content: center; width: 100%;
-}
-.workspace {
-  width: 100%; max-width: 860px; padding: 32px 24px 80px 24px;
-  display: flex; flex-direction: column; gap: 20px;
-}
-
+.main-container { flex: 1; display: flex; justify-content: center; width: 100%; }
+.workspace { width: 100%; max-width: 860px; padding: 32px 24px 80px 24px; display: flex; flex-direction: column; gap: 20px; }
 @media (max-width: 640px) {
   .workspace { padding: 20px 16px 80px 16px; }
   header { padding: 0 16px; }
   .brand { font-size: 18px; }
   .status-pill { display: none; }
+  .btn-text-hide { display: none; }
 }
 
 /* ── PAGE HEADER ── */
-.page-header { text-align: center; margin-bottom: 4px; }
-.page-title {
-  font-family: var(--font-serif); font-size: 26px; font-weight: 500;
-  color: var(--text); letter-spacing: -0.3px;
+.page-header { text-align: center; margin-bottom: 8px; }
+.page-title { font-family: var(--font-serif); font-size: 26px; font-weight: 500; color: var(--text); letter-spacing: -0.3px; }
+
+/* PENYESUAIAN TAGLINE ACRONYM */
+.page-tagline { 
+  font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--text3); 
+  letter-spacing: 0.5px; margin: 8px 0 12px 0; text-transform: uppercase; 
 }
-.page-desc { font-size: 13px; color: var(--text3); margin-top: 6px; line-height: 1.5; }
+.page-tagline .hl { color: var(--primary); font-weight: 700; }
+
+.page-desc { font-size: 13px; color: var(--text3); line-height: 1.6; }
 
 /* ── STATUS PILL ── */
 .status-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--font-mono); font-size: 11px; font-weight: 500;
-  padding: 5px 12px; border-radius: 20px;
-  border: 1px solid var(--border); background: var(--surface-hover); color: var(--text3);
+  display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+  padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface-hover); color: var(--text3);
 }
-.status-pill.online {
-  border-color: var(--success); color: var(--success); background: var(--success-light);
-}
-.status-dot {
-  width: 7px; height: 7px; border-radius: 50%; background: currentColor;
-  animation: pulse-dot 2s infinite;
-}
+.status-pill.online { border-color: var(--success); color: var(--success); background: var(--success-light); }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse-dot 2s infinite; }
 @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
 /* ── CARD ── */
 .card {
-  background: var(--surface); border-radius: var(--radius);
-  border: 1px solid var(--border); box-shadow: var(--shadow);
-  overflow: hidden; flex-shrink: 0;
+  background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; flex-shrink: 0;
 }
-.card-header {
-  padding: 16px 20px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
-}
-.card-title {
-  font-size: 13px; font-weight: 600; color: var(--text2);
-  text-transform: uppercase; letter-spacing: 0.5px;
-  font-family: var(--font-mono);
-}
+.card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.card-title { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; font-family: var(--font-mono); }
 .card-body { padding: 20px; }
-.step-label {
-  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
-  color: var(--primary); background: var(--primary-light);
-  border: 1px solid var(--border); border-radius: 4px;
-  padding: 2px 8px; flex-shrink: 0;
-}
+.step-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--primary); background: var(--primary-light); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; flex-shrink: 0; }
 
 /* ── DROPZONE ── */
 .dropzone {
-  border: 2px dashed var(--border-focus); background: var(--surface-hover);
-  border-radius: var(--radius); padding: 28px 20px; text-align: center;
-  transition: all 0.25s; cursor: pointer; position: relative;
+  border: 2px dashed var(--border-focus); background: var(--surface-hover); border-radius: var(--radius); padding: 28px 20px; text-align: center; transition: all 0.25s; cursor: pointer; position: relative;
 }
-.dropzone:hover, .dropzone.dragover {
-  background: var(--primary-light); border-color: var(--primary);
-}
-.dropzone.ready {
-  border-color: var(--success); background: var(--success-light);
-  border-style: solid;
-}
-.dropzone input[type="file"] {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  opacity: 0; cursor: pointer;
-}
+.dropzone:hover, .dropzone.dragover { background: var(--primary-light); border-color: var(--primary); }
+.dropzone.ready { border-color: var(--success); background: var(--success-light); border-style: solid; }
+.dropzone input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 .dz-icon { font-size: 28px; margin-bottom: 8px; }
-.dz-title {
-  font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 4px;
-}
+.dz-title { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
 .dz-sub { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
 .dropzone.ready .dz-title { color: var(--success); }
 .dropzone.ready .dz-sub { color: var(--success); opacity: 0.8; }
@@ -194,113 +148,60 @@ header {
 
 /* ── TEXTAREA ── */
 .prompt-textarea {
-  width: 100%; min-height: 90px; padding: 12px 14px;
-  border: 1px solid var(--border); border-radius: 8px;
-  background: var(--bg); color: var(--text);
-  font-family: var(--font-sans); font-size: 13px;
-  resize: vertical; outline: none; line-height: 1.5;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%; min-height: 90px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 13px; resize: vertical; outline: none; line-height: 1.5; transition: border-color 0.2s, box-shadow 0.2s;
 }
-.prompt-textarea:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
-}
+.prompt-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
 .prompt-textarea::placeholder { color: var(--text3); }
-label.field-label {
-  display: block; font-size: 12px; font-weight: 600;
-  color: var(--text2); margin-bottom: 6px; font-family: var(--font-mono);
-}
+label.field-label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; font-family: var(--font-mono); }
 
 /* ── MODE SELECTOR ── */
 .mode-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
 .mode-chip {
-  padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600;
-  cursor: pointer; border: 1px solid var(--border); background: var(--surface-hover);
-  color: var(--text2); font-family: var(--font-mono); transition: all 0.15s;
+  padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--surface-hover); color: var(--text2); font-family: var(--font-mono); transition: all 0.15s;
 }
-.mode-chip.active {
-  background: var(--primary); border-color: var(--primary); color: #fff;
-}
+.mode-chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
 .mode-chip:hover:not(.active) { background: var(--border); }
 
 /* ── OUTPUT SECTION ── */
 .output-card { display: none; }
 .output-card.visible { display: block; }
-.output-topbar {
-  padding: 14px 20px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-}
+.output-topbar { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .output-meta { display: flex; align-items: center; gap: 10px; }
-.badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 3px 10px; border-radius: 5px;
-  font-size: 11px; font-weight: 600; font-family: var(--font-mono);
-  background: var(--primary-light); color: var(--info); border: 1px solid var(--border);
-}
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 5px; font-size: 11px; font-weight: 600; font-family: var(--font-mono); background: var(--primary-light); color: var(--info); border: 1px solid var(--border); }
 .output-type-label { font-size: 11px; color: var(--text3); font-family: var(--font-mono); display: inline-block;}
 @media (max-width: 480px) { .output-type-label { display: none; } }
 
 .manuscript-box {
-  padding: 24px; font-family: 'Times New Roman', Times, serif;
-  font-size: 16px; line-height: 1.85; color: var(--text);
-  text-align: justify; white-space: pre-wrap; min-height: 160px;
-  text-indent: 2em;
+  padding: 24px; font-family: 'Times New Roman', Times, serif; font-size: 16px; line-height: 1.85; color: var(--text); text-align: justify; white-space: pre-wrap; min-height: 160px; text-indent: 2em;
 }
-.manuscript-box.ai-typing {
-  border-right: 2px solid var(--primary);
-  animation: blink 0.75s step-end infinite;
-}
+.manuscript-box.ai-typing { border-right: 2px solid var(--primary); animation: blink 0.75s step-end infinite; }
 @keyframes blink { from, to { border-color: transparent } 50% { border-color: var(--primary); } }
 
 /* ── INFO BANNER ── */
-.info-banner {
-  display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px;
-  background: var(--info-light); border: 1px solid var(--primary-light);
-  border-radius: 8px; font-size: 12px; color: var(--info); line-height: 1.5;
-}
+.info-banner { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; background: var(--info-light); border: 1px solid var(--primary-light); border-radius: 8px; font-size: 12px; color: var(--info); line-height: 1.5; }
 .info-banner .dsw-icon-styled { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
 
 /* ── PROGRESS BAR ── */
 .progress-wrap { display: none; padding: 0 20px 16px; }
 .progress-wrap.visible { display: block; }
-.progress-label {
-  font-size: 11px; color: var(--text3); font-family: var(--font-mono);
-  margin-bottom: 6px;
-}
-.progress-bar-track {
-  height: 4px; background: var(--border); border-radius: 4px; overflow: hidden;
-}
+.progress-label { font-size: 11px; color: var(--text3); font-family: var(--font-mono); margin-bottom: 6px; }
+.progress-bar-track { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
 .progress-bar-fill {
-  height: 100%; background: var(--primary); border-radius: 4px;
-  width: 0%; transition: width 0.4s ease;
-  animation: progress-shimmer 1.5s infinite linear;
-  background-image: linear-gradient(
-    90deg, var(--primary) 25%, var(--primary-dark) 50%, var(--primary) 75%
-  );
-  background-size: 200% 100%;
+  height: 100%; background: var(--primary); border-radius: 4px; width: 0%; transition: width 0.4s ease; animation: progress-shimmer 1.5s infinite linear; background-image: linear-gradient(90deg, var(--primary) 25%, var(--primary-dark) 50%, var(--primary) 75%); background-size: 200% 100%;
 }
 @keyframes progress-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
 .divider { height: 1px; background: var(--border); margin: 16px 0; }
 
 /* ── TOAST ── */
-.toast-container {
-  position: fixed; bottom: 20px; right: 24px; z-index: 9999;
-  display: flex; flex-direction: column; gap: 8px; pointer-events: none;
-}
+.toast-container { position: fixed; bottom: 20px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
 .toast {
-  background: var(--surface); border: 1px solid var(--border);
-  padding: 12px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
-  display: flex; align-items: center; gap: 10px; pointer-events: all;
-  box-shadow: var(--shadow-md);
-  animation: toast-in 0.25s ease;
+  background: var(--surface); border: 1px solid var(--border); padding: 12px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 10px; pointer-events: all; box-shadow: var(--shadow-md); animation: toast-in 0.25s ease;
 }
 @keyframes toast-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
 .toast.hide { animation: toast-out 0.25s forwards; }
 @keyframes toast-out { to { opacity: 0; transform: translateX(16px); } }
 .toast-icon { font-size: 15px; }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius: 4px; }
@@ -320,9 +221,16 @@ label.field-label {
       <span class="status-dot"></span>
       <span id="engineLabel">Vercel Proxy · Gemini AI</span>
     </div>
-    <button class="btn btn-outline btn-sm" onclick="toggleTheme()">
+    
+    <!-- Language Toggle Button -->
+    <button class="btn btn-outline btn-sm" onclick="toggleLang()" id="langBtn" title="Ganti Bahasa Output">
+      <span class="dsw-icon-styled">🇮🇩</span>
+      <span class="btn-text btn-text-hide">ID</span>
+    </button>
+    
+    <!-- Theme Toggle Button -->
+    <button class="btn btn-outline btn-sm" onclick="toggleTheme()" title="Ganti Tema">
       <span class="dsw-icon-styled" id="themeIcon">☀️</span>
-      <span class="btn-text">Tema</span>
     </button>
   </div>
 </header>
@@ -333,9 +241,15 @@ label.field-label {
 
     <div class="page-header">
       <div class="page-title">Generator Draf Akademik</div>
+      
+      <!-- SHIFTER ACRONYM TAGLINE DENGAN HIGHLIGHT -->
+      <div class="page-tagline">
+        <span class="hl">SHIFTER</span> (<span class="hl">S</span>mart <span class="hl">H</span>euristic <span class="hl">I</span>nterpreter for <span class="hl">F</span>ormatting <span class="hl">T</span>ext &amp; <span class="hl">E</span>xperimental <span class="hl">R</span>esults)
+      </div>
+      
       <div class="page-desc">
         Sistem akan otomatis menyusun draf saat data berhasil diekstrak.<br>
-        Isi kolom instruksi khusus jika Anda ingin merevisi atau menyesuaikan hasilnya.
+        Isi kolom instruksi jika Anda ingin merevisi detail atau mengubah arah narasi.
       </div>
     </div>
 
@@ -349,10 +263,10 @@ label.field-label {
 
         <label class="field-label">Mode Penyusunan</label>
         <div class="mode-row">
-          <div class="mode-chip active" onclick="selectMode(this, 'results')" data-mode="results">📄 Results &amp; Discussion</div>
-          <div class="mode-chip" onclick="selectMode(this, 'intro')" data-mode="intro">📖 Introduction</div>
-          <div class="mode-chip" onclick="selectMode(this, 'conclusion')" data-mode="conclusion">✅ Conclusion</div>
-          <div class="mode-chip" onclick="selectMode(this, 'abstract')" data-mode="abstract">📋 Abstract</div>
+          <div class="mode-chip active" onclick="selectMode(this, 'results')" data-mode="results">📄 Hasil &amp; Pembahasan</div>
+          <div class="mode-chip" onclick="selectMode(this, 'intro')" data-mode="intro">📖 Pendahuluan</div>
+          <div class="mode-chip" onclick="selectMode(this, 'conclusion')" data-mode="conclusion">✅ Kesimpulan</div>
+          <div class="mode-chip" onclick="selectMode(this, 'abstract')" data-mode="abstract">📋 Abstrak</div>
         </div>
 
         <div class="divider"></div>
@@ -372,7 +286,7 @@ label.field-label {
             <div>
               <label class="field-label" for="customPrompt">Revisi Khusus <span style="font-weight:400;color:var(--text3)">(opsional)</span></label>
               <textarea id="customPrompt" class="prompt-textarea"
-                placeholder="Jika hasil otomatis kurang sesuai, ketik instruksi tambahan di sini lalu klik tombol Perbarui..."></textarea>
+                placeholder="Contoh: Fokuskan kesimpulan pada nilai p-value yang signifikan saja..."></textarea>
             </div>
             <button id="btnGenerate" class="btn btn-primary" style="width:100%; padding:11px;" onclick="startAnalysis()" disabled>
               <span class="dsw-icon-styled">✨</span> Perbarui Naskah
@@ -390,12 +304,12 @@ label.field-label {
       </div>
     </div>
 
-    <!-- CARD 2: Output (Akan muncul di bawah Card 1 dan terus tumbuh ke bawah) -->
+    <!-- CARD 2: Output -->
     <div class="card output-card" id="outputCard">
       <div class="output-topbar">
         <div class="output-meta">
           <span class="badge" id="badgeTopic">Sistem Bersiaga…</span>
-          <span class="output-type-label" id="badgeSection">Results and Discussion</span>
+          <span class="output-type-label" id="badgeSection">Hasil dan Pembahasan</span>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-outline btn-sm" onclick="copyText('aiManuskripArea')">
@@ -422,12 +336,22 @@ let pendingData     = null;
 let pendingExt      = '';
 let pendingFileName = '';
 let selectedMode    = 'results';
+let currentLang     = 'id'; // Default Language: Indonesia
 
 function toggleTheme() {
   const h = document.documentElement;
   const next = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   h.setAttribute('data-theme', next);
   document.getElementById('themeIcon').textContent = next === 'dark' ? '☀️' : '🌗';
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'id' ? 'en' : 'id';
+  const btn = document.getElementById('langBtn');
+  btn.innerHTML = currentLang === 'id' 
+    ? '<span class="dsw-icon-styled">🇮🇩</span> <span class="btn-text btn-text-hide">ID</span>' 
+    : '<span class="dsw-icon-styled">🇬🇧</span> <span class="btn-text btn-text-hide">EN</span>';
+  toast(currentLang === 'id' ? 'Bahasa Naskah: Indonesia' : 'Manuscript Language: English', 'info');
 }
 
 function toast(msg, type = 'success') {
@@ -471,10 +395,10 @@ function selectMode(el, mode) {
   el.classList.add('active');
   selectedMode = mode;
   const labels = {
-    results:    'Results and Discussion',
-    intro:      'Introduction',
-    conclusion: 'Conclusion',
-    abstract:   'Abstract',
+    results:    'Hasil dan Pembahasan',
+    intro:      'Pendahuluan',
+    conclusion: 'Kesimpulan',
+    abstract:   'Abstrak',
   };
   document.getElementById('badgeSection').textContent = labels[mode] || mode;
 }
@@ -591,10 +515,7 @@ function onExtractionComplete(data, sub) {
   
   toast('Data siap! Memulai sintesis AI otomatis...', 'info');
   
-  // PEMICU OTOMATIS: Memanggil Gemini langsung setelah file siap
-  setTimeout(() => {
-    startAnalysis();
-  }, 500);
+  setTimeout(() => { startAnalysis(); }, 500);
 }
 
 function resetAll() {
@@ -613,19 +534,19 @@ async function startAnalysis() {
   const outputCard = document.getElementById('outputCard');
   outputCard.classList.add('visible');
   
-  // Karena body sudah menggunakan scroll normal, ini akan menggulir layar dengan sangat mulus
   setTimeout(() => {
     outputCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, 100);
 
   const sectionLabels = {
-    results:    'Results and Discussion',
-    intro:      'Introduction',
-    conclusion: 'Conclusion',
-    abstract:   'Abstract',
+    results:    'Hasil dan Pembahasan',
+    intro:      'Pendahuluan',
+    conclusion: 'Kesimpulan',
+    abstract:   'Abstrak',
   };
+  
   document.getElementById('badgeSection').textContent = sectionLabels[selectedMode];
-  document.getElementById('aiManuskripArea').innerHTML = '<span class="dsw-icon-styled">✨</span> AI sedang menyusun naskah akademik (Mohon tunggu)...';
+  document.getElementById('aiManuskripArea').innerHTML = '<span class="dsw-icon-styled">✨</span> AI sedang menyusun naskah akademik...';
   document.getElementById('aiManuskripArea').classList.remove('ai-typing');
 
   document.getElementById('btnGenerate').disabled = true;
@@ -660,20 +581,46 @@ async function startAnalysis() {
 }
 
 async function callGeminiAPI(content) {
-  const sectionMap = {
-    results:    'Results and Discussion (Hasil dan Pembahasan)',
-    intro:      'Introduction (Pendahuluan)',
-    conclusion: 'Conclusion (Kesimpulan)',
-    abstract:   'Abstract (Abstrak)',
+  // PROMPT ENGINEERING KETAT BERDASARKAN MODE & BAHASA
+  const sectionRules = {
+    results: currentLang === 'id' 
+      ? 'Tulis 2-4 paragraf. Analisis data secara kritis, bandingkan antar variabel/perlakuan, dan jabarkan makna biologisnya secara mendalam.' 
+      : 'Write 2-4 paragraphs. Critically analyze the data, compare variables/treatments, and explain the deep biological meaning.',
+      
+    intro: currentLang === 'id' 
+      ? 'Tulis 2-3 paragraf. Susun latar belakang masalah yang kuat, kesenjangan penelitian (research gap), dan akhiri dengan tujuan utama dari data ini.' 
+      : 'Write 2-3 paragraphs. Build a strong background, highlight the research gap, and end with the main objective derived from this data.',
+      
+    conclusion: currentLang === 'id' 
+      ? 'Tulis HANYA 1 paragraf singkat dan tegas (maksimal 4-6 kalimat). Rangkum temuan utama yang menjawab tujuan, tanpa basa-basi, tanpa poin-poin.' 
+      : 'Write EXACTLY 1 concise and definitive paragraph (max 4-6 sentences). Summarize the main findings that answer the objective, no fluff, no bullet points.',
+      
+    abstract: currentLang === 'id' 
+      ? 'Tulis HANYA 1 paragraf (150-250 kata). Format terstruktur: 1 kalimat latar belakang, 1 kalimat tujuan, ringkasan metode/data, hasil utama beserta angka penting, dan 1 kalimat kesimpulan akhir.' 
+      : 'Write EXACTLY 1 paragraph (150-250 words). Structured format: 1 sentence background, 1 sentence objective, brief methods/data, key results with numbers, and 1 concluding sentence.'
   };
+
+  const sectionMap = {
+    results:    currentLang === 'id' ? 'Hasil dan Pembahasan' : 'Results and Discussion',
+    intro:      currentLang === 'id' ? 'Pendahuluan' : 'Introduction',
+    conclusion: currentLang === 'id' ? 'Kesimpulan' : 'Conclusion',
+    abstract:   currentLang === 'id' ? 'Abstrak' : 'Abstract'
+  };
+
+  const langInstruction = currentLang === 'id' ? 'berbahasa Indonesia yang sangat formal dan saintifik' : 'in highly formal and scientific English';
+
   const instruction = document.getElementById('customPrompt').value.trim();
   const extra = instruction
-    ? `\n\nINSTRUKSI KHUSUS DARI PENELITI:\n"${instruction}"\n(Patuhi instruksi ini dalam penyusunan naskah.)`
+    ? `\n\nINSTRUKSI KHUSUS DARI PENELITI:\n"${instruction}"\n(Patuhi instruksi khusus ini secara mutlak).`
     : '';
 
   const prompt = `Anda adalah asisten peneliti senior di bidang Akuakultur, Bioteknologi, dan Ekologi Perairan.
-Berdasarkan data dari file "${pendingFileName}" di bawah ini, susunlah 2–3 paragraf akademik yang merupakan bab "${sectionMap[selectedMode]}" berbahasa Indonesia yang sangat formal dan saintifik.
-Interpretasikan makna biologis/ekologis/teknis dari data secara komprehensif, jangan pernah membahas tentang proses web ekstraksi data.${extra}
+Tugas Anda adalah menulis draf bab "${sectionMap[selectedMode]}" untuk naskah jurnal akademik ${langInstruction}.
+
+ATURAN STRUKTUR (WAJIB DIPATUHI):
+${sectionRules[selectedMode]}
+
+TIDAK PERLU menuliskan judul bab (misal: "Kesimpulan:" atau "Abstract:"). Langsung tulis isi paragrafnya. Jangan pernah menyebutkan proses "ekstraksi data web" atau "berdasarkan data di atas".${extra}
 
 DATA/RINGKASAN DATA:
 """
@@ -694,6 +641,7 @@ ${content}
 
     document.getElementById('btnGenerate').disabled = false;
 
+    // Menghilangkan format Bintang (Markdown Bold) agar bersih saat disalin ke Microsoft Word
     const cleanText = data.result.replace(/\*\*/g, '');
     typeEffect('aiManuskripArea', cleanText, 5);
     toast('Sintesis selesai!');
