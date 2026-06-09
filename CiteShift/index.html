@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CiteShift — Konverter Sitasi by DSW</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗂️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:opsz,wght@9..144,300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   AREs DESIGN SYSTEM v2 — CiteShift by DSW
+   Konsisten dengan StatWise · AquaLab · BioTools · ShifterAI
+   ============================================================ */
+:root {
+  --bg:#F8FAFC; --surface:#FFFFFF; --surface-hover:#F1F5F9;
+  --border:#E2E8F0; --border-focus:#94A3B8;
+  --text:#0F172A; --text2:#475569; --text3:#94A3B8;
+  --primary:#0284C7; --primary-light:#E0F2FE; --primary-dark:#0369A1;
+  --success:#16A34A; --success-light:#DCFCE7;
+  --danger:#DC2626; --danger-light:#FEE2E2;
+  --warning:#D97706; --warning-light:#FEF3C7;
+  --purple:#7C3AED; --purple-light:#EDE9FE;
+  --font-sans:'DM Sans',sans-serif;
+  --font-mono:'DM Mono',monospace;
+  --font-serif:'Fraunces',serif;
+  --radius:10px;
+  --shadow:0 4px 6px -1px rgba(0,0,0,0.05),0 2px 4px -1px rgba(0,0,0,0.03);
+  --shadow-md:0 10px 15px -3px rgba(0,0,0,0.07),0 4px 6px -2px rgba(0,0,0,0.04);
+}
+[data-theme="dark"]{
+  --bg:#0F172A; --surface:#1E293B; --surface-hover:#334155;
+  --border:#334155; --border-focus:#475569;
+  --text:#F8FAFC; --text2:#CBD5E1; --text3:#94A3B8;
+  --primary:#38BDF8; --primary-light:#0C4A6E; --primary-dark:#7DD3FC;
+  --success:#4ADE80; --success-light:#064E3B;
+  --danger:#F87171; --danger-light:#7F1D1D;
+  --warning:#FCD34D; --warning-light:#451A03;
+  --purple:#C084FC; --purple-light:#3B0764;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100vh}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);display:flex;flex-direction:column;overflow-x:hidden;font-size:14px;transition:background .3s,color .3s}
+
+/* ── HEADER ── */
+header{background:var(--surface);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;box-shadow:var(--shadow);transition:background .3s}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-icon{font-size:20px}
+.brand-text{font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--text);letter-spacing:-0.3px}
+.brand-text .accent{color:var(--primary)}
+.brand-sub{font-size:11px;color:var(--text3);margin-left:2px}
+.header-actions{display:flex;gap:8px;align-items:center}
+
+/* ── BUTTONS ── */
+.btn{
+  padding:8px 16px; border-radius:6px; font-family:var(--font-sans); font-size:13px; font-weight:600; 
+  cursor:pointer; transition:all .25s cubic-bezier(0.4,0,0.2,1); border:1px solid transparent; 
+  display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap;
+}
+.btn:hover:not(:disabled) { transform: translateY(-2px); }
+.btn:active:not(:disabled) { transform: translateY(0); }
+
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary);box-shadow:0 4px 10px rgba(2, 132, 199, 0.2);}
+[data-theme="dark"] .btn-primary { color: #0F172A; box-shadow:0 4px 10px rgba(56, 189, 248, 0.2); }
+.btn-primary:hover:not(:disabled){background:var(--primary-dark); box-shadow:0 6px 14px rgba(2, 132, 199, 0.4);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed; transform:none; box-shadow:none;}
+
+.btn-outline{background:transparent;border-color:var(--border);color:var(--text2)}
+.btn-outline:hover{background:var(--surface-hover);color:var(--text)}
+
+.btn-copy { background: rgba(56, 189, 248, 0.1); border: 1px solid var(--primary); color: var(--primary); }
+.btn-copy:hover { background: var(--primary); color: #fff; box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3); }
+[data-theme="dark"] .btn-copy:hover { color: #0F172A; }
+
+.btn-download { background: rgba(74, 222, 128, 0.1); border: 1px solid var(--success); color: var(--success); }
+.btn-download:hover { background: var(--success); color: #fff; box-shadow: 0 4px 10px rgba(74, 222, 128, 0.3); }
+[data-theme="dark"] .btn-download:hover { color: #0F172A; }
+
+.btn-reset { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
+.btn-reset:hover { background: var(--danger); color: #fff; box-shadow: 0 4px 10px rgba(248, 113, 113, 0.3); }
+
+.btn-sample { background: transparent; border: 1px solid var(--warning); color: var(--warning); }
+.btn-sample:hover { background: var(--warning); color: #fff; box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3); }
+[data-theme="dark"] .btn-sample:hover { color: #0F172A; }
+
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-xs{padding:5px 10px;font-size:11px}
+
+/* Tombol Magic Wand */
+.btn-magic.active {
+    background: var(--purple); color: #fff; border-color: var(--purple);
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
+}
+
+/* ── LAYOUT ── */
+.main-wrap{flex:1;display:flex;justify-content:center;width:100%;padding:28px 20px 80px}
+.workspace{width:100%;max-width:1120px;display:flex;flex-direction:column;gap:18px}
+
+/* ── PAGE HEADER ── */
+.page-header{text-align:center;padding:4px 0}
+.page-title{font-family:var(--font-serif);font-size:28px;font-weight:500;color:var(--text);letter-spacing:-.4px}
+.page-title .accent{color:var(--primary)}
+.page-desc{font-size:13px;color:var(--text3);line-height:1.7;margin-top:8px}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.card-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.card-title{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;font-family:var(--font-mono);display:flex;align-items:center;gap:6px}
+
+/* ── OPTIONS BAR ── */
+.options-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 20px;background:var(--surface-hover);border-bottom:1px solid var(--border)}
+.opt-group{display:flex;align-items:center;gap:8px}
+.opt-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.opt-sep{width:1px;height:22px;background:var(--border)}
+select.opt-select{padding:6px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--font-sans);font-size:12px;font-weight:600;outline:none;cursor:pointer;transition:border-color .2s}
+select.opt-select:focus{border-color:var(--primary)}
+select.opt-select option{background:var(--surface);color:var(--text)}
+
+/* ── FORMAT PILLS ── */
+.fmt-pills{display:flex;gap:4px; background: var(--bg); padding: 4px; border-radius: 8px; border: 1px solid var(--border);}
+.fmt-pill{padding:5px 16px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--text3);font-family:var(--font-mono);transition:all .2s}
+.fmt-pill.active{background:var(--primary);color:#fff; box-shadow: 0 2px 6px rgba(0,0,0,0.15);}
+[data-theme="dark"] .fmt-pill.active { color: #0F172A; }
+.fmt-pill:hover:not(.active){color:var(--text)}
+
+/* ── MAIN GRID ── */
+.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:0}
+@media(max-width:768px){.editor-grid{grid-template-columns:1fr}}
+.editor-panel{display:flex;flex-direction:column}
+.editor-panel:first-child{border-right:1px solid var(--border)}
+.editor-top{padding:12px 16px;background:var(--surface-hover);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:56px}
+.editor-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-family:var(--font-mono)}
+.editor-stats{font-size:11px;color:var(--text3);font-family:var(--font-mono)}
+.editor-area{flex:1;position:relative}
+.dsw-textarea{width:100%;height:340px;padding:16px;border:none;background:var(--bg);color:var(--text);font-family:var(--font-sans);font-size:13px;resize:none;outline:none;line-height:1.7;transition:background .2s}
+.dsw-textarea:focus{background:var(--surface)}
+.dsw-textarea.output-mono{font-family:var(--font-mono);font-size:12px;background:var(--bg);color:var(--text2)}
+[data-theme="dark"] .dsw-textarea.output-mono{background:#0A1628;color:#7DD3FC}
+.dsw-textarea.output-text{font-family:var(--font-sans);font-size:14px;line-height:1.8;} /* Mode Word/APA */
+
+/* ── CONVERT BAR ── */
+.convert-bar{padding:16px 20px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+
+/* ── RESULT TABLE (EDITABLE) ── */
+.table-wrap{overflow-x:auto;border-top:1px solid var(--border)}
+table.result-table{width:100%;border-collapse:collapse;font-size:12px}
+table.result-table thead th{padding:9px 12px;text-align:left;background:var(--surface-hover);color:var(--text3);font-weight:700;font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);position:sticky;top:0}
+table.result-table tbody td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+table.result-table tbody tr:last-child td{border-bottom:none}
+
+/* DUPLICATE HIGHLIGHT */
+.duplicate-row td { background-color: var(--danger-light) !important; }
+
+/* Efek khusus sel tabel yang bisa diedit */
+table.result-table tbody td[contenteditable="true"] {
+  outline: none;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+table.result-table tbody td[contenteditable="true"]:hover {
+  background: rgba(148, 163, 184, 0.1);
+  cursor: text;
+}
+table.result-table tbody td[contenteditable="true"]:focus {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1.5px var(--primary);
+  color: var(--text);
+}
+
+/* Kursor Khusus saat Mode Italic Aktif */
+.italic-mode-table td[data-field="title"] { cursor: crosshair !important; }
+.italic-mode-table td[data-field="title"]:hover { background: rgba(124, 58, 237, 0.15) !important; }
+
+/* ── SELECT BADGE (DROPDOWN TIPE) ── */
+select.select-badge {
+  appearance: none; -webkit-appearance: none;
+  border: 1px solid transparent; border-radius: 4px;
+  padding: 3px 18px 3px 8px; font-size: 10px; font-weight: 700;
+  font-family: var(--font-mono); letter-spacing: .3px; cursor: pointer;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%2364748B" viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat; background-position: right 2px center;
+  transition: all 0.2s; outline: none; text-align: center;
+}
+[data-theme="dark"] select.select-badge {
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%2394A3B8" viewBox="0 0 24 24" width="14" height="14" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+}
+select.select-badge:hover { filter: brightness(0.95); }
+select.select-badge:focus { border-color: currentColor; }
+
+select.select-badge.tag-article { background-color: var(--primary-light); color: var(--primary); }
+select.select-badge.tag-book { background-color: var(--success-light); color: var(--success); }
+select.select-badge.tag-misc { background-color: var(--surface-hover); color: var(--text3); }
+select.select-badge.tag-thesis { background-color: var(--purple-light); color: var(--purple); }
+
+.status-ok{color:var(--success);font-size:13px}
+.status-partial{color:var(--warning);font-size:13px}
+
+/* ── INFO BOX ── */
+.info-box{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-radius:8px;font-size:12.5px;line-height:1.6;border-left:3px solid}
+.info-box.info{background:var(--primary-light);color:var(--primary);border-color:var(--primary)}
+.info-box.warning{background:var(--warning-light);color:var(--warning);border-color:var(--warning)}
+.info-box.success{background:var(--success-light);color:var(--success);border-color:var(--success)}
+.info-box.danger{background:var(--danger-light);color:var(--danger);border-color:var(--danger)}
+
+/* ── BADGE ── */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;font-family:var(--font-mono)}
+.badge-orange{background:var(--warning-light);color:var(--warning)}
+.badge-red{background:var(--danger-light);color:var(--danger)}
+
+/* ── STATS ROW ── */
+.stats-strip{display:flex;gap:0;border-top:1px solid var(--border)}
+.stat-item{flex:1;padding:12px 16px;text-align:center;border-right:1px solid var(--border)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-size:22px;font-weight:700;font-family:var(--font-mono);color:var(--text);line-height:1}
+.stat-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+
+/* ── OVERLAY / DIALOG ── */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(3px);display:none;justify-content:center;align-items:center;z-index:200}
+.overlay.active{display:flex}
+.dialog{background:var(--surface);width:460px;max-width:95vw;border-radius:12px;box-shadow:var(--shadow-md);overflow:hidden}
+.dialog-header{padding:16px 20px;border-bottom:1px solid var(--border);font-weight:700;font-size:16px;font-family:var(--font-serif);color:var(--text);display:flex;justify-content:space-between;align-items:center}
+.dialog-body{padding:20px;display:flex;flex-direction:column;gap:12px;max-height:70vh;overflow-y:auto}
+.dialog-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--surface-hover)}
+.close-btn{background:transparent;border:none;font-size:20px;color:var(--text3);cursor:pointer;line-height:1}
+.close-btn:hover{color:var(--danger)}
+
+/* ── TOAST ── */
+.toast-container{position:fixed;bottom:20px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--surface);border:1px solid var(--border);padding:11px 16px;border-radius:8px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;pointer-events:all;box-shadow:var(--shadow-md);animation:toastIn .25s ease}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.toast.hide{animation:toastOut .25s forwards}
+@keyframes toastOut{to{opacity:0;transform:translateX(16px)}}
+
+.section-label{font-size:10px;text-transform:uppercase;font-weight:700;color:var(--text3);letter-spacing:.8px;display:flex;align-items:center;gap:8px;margin:8px 0 4px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── MOBILE ── */
+@media(max-width:640px){
+  .main-wrap{padding:16px 12px 80px}
+  header{padding:0 16px}
+  .page-title{font-size:22px}
+  .options-bar{padding:10px 14px}
+  .editor-panel:first-child{border-right:none;border-bottom:1px solid var(--border)}
+  .dsw-textarea{height:220px}
+  .stats-strip{flex-wrap:wrap}
+  .stat-item{min-width:50%}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-icon">🗂️</span>
+    <span class="brand-text">Cite<span class="accent">Shift</span></span>
+    <span class="brand-sub">by DSW</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-outline btn-sm" onclick="showGuide()">❓ Panduan</button>
+    <button class="btn btn-outline btn-sm" onclick="toggleTheme()">🌗 Tema</button>
+  </div>
+</header>
+
+<div class="main-wrap">
+  <div class="workspace">
+
+    <div class="page-header">
+      <div class="page-title">Konverter <span class="accent">Sitasi</span> Ilmiah</div>
+      <div class="page-desc">
+        Ubah daftar pustaka teks mentah (APA, Vancouver, Harvard, IEEE) menjadi BibTeX, RIS, atau APA Word.<br>
+        100% client-side · offline · tidak ada data yang dikirim ke server.
+      </div>
+    </div>
+
+    <div class="card">
+
+      <div class="options-bar">
+        <div class="opt-group">
+          <span class="opt-label">Format Input</span>
+          <select id="styleInput" class="opt-select" onchange="detectStyle()">
+            <option value="auto">🔍 Deteksi Otomatis</option>
+            <option value="apa">APA 7th</option>
+            <option value="vancouver">Vancouver / Numbered</option>
+            <option value="harvard">Harvard</option>
+            <option value="ieee">IEEE</option>
+          </select>
+        </div>
+        <div class="opt-sep"></div>
+        <div class="opt-group">
+          <span class="opt-label">Output Format</span>
+          <div class="fmt-pills">
+            <button class="fmt-pill" id="pill-bibtex" onclick="setFmt('bibtex')">BibTeX</button>
+            <button class="fmt-pill active" id="pill-ris" onclick="setFmt('ris')">RIS</button>
+            <button class="fmt-pill" id="pill-apa" onclick="setFmt('apa')">APA (Word)</button>
+          </div>
+        </div>
+        <div class="opt-sep"></div>
+        <div class="opt-group">
+          <span class="opt-label">Entry Type Default</span>
+          <select id="defaultType" class="opt-select">
+            <option value="auto">🔍 Deteksi Otomatis</option>
+            <option value="article">Jurnal (Article)</option>
+            <option value="book">Buku (Book)</option>
+            <option value="incollection">Bab Buku (Incoll)</option>
+            <option value="phdthesis">Tesis/Skripsi</option>
+            <option value="misc">Web/Lainnya (Misc)</option>
+          </select>
+        </div>
+        
+        <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
+          <span id="detectedStyleBadge" style="display:none;" class="badge badge-orange"></span>
+          <button class="btn btn-sample btn-xs" onclick="loadSample()">📝 Isi Contoh Data</button>
+          <button class="btn btn-reset btn-xs" onclick="clearAll()">🗑 Kosongkan</button>
+        </div>
+      </div>
+
+      <div class="editor-grid">
+        <div class="editor-panel">
+          <div class="editor-top">
+            <span class="editor-label">📥 Input Daftar Pustaka</span>
+            <span class="editor-stats" id="inputStats">0 referensi</span>
+          </div>
+          <div class="editor-area">
+            <textarea id="inputArea" class="dsw-textarea"
+              placeholder="Tempel daftar pustaka Anda di sini. Setiap referensi dipisahkan baris baru.&#10;&#10;Contoh APA:&#10;Wibowo, D. S., Ridho, M., &amp; Al Kharis, M. R. (2024). Variasi Sekuens Gen Cytochrome b untuk DNA Barcoding Ikan Wader Pari (Rasbora sp.). Jurnal Maiyah Vol, 3(4), 277-286.&#10;&#10;Contoh Vancouver:&#10;1. Smith JA, Jones B. Aquaculture genetics. J Fish Sci. 2023;45(3):120-35."
+              oninput="countInputLines()"></textarea>
+          </div>
+        </div>
+
+        <div class="editor-panel">
+          <div class="editor-top">
+            <span class="editor-label" id="outputLabel">📤 Hasil RIS</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span id="apaModeNote" style="display:none;font-size:10px;color:var(--warning);font-weight:600;background:var(--warning-light);padding:2px 8px;border-radius:4px;">* = miring di Word</span>
+              <button class="btn btn-copy btn-xs" id="btnCopy" onclick="copyOutput()">📋 Salin Teks</button>
+              <button class="btn btn-download btn-xs" id="btnDownload" style="display:none;" onclick="downloadOutput()">💾 Unduh File</button>
+            </div>
+          </div>
+          <div class="editor-area">
+            <textarea id="outputArea" class="dsw-textarea output-mono" readonly
+              placeholder="Hasil konversi akan muncul di sini..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="convert-bar">
+        <button class="btn btn-primary" style="padding:12px 24px; font-size:14px;" onclick="runConvert()" id="btnConvert">
+          <span style="font-size: 16px;">🔄</span> Konversi Sekarang
+        </button>
+        <span id="convertStatus" style="font-size:12px;color:var(--text3); font-weight: 500;">Menunggu input...</span>
+      </div>
+
+      <div class="stats-strip" id="statsStrip" style="display:none;">
+        <div class="stat-item"><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">Total Ref</div></div>
+        <div class="stat-item"><div class="stat-num" id="statArticle" style="color:var(--primary)">0</div><div class="stat-lbl">Jurnal</div></div>
+        <div class="stat-item"><div class="stat-num" id="statBook" style="color:var(--success)">0</div><div class="stat-lbl">Buku</div></div>
+        <div class="stat-item"><div class="stat-num" id="statOther" style="color:var(--warning)">0</div><div class="stat-lbl">Lainnya</div></div>
+        <div class="stat-item"><div class="stat-num" id="statComplete" style="color:var(--success)">0</div><div class="stat-lbl">Lengkap</div></div>
+        <div class="stat-item"><div class="stat-num" id="statPartial" style="color:var(--danger)">0</div><div class="stat-lbl">Parsial</div></div>
+      </div>
+    </div>
+
+    <div class="card" id="previewCard" style="display:none;">
+      <div class="card-header">
+        <span class="card-title">📊 Editor Data Interaktif</span>
+        <div style="margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap: wrap; justify-content: flex-end;">
+          <span id="dupeBadge" style="display:none;" class="badge badge-red">Duplikat Terdeteksi</span>
+          <button class="btn btn-outline btn-xs btn-magic" id="btnItalicMode" onclick="toggleItalicMode()" title="Aktifkan klik pada kata untuk memiringkan manual">🪄 Mode Italic (Klik)</button>
+          <button class="btn btn-primary btn-xs" onclick="autoItalicize()" title="Deteksi dan cetak miring nama latin secara otomatis">🧬 Auto-Italic (Kamus)</button>
+          <button class="btn btn-sample btn-xs" onclick="flipNames()" title="Ubah 'Dandi Setio Wibowo' menjadi 'Wibowo, D. S.'">🔄 Balik Nama</button>
+          <button class="btn btn-primary btn-xs" onclick="autoCompleteCrossref()" title="Ambil Metadata Lengkap dari Crossref (Butuh Internet)">🪄 Auto-Complete (DOI)</button>
+          <button class="btn btn-outline btn-xs" onclick="document.getElementById('previewCard').style.display='none'">Sembunyikan</button>
+        </div>
+      </div>
+      <div class="table-wrap" style="max-height:400px;overflow-y:auto;">
+        <table class="result-table" id="previewTable">
+          <thead><tr>
+            <th style="width:36px;">#</th>
+            <th>Penulis</th>
+            <th style="width:50px;">Tahun</th>
+            <th>Judul</th>
+            <th>Sumber / Jurnal</th>
+            <th style="width:40px;">Vol</th>
+            <th style="width:40px;">No</th>
+            <th style="width:60px;">Hal</th>
+            <th style="width:100px;">Tipe</th>
+            <th style="width:36px;">✓</th>
+          </tr></thead>
+          <tbody id="previewBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="info-box info">
+      <span style="font-size: 16px;">🔒</span>
+      <span>
+        <strong>Privasi Terjamin.</strong> CiteShift memproses semua data secara lokal di perangkat Anda (client-side). Tidak ada naskah, sitasi, atau data apa pun yang dikirim ke server eksternal. (Kecuali jika Anda menekan tombol fitur <em>Auto-Complete Crossref</em>).
+      </span>
+    </div>
+
+  </div>
+</div>
+
+<div class="overlay" id="dlgGuide">
+  <div class="dialog" style="width:520px;">
+    <div class="dialog-header">❓ Panduan Format Input <button class="close-btn" onclick="closeDialog('dlgGuide')">×</button></div>
+    <div class="dialog-body" style="font-size:13px; line-height:1.8; color:var(--text2);">
+      <div class="info-box success" style="font-size:12px;">
+        <span>✅</span><span>Tiap referensi dipisahkan <strong>baris baru</strong>. Baris kosong akan diabaikan.</span>
+      </div>
+      <div class="section-label" style="margin:10px 0 6px;">Format yang Didukung</div>
+      <div style="background:var(--surface-hover);padding:12px;border-radius:8px;font-family:var(--font-mono);font-size:11.5px;line-height:2;border:1px solid var(--border);">
+        <div style="color:var(--primary);font-weight:700;">APA 7th Edition</div>
+        <div style="color:var(--text3);font-size:11px;">Wibowo, D. S., &amp; Santoso, A. (2025). Judul artikel. Nama Jurnal, 12(2), 45–56.</div>
+        <div style="color:var(--primary);font-weight:700;margin-top:8px;">Vancouver / Numbered</div>
+        <div style="color:var(--text3);font-size:11px;">1. Smith JA, Jones B. Aquaculture genetics. J Fish Sci. 2023;45(3):120-35.</div>
+        <div style="color:var(--primary);font-weight:700;margin-top:8px;">Harvard</div>
+        <div style="color:var(--text3);font-size:11px;">Smith, J.A. and Jones, B., 2023. Aquaculture genetics. J Fish Sci, 45(3), pp.120-135.</div>
+        <div style="color:var(--primary);font-weight:700;margin-top:8px;">IEEE</div>
+        <div style="color:var(--text3);font-size:11px;">[1] J.A. Smith and B. Jones, "Aquaculture genetics," J Fish Sci, vol. 45, no. 3, pp. 120-135, 2023.</div>
+      </div>
+      <div class="section-label" style="margin:10px 0 6px;">Keterangan Tipe Referensi</div>
+      <ul style="padding-left:18px; font-size:12.5px; line-height:2; color:var(--text2);">
+        <li><strong>Jurnal:</strong> Artikel jurnal ilmiah (umumnya terdeteksi memiliki Volume/Nomor).</li>
+        <li><strong>Buku:</strong> Buku cetak atau digital yang diterbitkan oleh suatu Penerbit/Instansi.</li>
+        <li><strong>Bab Buku:</strong> Bagian spesifik dari buku kompilasi yang memiliki Editor (<em>Incollection</em>).</li>
+        <li><strong>Tesis/Skripsi:</strong> Karya tulis akhir institusi akademik (Skripsi, Tesis, Disertasi).</li>
+        <li><strong>Web/Lainnya:</strong> Halaman website, dokumen lembaga, atau referensi tak terdefinisi (<em>Misc</em>).</li>
+      </ul>
+
+      <div class="section-label" style="margin:10px 0 6px;">Tips Akurasi</div>
+      <ul style="padding-left:18px; font-size:12.5px; line-height:2; color:var(--text2);">
+        <li>Gunakan <strong>Deteksi Otomatis</strong> untuk campuran gaya sitasi</li>
+        <li>Tipe entry dideteksi otomatis dari kata kunci teks</li>
+        <li>DOI dan URL disimpan di field <code>doi</code> / <code>url</code> secara otomatis</li>
+        <li>Citation key: <code>namaAkhir + tahun + kataJudul</code></li>
+        <li>Field tidak terdeteksi diberi nilai <code>??</code> — mudah ditemukan di Mendeley/Zotero</li>
+      </ul>
+      <div class="section-label" style="margin:10px 0 6px;">Nama Ilmiah &amp; Italic</div>
+      <ul style="padding-left:18px; font-size:12.5px; line-height:2; color:var(--text2);">
+        <li>Klik <strong>🧬 Auto-Italic (Kamus)</strong> untuk otomatis memiringkan nama spesies populer.</li>
+        <li>Gunakan <strong>🪄 Mode Italic (Klik)</strong> lalu klik/blok kata pada tabel untuk memiringkannya secara manual.</li>
+        <li>Output <strong>BibTeX</strong>: nama ilmiah dikonversi ke <code>\textit{Genus species}</code></li>
+        <li>Output <strong>APA (Word)</strong>: nama miring ditandai <code>*teks*</code> — salin ke Word.</li>
+        <li>Output <strong>RIS</strong>: tag <code>&lt;i&gt;</code> dipertahankan untuk Mendeley/Zotero</li>
+      </ul>
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-primary btn-sm" onclick="closeDialog('dlgGuide')">Mengerti</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+'use strict';
+
+// ── STATE ──────────────────────────────────────────────────────────
+let currentFmt = 'ris'; 
+let parsedRefs  = [];
+let isItalicMode = false;
+
+// ── CITATION KEY BUILDER ───────────────────────────────────────────
+function buildCiteKey(f){
+  const cleanStr = s => s.replace(/[^a-zA-Z0-9]/g,'').toLowerCase();
+  const authorPart = cleanStr((f.author || 'unknown').split(/,|\band\b|&|;/)[0].trim()).slice(0, 10) || 'unknown';
+  const yearPart   = (f.year && f.year !== '??') ? f.year : 'xxxx';
+  const titlePart  = cleanStr((f.title || 'notitle').replace(/^(the|a|an|di|dan|the|dari)\s+/i,'').trim().split(/\s+/)[0]).slice(0, 8) || 'ref';
+  return authorPart + yearPart + titlePart;
+}
+
+// ── CLEANERS (NORMALISASI MS WORD & GELAR INDONESIA) ───────────────
+function cleanWordFormatting(text) {
+  return text.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\t/g, ' ').trim();
+}
+
+function cleanAcademicTitles(authorStr) {
+  if (!authorStr) return '';
+  const titleRegex = /\b(Prof|Dr|Ir|Drs|Dra|Hj|H|S\.Pi|M\.Si|M\.Sc|Ph\.D|M\.Pd|S\.Pd|S\.T|M\.T)\b\.?,?\s*/gi;
+  return authorStr.replace(titleRegex, '').trim();
+}
+
+function normalizeItalics(htmlStr) {
+  if(!htmlStr) return '';
+  let s = htmlStr.replace(/<em[^>]*>/gi, '<i>').replace(/<\/em>/gi, '</i>');
+  s = s.replace(/<span[^>]*style="[^"]*font-style:\s*italic[^"]*"[^>]*>(.*?)<\/span>/gi, '<i>$1</i>');
+  return s;
+}
+
+// ── UI HELPERS ─────────────────────────────────────────────────────
+function toggleTheme(){
+  const h = document.documentElement;
+  h.setAttribute('data-theme', h.getAttribute('data-theme')==='dark' ? 'light' : 'dark');
+}
+function showGuide(){ document.getElementById('dlgGuide').classList.add('active'); }
+function closeDialog(id){ document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('active'); }));
+
+function toast(msg, type='ok'){
+  const colors = {ok:'var(--success)', warn:'var(--warning)', info:'var(--primary)'};
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span style="color:${colors[type]||colors.ok}; font-size:16px;">${type==='ok'?'✓':type==='warn'?'⚠':'ℹ'}</span> ${msg}`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(()=>{ t.classList.add('hide'); setTimeout(()=>t.remove(),3000); }, 3000);
+}
+
+function toggleItalicMode() {
+    isItalicMode = !isItalicMode;
+    const btn = document.getElementById('btnItalicMode');
+    const table = document.getElementById('previewTable');
+    if(isItalicMode) {
+        btn.classList.add('active');
+        btn.classList.remove('btn-outline');
+        btn.textContent = '🪄 Mode Italic: ON';
+        table.classList.add('italic-mode-table');
+        toast('Mode Italic Aktif. Klik atau blok kata pada kolom Judul untuk memiringkan.', 'info');
+    } else {
+        btn.classList.remove('active');
+        btn.classList.add('btn-outline');
+        btn.textContent = '🪄 Mode Italic (Klik)';
+        table.classList.remove('italic-mode-table');
+    }
+}
+
+// Listener Mode Italic Magic Wand
+document.getElementById('previewTable').addEventListener('click', function(e) {
+    if(!isItalicMode) return;
+    const td = e.target.closest('td[data-field="title"]');
+    if(!td) {
+        if(e.target.closest('td[contenteditable="true"]')) {
+             toast('Mode Italic (Klik) saat ini hanya diaplikasikan pada kolom Judul.', 'warn');
+        }
+        return;
+    }
+
+    const sel = window.getSelection();
+    if(sel.isCollapsed) {
+        sel.modify('move', 'backward', 'word');
+        sel.modify('extend', 'forward', 'word');
+    }
+    
+    if(!sel.isCollapsed) {
+        document.execCommand('italic', false, null);
+        const idx = td.getAttribute('data-index');
+        td.innerHTML = normalizeItalics(td.innerHTML);
+        updateRef(idx, 'title', td.innerHTML);
+        sel.removeAllRanges(); 
+    }
+});
+
+function setFmt(fmt){
+  currentFmt = fmt;
+  document.getElementById('pill-bibtex').classList.toggle('active', fmt==='bibtex');
+  document.getElementById('pill-ris').classList.toggle('active', fmt==='ris');
+  document.getElementById('pill-apa').classList.toggle('active', fmt==='apa');
+  
+  let lbl = '📤 Hasil ' + (fmt==='bibtex' ? 'BibTeX' : fmt==='ris' ? 'RIS' : 'APA 7th (Word)');
+  document.getElementById('outputLabel').textContent = lbl;
+  const apaNote = document.getElementById('apaModeNote');
+  if(apaNote) apaNote.style.display = fmt==='apa' ? 'flex' : 'none';
+
+  const outArea = document.getElementById('outputArea');
+  if(fmt === 'apa') outArea.classList.remove('output-mono');
+  else outArea.classList.add('output-mono');
+
+  if(parsedRefs.length) renderOutput();
+}
+
+function countInputLines(){
+  const raw = document.getElementById('inputArea').value;
+  const cleanedRaw = cleanWordFormatting(raw);
+  if(!cleanedRaw){ document.getElementById('inputStats').textContent = '0 referensi'; return; }
+  try {
+    const n = splitIntoRefs(cleanedRaw).length;
+    document.getElementById('inputStats').textContent = n + ' referensi terdeteksi';
+  } catch(e) {
+    const n = cleanedRaw.split('\n').filter(l=>l.trim().length>5).length;
+    document.getElementById('inputStats').textContent = n + ' referensi terdeteksi';
+  }
+}
+
+function detectStyle(){
+  if(parsedRefs.length > 0) {
+    const raw = document.getElementById('inputArea').value;
+    const cleanedRaw = cleanWordFormatting(raw);
+    const styleInput = document.getElementById('styleInput').value;
+    const style = styleInput === 'auto' ? detectStyleFromText(cleanedRaw) : styleInput;
+    const badge = document.getElementById('detectedStyleBadge');
+    badge.textContent = 'Gaya: ' + style.toUpperCase();
+    badge.style.display = 'inline-flex';
+  }
+}
+
+function clearAll(){
+  document.getElementById('inputArea').value = '';
+  document.getElementById('outputArea').value = '';
+  document.getElementById('statsStrip').style.display = 'none';
+  document.getElementById('previewCard').style.display = 'none';
+  document.getElementById('btnDownload').style.display = 'none';
+  document.getElementById('dupeBadge').style.display = 'none';
+  document.getElementById('convertStatus').textContent = 'Menunggu input...';
+  document.getElementById('inputStats').textContent = '0 referensi';
+  document.getElementById('detectedStyleBadge').style.display = 'none';
+  parsedRefs = [];
+}
+
+function loadSample(){
+  document.getElementById('inputArea').value = `Wibowo, D. S., Ridho, M., & Al Kharis, M. R. (2024). Variasi Sekuens Gen Cytochrome b untuk DNA Barcoding Ikan Wader Pari (Rasbora sp.). Jurnal Maiyah Vol, 3(4), 277-286.
+Dr. Effendie, M. I., M.Si. (1997). Biologi Perikanan. Yayasan Pustaka Nusantara.
+Smith, J. A., & Jones, B. C. (2022). Advances in fish genetics and aquaculture. In R. Brown (Ed.), Modern Aquaculture Science (pp. 110–145). Elsevier.
+Wibowo, D. S. (2026). Eksplorasi Bakteri Intestine Udang Windu (Penaeus monodon) sebagai Kandidat Probiotik Akuakultur Laut [Skripsi, Universitas Jenderal Soedirman].
+Kementerian Kelautan dan Perikanan. (2022). Laporan Tahunan KKP 2022. https://kkp.go.id
+Wibowo, D. S., Ridho, M., & Al Kharis, M. R. (2024). Variasi Sekuens Gen Cytochrome b untuk DNA Barcoding Ikan Wader Pari (Rasbora sp.). Jurnal Maiyah Vol, 3(4), 277-286.`;
+  countInputLines();
+  toast('Data sampel dimuat (Terdapat 1 duplikat disengaja). Klik Konversi Sekarang.', 'info');
+}
+
+// ── CORE PARSER ────────────────────────────────────────────────────
+function splitIntoRefs(raw){
+  raw = raw.replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim();
+
+  if (/\n[ \t]*\n/.test(raw)) {
+    const chunks = raw.split(/\n[ \t]*\n+/)
+      .map(s => s.replace(/\n/g,' ').replace(/\s+/g,' ').trim())
+      .filter(s => s.length > 10);
+    if (chunks.length > 1) return chunks;
+  }
+
+  if (/(?:^|\n)\s*\[?\d{1,3}\]?\.?\s+[A-Z]/.test(raw)) {
+    const parts = raw.split(/\n(?=\s*\[?\d{1,3}\]?\.?\s+[A-Z])/)
+      .map(s => s.replace(/\n/g,' ').replace(/\s+/g,' ').trim())
+      .filter(s => s.length > 10);
+    if (parts.length > 1) return parts;
+  }
+
+  const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 10);
+  if (lines.length > 1) return lines;
+
+  return raw.length > 10 ? [raw] : [];
+}
+
+function detectStyleFromText(raw){
+  const first = raw.trim().split('\n')[0];
+  if(/^\[\d+\]/.test(first)) return 'ieee';
+  if(/\.\s+\d{4}\s*;\s*\d+/.test(raw)) return 'vancouver';
+  if(/^\d+\.\s+[A-Z][a-z]+\s+[A-Z]{1,3},/.test(first)) return 'vancouver';
+  if(/\(\d{4}[a-z]?\)/.test(raw)) return 'apa';
+  if(/[A-Z][a-z]+,\s+\d{4}\./.test(raw)) return 'harvard';
+  return 'apa';
+}
+
+function stripLeadingNumber(s){
+  return s.replace(/^\[?\d{1,3}\]?\.?\s+/, '').replace(/^[•\-–]\s+/,'').trim();
+}
+
+function detectEntryType(text, overrideType){
+  if(overrideType && overrideType !== 'auto') return overrideType;
+  const t = text.toLowerCase();
+
+  if(/\[(?:skripsi|tesis|disertasi|thesis|dissertation|s[123])\]|\bthesis\b|\bdissertation\b|\bskripsi\b|\btesis\b|\bdisertasi\b/i.test(t)) return 'phdthesis';
+  if(/\bIn\s+[A-Z].+?\(Eds?\.|(?:^|\s)\(Eds?\.\)/m.test(text)) return 'incollection';
+  if(/\(eds?\.\)/i.test(t) && /\bpp\.\s*\d/i.test(t)) return 'incollection';
+  
+  if(/\bjournal\b|\bjurnal\b|ejournal|sinta\.kemdikbud|garuda\.kemdikbud/i.test(t)) return 'article';
+  if(/vol\.?\s*\d|no\.?\s*\d/i.test(t)) return 'article';
+  if(/\(\d{1,2}\)\s*[,;:]\s*\d{1,4}/.test(t)) return 'article';
+  if(/doi\s*:|https?:\/\/doi/i.test(t)) return 'article';
+  if(/;\s*\d{1,3}\s*(?:\(\d+\))?\s*:\s*\d/.test(t)) return 'article';
+  
+  if(/\bpress\b|\bpenerbit\b|\bpublisher\b|\byayasan\b|\belsevier\b|\bspringer\b|\bwiley\b/i.test(t)) return 'book';
+  if(/[,.\s]\d{3,4}\s*(?:hlm|hal|pages?|pp)\.?\s*(?:$|\.)/i.test(t)) return 'book';
+  
+  if(/\bfao\b|\bwho\b|\bbadan\b|\bkementerian\b|https?:\/\/|www\./i.test(t)) return 'misc';
+
+  return 'article';
+}
+
+function parseRef(raw, style){
+  const clean = stripLeadingNumber(raw);
+  const overrideType = document.getElementById('defaultType').value;
+  const entryType = detectEntryType(clean, overrideType);
+  const fields = {
+    raw: clean, entryType, author:'', year:'', title:'', journal:'', volume:'', number:'',
+    pages:'', publisher:'', address:'', doi:'', url:'', editor:'', booktitle:'', note:'', school:''
+  };
+
+  const yearM = clean.match(/\b(19[5-9]\d|20[0-3]\d)\b/);
+  fields.year = yearM ? yearM[1] : '??';
+
+  const doiM = clean.match(/https?:\/\/doi\.org\/(10\.\S+)|doi\s*:\s*(10\.\S+)/i);
+  if(doiM) fields.doi = (doiM[1]||doiM[2]).replace(/[.,;)]+$/,'');
+  const urlM = clean.match(/https?:\/\/[^\s,;)]+/);
+  if(urlM && !fields.doi) fields.url = urlM[0].replace(/[.,;)]+$/,'');
+
+  if(style === 'apa') parseAPA(fields, clean);
+  else if(style === 'vancouver') parseVancouver(fields, clean);
+  else if(style === 'harvard') parseHarvard(fields, clean);
+  else if(style === 'ieee') parseIEEE(fields, clean);
+  else {
+    const detStyle = detectStyleFromText(clean);
+    if(detStyle==='apa') parseAPA(fields, clean);
+    else if(detStyle==='vancouver') parseVancouver(fields, clean);
+    else if(detStyle==='harvard') parseHarvard(fields, clean);
+    else if(detStyle==='ieee') parseIEEE(fields, clean);
+    else parseAPA(fields, clean);
+  }
+
+  if(fields.entryType === 'phdthesis' || fields.entryType === 'mastersthesis'){
+    const schoolBracket = clean.match(/\[(?:skripsi|tesis|disertasi|thesis|dissertation|s[123])[,\s]+([^\]]+)\]/i);
+    if(schoolBracket) fields.school = schoolBracket[1].trim();
+    if(!fields.school){
+      const schoolM = clean.match(/(?:universitas|university|institut(?:e)?|politeknik|akademi|sekolah tinggi)\s+[A-Z][^.,\n]{3,40}/i);
+      if(schoolM) fields.school = schoolM[0].replace(/[.,\s]+$/,'').trim();
+    }
+    if(/disertasi|dissertation|doktor|ph\.?d/i.test(clean)) fields.entryType = 'phdthesis';
+    else if(/tesis|thesis|magister|master|s2/i.test(clean)) fields.entryType = 'mastersthesis';
+  }
+  
+  let cleanAuthor = cleanAcademicTitles(fields.author || '');
+  fields.author = cleanAuthor.replace(/\.\s*$/, '').replace(/[.,\s]+$/, '').trim();
+  
+  fields.title  = (fields.title||'')
+    .replace(/\.\s*$/, '')
+    .replace(/\s*\[(?:skripsi|tesis|disertasi|thesis|dissertation|s[123])[^\]]*\]/gi, '')
+    .trim();
+  
+  if(fields.pages) fields.pages = fields.pages.replace(/[–—]/g, '-');
+
+  fields.key = buildCiteKey(fields);
+
+  const filled = [
+    fields.author && fields.author !== '??',
+    fields.year && fields.year !== '??',
+    fields.title && fields.title !== '??',
+    !!(fields.journal || fields.publisher || fields.booktitle || fields.school)
+  ].filter(Boolean).length;
+  fields.complete = filled >= 3;
+  fields.isDuplicate = false; 
+
+  return fields;
+}
+
+function parseAPA(f, s){
+  const apaFullM = s.match(/^(.+?)\((\d{4}[a-z]?)\)\.?\s+(.+)/);
+  if(!apaFullM){ genericParse(f, s); return; }
+
+  f.author = apaFullM[1].replace(/[&,\s]+$/,'').trim();
+  f.year   = apaFullM[2];
+  const rest = apaFullM[3];
+
+  const inBookM = rest.match(/^(.+?)\.\s+In\s+(.+?)\(Eds?\.\),?\s+([^(]+)\(pp?\.\s*([\d\u2013\u2014\-]+)\)/i);
+  if(inBookM){
+    f.entryType = 'incollection';
+    f.title     = inBookM[1].trim();
+    f.editor    = cleanAcademicTitles(inBookM[2].replace(/[.,\s]+$/,'').trim());
+    f.booktitle = inBookM[3].trim();
+    f.pages     = inBookM[4].replace(/[\u2013\u2014]/g,'-');
+    const pubM  = rest.match(/\)\.\s+([^.\n]+)/);
+    if(pubM) f.publisher = pubM[1].replace(/[.,]+$/, '').trim();
+    return;
+  }
+
+  const artFullM = rest.match(/^(.+?)\.\s+([^,]+),\s*(\d+)\s*\((\d+)\)\s*,\s*([\d\u2013\u2014\-]+)/);
+  if(artFullM){
+    f.title   = artFullM[1].trim();
+    f.journal = artFullM[2].trim();
+    f.volume  = artFullM[3];
+    f.number  = artFullM[4];
+    f.pages   = artFullM[5].replace(/[\u2013\u2014]/g,'-');
+    return;
+  }
+
+  const artNoNumM = rest.match(/^(.+?)\.\s+([^,]+),\s*(\d+),\s*([\d\u2013\u2014\-]+)/);
+  if(artNoNumM && parseInt(artNoNumM[3]) < 300){
+    f.title   = artNoNumM[1].trim();
+    f.journal = artNoNumM[2].trim();
+    f.volume  = artNoNumM[3];
+    f.pages   = artNoNumM[4].replace(/[\u2013\u2014]/g,'-');
+    return;
+  }
+
+  const parts = rest.split(/\.\s+/);
+  if(parts.length >= 1) f.title = parts[0].replace(/\.+$/, '').trim();
+  if(parts.length >= 2){
+    const pubCandidate = parts[1].replace(/[.,\s]+$/,'').trim();
+    if(/https?:\/\//i.test(pubCandidate)) f.url = pubCandidate;
+    else f.publisher = pubCandidate;
+  }
+  if(parts.length >= 3) f.address = parts[2].replace(/[.,\s]+$/,'').trim();
+}
+function parseVancouver(f, s){
+  const vanM = s.match(/^(.+?)\.\s+(.+?)\.\s+([A-Za-z].+?)\.\s+(\d{4})\s*;\s*(\d+)\s*(?:\((\d+)\))?\s*:\s*([\d\u2013\u2014\-]+)/);
+  if(vanM){
+    f.author  = vanM[1].trim();
+    f.title   = vanM[2].trim();
+    f.journal = vanM[3].trim();
+    f.year    = vanM[4];
+    f.volume  = vanM[5];
+    f.number  = vanM[6] || '';
+    f.pages   = vanM[7].replace(/[\u2013\u2014]/g,'-');
+    return;
+  }
+  const vanShort = s.match(/^(.+?)\s+(\d{4})\s*;\s*(\d+)\s*(?:\((\d+)\))?\s*:\s*([\d\u2013\u2014\-]+)/);
+  if(vanShort){
+    f.year   = vanShort[2];
+    f.volume = vanShort[3];
+    f.number = vanShort[4] || '';
+    f.pages  = vanShort[5].replace(/[\u2013\u2014]/g,'-');
+    const before = vanShort[1].trim();
+    const dotIdx = before.lastIndexOf('. ');
+    if(dotIdx > 0){
+      f.title   = before.slice(dotIdx+2).trim();
+      const prev = before.slice(0, dotIdx);
+      const dot2 = prev.lastIndexOf('. ');
+      f.author  = dot2 > 0 ? prev.slice(0, dot2).trim() : prev.trim();
+      f.journal = dot2 > 0 ? prev.slice(dot2+2).trim() : '';
+    }
+    return;
+  }
+  genericParse(f, s);
+}
+function parseHarvard(f, s){
+  const harvM = s.match(/^(.+?),\s+(\d{4}[a-z]?)\.\s+(.+?)\.\s+([A-Za-z].+?),\s+(\d+)\s*(?:\((\d*)\))?,\s+pp?\.?\s*([\d–—\-]+)/);
+  if(harvM){ f.author=harvM[1].trim(); f.year=harvM[2]; f.title=harvM[3].trim(); f.journal=harvM[4].trim(); f.volume=harvM[5]; f.number=harvM[6]||''; f.pages=harvM[7].replace(/[–—]/g,'-'); }
+  else genericParse(f, s);
+}
+
+function parseIEEE(f, s){
+  const ieeeM = s.match(/^\[?\d*\]?\s*(.+?),\s+"(.+?)",?\s+([A-Za-z].+?),\s+vol\.\s*(\d+),\s+no\.\s*(\d+),\s+pp\.\s*([\d–—\-]+),\s+(\d{4})/i);
+  if(ieeeM){ f.author=ieeeM[1].trim(); f.title=ieeeM[2].trim(); f.journal=ieeeM[3].trim(); f.volume=ieeeM[4]; f.number=ieeeM[5]; f.pages=ieeeM[6].replace(/[–—]/g,'-'); f.year=ieeeM[7]; }
+  else genericParse(f, s);
+}
+
+function genericParse(f, s){
+  const yearM = s.match(/\b(19[5-9]\d|20[0-3]\d)\b/);
+  if(!yearM){ f.author = s.slice(0, 60).replace(/[.,\s]+$/,''); return; }
+
+  const yIdx = yearM.index;
+  f.author = s.slice(0, yIdx).replace(/[\(.,\s]+$/, '').trim();
+  f.year   = yearM[1];
+  const after = s.slice(yIdx + yearM[1].length).replace(/^[\)\.,\s]+/, '').trim();
+  const parts = after.split(/\.\s+/);
+
+  if(parts.length >= 1) f.title = parts[0].replace(/\.+$/,'').trim();
+
+  const volM = after.match(/(\d+)\s*\((\d+)\)\s*[:;,]\s*([\d\u2013\u2014\-]+)/);
+  if(volM){
+    f.volume = volM[1];
+    f.number = volM[2];
+    f.pages  = volM[3].replace(/[\u2013\u2014]/g,'-');
+    const beforeVol = after.slice(0, volM.index);
+    const jParts = beforeVol.split(/\.\s+/);
+    if(jParts.length > 1) f.journal = jParts[jParts.length-1].replace(/[.,\s]+$/,'').trim();
+  } else if(f.entryType === 'book' || f.entryType === 'misc'){
+    if(parts.length >= 2) f.publisher = parts[1].replace(/[.,\s]+$/,'').trim();
+    if(parts.length >= 3) f.address   = parts[2].replace(/[.,\s]+$/,'').trim();
+  } else if(parts.length >= 2){
+    f.journal = parts[1].replace(/[.,\s]+$/,'').trim();
+  }
+}
+// ── RENDER OUTPUT ──────────────────────────────────────────────────
+function renderOutput(){
+  let out = '';
+  if(currentFmt === 'bibtex') out = renderBibtex(parsedRefs);
+  else if(currentFmt === 'ris') out = renderRIS(parsedRefs);
+  else if(currentFmt === 'apa') out = renderAPA(parsedRefs);
+  
+  document.getElementById('outputArea').value = out;
+  document.getElementById('btnDownload').style.display = 'inline-flex';
+}
+
+function stripHtmlTags(s){ return (s||'').replace(/<[^>]+>/g,''); }
+function htmlItalicToAsterisk(s){ return (s||'').replace(/<i>(.*?)<\/i>/gi,'*$1*'); }
+
+function renderBibtex(refs){
+  return refs.map(f => {
+    const lines = [`@${f.entryType}{${f.key},`];
+    const add = (k, v) => { if(v && v !== '??' && String(v).trim()) lines.push(`  ${k.padEnd(12)}= {${v}},`); };
+    add('author',    f.author);
+    add('year',      f.year);
+    
+    let bibTitle = (f.title||'').replace(/<i>(.*?)<\/i>/gi, '\\textit{$1}').replace(/<[^>]+>/g, '');
+    add('title', `{{${bibTitle}}}`);
+    
+    if(f.entryType === 'article'){ add('journal', f.journal); add('volume', f.volume); add('number', f.number); add('pages', f.pages); add('doi', f.doi); add('url', f.url); } 
+    else if(f.entryType === 'incollection'){ add('booktitle', f.booktitle); add('editor', f.editor); add('pages', f.pages); add('publisher', f.publisher); add('address', f.address); } 
+    else if(f.entryType === 'book'){ add('publisher', f.publisher); add('address', f.address); add('url', f.url); } 
+    else if(f.entryType === 'phdthesis' || f.entryType === 'mastersthesis'){ add('school', f.school || f.institution || f.publisher || f.journal); add('type', f.thesisType || ''); } 
+    else { add('howpublished', f.publisher || f.url ? (f.url ? `\\url{${f.url}}` : f.publisher) : ''); add('url', f.url); add('note', f.note); }
+    if(f.entryType !== 'article') add('doi', f.doi);
+    if(!f.complete) add('note', 'FIELD INCOMPLETE -- periksa kembali');
+    lines.push('}');
+    return lines.join('\n');
+  }).join('\n\n');
+}
+
+function renderRIS(refs){
+  const typeMap = { article:'JOUR', book:'BOOK', incollection:'CHAP', phdthesis:'THES', mastersthesis:'THES', misc:'GEN', conference:'CONF' };
+  return refs.map(f => {
+    const lines = [];
+    const tag = (k, v) => { if(v && v !== '??' && String(v).trim()) lines.push(`${k}  - ${v}`); };
+    lines.push(`TY  - ${typeMap[f.entryType]||'JOUR'}`);
+    (f.author || '').split(/\s+and\s+|\s*&\s*|;\s*/).forEach(a => { const t=a.trim(); if(t) tag('AU', t); });
+    
+    const risTi = (f.title||'').replace(/<i>(.*?)<\/i>/gi,'$1').replace(/<[^>]+>/g,'');
+    tag('TI', risTi); tag('PY', f.year); 
+    const risJournal = stripHtmlTags(f.journal||'');
+    tag('JO', risJournal); tag('JF', risJournal); tag('VL', f.volume); tag('IS', f.number);
+    if(f.pages){ const pp = f.pages.split(/[-–—]/); tag('SP', pp[0]?.trim()); if(pp[1]) tag('EP', pp[1]?.trim()); }
+    tag('DO', f.doi);
+    tag('UR', f.url);
+    tag('PB', f.publisher || f.school); 
+    tag('CY', f.address);
+    tag('T2', f.booktitle);
+    tag('A2', f.editor);
+    lines.push('ER  - ');
+    return lines.join('\n');
+  }).join('\n\n');
+}
+
+function renderAPA(refs){
+  const sorted = [...refs].sort((a,b) => (a.author||'').localeCompare(b.author||''));
+  return sorted.map(f => {
+    const au = f.author ? f.author.replace(/;\s*/g,', ') : 'Unknown';
+    const yr = (f.year && f.year !== '??') ? `(${f.year}).` : '(n.d.).';
+
+    const titleClean = htmlItalicToAsterisk(f.title || '');
+    const ti = titleClean ? `${titleClean}.` : '';
+
+    let src = '';
+    if(f.entryType === 'article'){
+      const jName = f.journal ? `*${stripHtmlTags(f.journal)}*` : '';
+      src = jName ? `${jName}, ` : '';
+      if(f.volume) src += `*${f.volume}*`;
+      if(f.number) src += `(${f.number})`;
+      if(f.pages)  src += `, ${f.pages}.`;
+      else if(f.volume) src += `.`;
+    } else if(f.entryType === 'book'){
+      src = `${f.publisher || ''}.`;
+    } else if(f.entryType === 'incollection'){
+      const bt = f.booktitle ? `*${stripHtmlTags(f.booktitle)}*` : '';
+      const ed = f.editor ? `${f.editor} (Ed.), ` : '';
+      src = `In ${ed}${bt}${f.pages ? ` (pp. ${f.pages})` : ''}. ${f.publisher || ''}.`;
+    } else if(f.entryType === 'phdthesis' || f.entryType === 'mastersthesis'){
+      const typeStr = f.entryType === 'phdthesis' ? 'Disertasi' : 'Tesis/Skripsi';
+      src = `[${typeStr}, ${f.school || 'Universitas'}].`;
+    } else {
+      src = f.publisher || f.url || '';
+      if(src && !src.endsWith('.')) src += '.';
+    }
+
+    const doi = f.doi ? ` https://doi.org/${f.doi}` : (f.url ? ` ${f.url}` : '');
+    return `${au} ${yr} ${ti} ${src}${doi}`
+      .replace(/  +/g, ' ')
+      .replace(/\.\s*\.\s*/g, '. ')
+      .replace(/,\s*\.\s*/g, '. ')
+      .trim();
+  }).join('\n\n');
+}
+
+// ── MAIN CONVERT ───────────────────────────────────────────────────
+function runConvert(){
+  const rawData = document.getElementById('inputArea').value;
+  const raw = cleanWordFormatting(rawData);
+  if(!raw){ toast('Silakan masukkan daftar pustaka terlebih dahulu.', 'warn'); return; }
+
+  const styleInput = document.getElementById('styleInput').value;
+  const style = styleInput === 'auto' ? detectStyleFromText(raw) : styleInput;
+
+  const badge = document.getElementById('detectedStyleBadge');
+  badge.textContent = 'Terdeteksi: ' + style.toUpperCase();
+  badge.style.display = 'inline-flex';
+
+  const refs = splitIntoRefs(raw);
+  parsedRefs = refs.map(r => parseRef(r, style));
+
+  // DUPLICATE CHECKER LOGIC
+  const titleCount = {};
+  parsedRefs.forEach(f => {
+      const cleanTitle = (f.title||'').toLowerCase().replace(/[^a-z0-9]/g, '');
+      if(cleanTitle) titleCount[cleanTitle] = (titleCount[cleanTitle]||0) + 1;
+  });
+  
+  let dupeCount = 0;
+  parsedRefs.forEach(f => {
+      const cleanTitle = (f.title||'').toLowerCase().replace(/[^a-z0-9]/g, '');
+      if(cleanTitle && titleCount[cleanTitle] > 1) {
+          f.isDuplicate = true;
+          dupeCount++;
+      } else {
+          f.isDuplicate = false;
+      }
+  });
+
+  const keyCount = {}; parsedRefs.forEach(f => { keyCount[f.key] = (keyCount[f.key]||0) + 1; });
+  const keySeq = {}; parsedRefs.forEach(f => {
+    const baseKey = f.key;
+    if(keyCount[baseKey] > 1){
+      const seq = keySeq[baseKey] || 0;
+      f.key = baseKey + String.fromCharCode(97 + seq); 
+      keySeq[baseKey] = seq + 1;
+    }
+  });
+
+  const counts = {article:0, book:0, other:0, complete:0, partial:0};
+  parsedRefs.forEach(f => {
+    if(f.entryType==='article') counts.article++;
+    else if(f.entryType==='book'||f.entryType==='incollection') counts.book++;
+    else counts.other++;
+    if(f.complete) counts.complete++; else counts.partial++;
+  });
+
+  document.getElementById('statTotal').textContent   = parsedRefs.length;
+  document.getElementById('statArticle').textContent  = counts.article;
+  document.getElementById('statBook').textContent     = counts.book;
+  document.getElementById('statOther').textContent    = counts.other;
+  document.getElementById('statComplete').textContent = counts.complete;
+  document.getElementById('statPartial').textContent  = counts.partial;
+  document.getElementById('statsStrip').style.display = 'flex';
+  
+  const dBadge = document.getElementById('dupeBadge');
+  if(dupeCount > 0) {
+      dBadge.style.display = 'inline-flex';
+      dBadge.textContent = `${dupeCount} Duplikat Terdeteksi`;
+      toast(`Peringatan: Terdapat ${dupeCount} referensi yang identik/duplikat!`, 'warn');
+  } else {
+      dBadge.style.display = 'none';
+  }
+
+  renderOutput();
+  renderPreviewTable();
+  document.getElementById('previewCard').style.display = 'block'; 
+  
+  setTimeout(() => {
+      document.getElementById('previewCard').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 150);
+
+  const statusEl = document.getElementById('convertStatus');
+  statusEl.textContent = `${parsedRefs.length} referensi dikonversi · ${counts.partial} perlu direview`;
+  statusEl.style.color = counts.partial>0 ? 'var(--warning)' : 'var(--success)';
+
+  if(dupeCount === 0) toast(`${parsedRefs.length} referensi berhasil dikonversi ke ${currentFmt.toUpperCase()}.`);
+}
+
+// ── FITUR: AUTO ITALIC LATIN NAMES ──
+const AQUA_GENERA = [
+  'Oreochromis','Cyprinus','Clarias','Channa','Pangasius','Lates','Rasbora','Tor',
+  'Mystus','Barbonymus','Hampala','Notopterus','Osphronemus','Trichopodus',
+  'Epinephelus','Salmo','Oncorhynchus','Salvelinus','Danio','Carassius',
+  'Puntius','Labeo','Cirrhinus','Hypophthalmichthys','Ctenopharyngodon',
+  'Colossoma','Arapaima','Acanthopagrus','Siganus','Lutjanus','Mugil',
+  'Penaeus','Litopenaeus','Macrobrachium','Metapenaeus','Fenneropenaeus',
+  'Marsupenaeus','Parapenaeopsis','Scylla','Portunus','Cherax','Procambarus',
+  'Crassostrea','Perna','Mytilus','Haliotis','Trochus','Anadara',
+  'Vibrio','Streptococcus','Aeromonas','Pseudomonas','Flavobacterium',
+  'Edwardsiella','Yersinia','Mycobacterium','Nocardia','Piscirickettsia',
+  'Lactobacillus','Bacillus','Bifidobacterium','Saccharomyces','Candida',
+  'Aspergillus','Enterococcus','Pediococcus','Leuconostoc','Lactococcus',
+  'Weissella','Ligilactobacillus','Limosilactobacillus',
+  'Escherichia','Staphylococcus','Micrococcus','Klebsiella','Shewanella',
+  'Chlorella','Nannochloropsis','Spirulina','Artemia','Dunaliella','Haematococcus',
+  'Chaetoceros','Skeletonema','Tetraselmis','Isochrysis',
+  'Trichodina','Dactylogyrus','Ichthyophthirius','Gyrodactylus','Henneguya'
+];
+
+function applyItalicToTitle(title) {
+  if(!title) return title;
+
+  let t = title.replace(/<\/?i>/gi, '');
+
+  const generaPattern = AQUA_GENERA.join('|');
+  const GENUS_SPECIES = new RegExp(
+    '(?<![>\\w])(' + generaPattern + ')' +   
+    '(?:\\s+(?:sp\\.|spp\\.|cf\\.|aff\\.))*' + 
+    '(?:\\s+([a-z][a-z]{2,}(?:\\s+[a-z]{2,})?))?', 
+    'g'
+  );
+
+  t = t.replace(GENUS_SPECIES, (match, genus, epithet) => {
+    return epithet ? `<i>${genus} ${epithet}</i>` : `<i>${genus}</i>`;
+  });
+
+  t = t.replace(
+    /\(([A-Z][a-z]{3,})\s+([a-z]{4,})\)/g,
+    (m, g, sp) => `(<i>${g} ${sp}</i>)`
+  );
+
+  t = t.replace(
+    /(?<![>])([A-Z][a-z]{3,})\s+(spp?\.)(?!\s*<\/i>)/g,
+    '<i>$1</i> $2'
+  );
+
+  return t;
+}
+
+function autoItalicize() {
+  let count = 0;
+  parsedRefs.forEach(f => {
+    if(!f.title) return;
+    const newTitle = applyItalicToTitle(f.title);
+    if(f.title !== newTitle){ f.title = newTitle; count++; }
+  });
+  if(count > 0){
+    renderOutput();
+    renderPreviewTable();
+    toast(`${count} judul diperbarui dengan italic nama ilmiah.`, 'ok');
+  } else {
+    toast('Tidak ada nama ilmiah spesifik yang terdeteksi.', 'info');
+  }
+}
+
+// ── FITUR: NAME FLIPPER (Ubah Dandi Setio Wibowo -> Wibowo, D. S.) ──
+function flipNames() {
+    let flippedCount = 0;
+    parsedRefs.forEach((f, i) => {
+        if(!f.author || f.author === '??') return;
+        const sepRegex = /\s+and\s+|\s*&\s*|;\s*/i;
+        const authors = f.author.split(sepRegex);
+        const flipped = authors.map(a => {
+            a = a.trim();
+            if(a.includes(',')) return a; 
+            const parts = a.split(/\s+/);
+            if(parts.length <= 1) return a;
+            const last = parts.pop();
+            const initials = parts.map(p => p[0].toUpperCase() + '.').join(' ');
+            return `${last}, ${initials}`;
+        });
+        const newAuthor = flipped.join(' and ');
+        if(f.author !== newAuthor) {
+            f.author = newAuthor;
+            flippedCount++;
+        }
+    });
+    if(flippedCount > 0) {
+        renderOutput();
+        renderPreviewTable();
+        toast(`Berhasil membalik format nama pada ${flippedCount} referensi!`, 'ok');
+    } else {
+        toast('Semua nama sudah berformat (Last, F.) atau tidak bisa dibalik.', 'info');
+    }
+}
+
+// ── FITUR: AUTO COMPLETE CROSSREF API ──
+async function autoCompleteCrossref() {
+    toast('Menghubungi Server Crossref API global...', 'info');
+    let updated = 0;
+    const emailAnda = "dandiswibowo@gmail.com";  
+    
+    for(let i=0; i<parsedRefs.length; i++){
+        let f = parsedRefs[i];
+        if(f.doi && (!f.complete || f.author==='??' || !f.journal || !f.volume || !f.pages)) {
+            try {
+                const res = await fetch(`https://api.crossref.org/works/${f.doi}?mailto=${emailAnda}`);
+                if(!res.ok) continue;
+                const data = await res.json();
+                const msg = data.message;
+                
+                if(msg.author) {
+                   f.author = msg.author.map(a => `${a.family||''}, ${a.given||''}`.replace(/,\s*$/, '')).join(' and ');
+                }
+                if(msg.title && msg.title.length) f.title = msg.title[0];
+                if(msg['container-title'] && msg['container-title'].length) f.journal = msg['container-title'][0];
+                if(msg.volume) f.volume = msg.volume;
+                if(msg.issue) f.number = msg.issue;
+                if(msg.page) f.pages = msg.page;
+                if(msg.published && msg.published['date-parts']) f.year = msg.published['date-parts'][0][0];
+
+                const filled = [f.author, f.year, f.title, f.journal].filter(Boolean).length;
+                f.complete = filled >= 3; 
+                updated++;
+            } catch(e) {
+                console.error('Gagal mengambil data DOI:', f.doi, e);
+            }
+        }
+    }
+    if(updated > 0) {
+        renderOutput();
+        renderPreviewTable();
+        toast(`Sukses! ${updated} referensi telah dilengkapi datanya dari Crossref.`, 'ok');
+    } else {
+        toast('Selesai. Tidak ada data baru yang bisa diekstrak dari DOI.', 'info');
+    }
+}
+
+// ── LIVE EDIT (REAKTIF) ────────────────────────────────────────────
+function updateRef(index, field, value) {
+  const f = parsedRefs[index];
+  const val = value.trim();
+
+  if (field === 'source') {
+      if (f.entryType === 'article') f.journal = val;
+      else if (f.entryType === 'book') f.publisher = val;
+      else if (f.entryType === 'incollection') f.booktitle = val;
+      else if (f.entryType === 'phdthesis' || f.entryType === 'mastersthesis') f.school = val;
+      else f.journal = val;
+  } else {
+      f[field] = val;
+  }
+
+  const filled = [
+      f.author && f.author !== '??',
+      f.year && f.year !== '??',
+      f.title && f.title !== '??',
+      !!(f.journal || f.publisher || f.booktitle || f.school)
+  ].filter(Boolean).length;
+  f.complete = filled >= 3;
+
+  renderOutput();
+
+  const checkCell = document.getElementById(`check-${index}`);
+  if (checkCell) {
+      checkCell.innerHTML = f.complete ? '<span class="status-ok">✓</span>' : '<span class="status-partial">⚠</span>';
+  }
+}
+
+function updateType(index, newType, selectEl) {
+  const f = parsedRefs[index];
+  f.entryType = newType;
+
+  const filled = [
+      f.author && f.author !== '??',
+      f.year && f.year !== '??',
+      f.title && f.title !== '??',
+      !!(f.journal || f.publisher || f.booktitle || f.school)
+  ].filter(Boolean).length;
+  f.complete = filled >= 3;
+
+  renderOutput();
+
+  const checkCell = document.getElementById(`check-${index}`);
+  if (checkCell) {
+      checkCell.innerHTML = f.complete ? '<span class="status-ok">✓</span>' : '<span class="status-partial">⚠</span>';
+  }
+
+  const typeTag = {article:'tag-article',book:'tag-book',incollection:'tag-book',phdthesis:'tag-thesis',mastersthesis:'tag-thesis',misc:'tag-misc'};
+  selectEl.className = `select-badge ${typeTag[newType]||'tag-misc'}`;
+}
+
+// ── PREVIEW TABLE ──────────────────────────────────────────────────
+function makeEditCell(idx, field, val, extraStyle, isHTML = false){
+  const td = document.createElement('td');
+  td.contentEditable = 'true';
+  td.setAttribute('data-index', idx);
+  td.setAttribute('data-field', field);
+  td.setAttribute('oninput', `updateRef(${idx},'${field}', this.${isHTML ? 'innerHTML' : 'innerText'})`);
+  if(extraStyle) td.style.cssText = extraStyle;
+  if(isHTML) td.innerHTML = val || '';
+  else td.textContent = val || '';
+  return td;
+}
+
+function renderPreviewTable(){
+  const tbody = document.getElementById('previewBody');
+  tbody.innerHTML = '';
+  const typeTag   = {article:'tag-article',book:'tag-book',incollection:'tag-book',phdthesis:'tag-thesis',mastersthesis:'tag-thesis',misc:'tag-misc'};
+  
+  const typeOpts = [
+    {val:'article', lbl:'Jurnal'},
+    {val:'book', lbl:'Buku'},
+    {val:'incollection', lbl:'Bab Buku'},
+    {val:'phdthesis', lbl:'Tesis/Skripsi'},
+    {val:'misc', lbl:'Web/Lainnya'}
+  ];
+
+  parsedRefs.forEach((f,i)=>{
+    const sourceVal = f.journal || f.publisher || f.booktitle || f.school || '';
+    const tr = document.createElement('tr');
+    
+    // Highlight Duplikat
+    if(f.isDuplicate) tr.classList.add('duplicate-row');
+
+    const tdNum = document.createElement('td');
+    tdNum.style.cssText = 'color:var(--text3);font-size:11px;';
+    tdNum.textContent = i + 1;
+    tr.appendChild(tdNum);
+
+    tr.appendChild(makeEditCell(i,'author', f.author,
+      'font-family:var(--font-mono);font-size:11px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'));
+    tr.appendChild(makeEditCell(i,'year', f.year==='??'?'':f.year,
+      'font-family:var(--font-mono);font-weight:700;color:var(--primary);width:50px;'));
+      
+    tr.appendChild(makeEditCell(i,'title', f.title,
+      'max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;', true));
+      
+    tr.appendChild(makeEditCell(i,'source', sourceVal,
+      'max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--text3);'));
+    tr.appendChild(makeEditCell(i,'volume', f.volume,
+      'font-family:var(--font-mono);font-size:11px;color:var(--text3);width:40px;'));
+    tr.appendChild(makeEditCell(i,'number', f.number,
+      'font-family:var(--font-mono);font-size:11px;color:var(--text3);width:40px;'));
+    tr.appendChild(makeEditCell(i,'pages', f.pages,
+      'font-family:var(--font-mono);font-size:11px;color:var(--text3);width:60px;'));
+
+    // Select Dropdown untuk Tipe
+    const tdType = document.createElement('td');
+    let currentTypeUI = f.entryType === 'mastersthesis' ? 'phdthesis' : f.entryType;
+    
+    let selHtml = `<select class="select-badge ${typeTag[currentTypeUI]||'tag-misc'}" onchange="updateType(${i}, this.value, this)">`;
+    typeOpts.forEach(t => {
+      const sel = currentTypeUI === t.val ? 'selected' : '';
+      selHtml += `<option value="${t.val}" ${sel}>${t.lbl}</option>`;
+    });
+    selHtml += `</select>`;
+    tdType.innerHTML = selHtml;
+    tr.appendChild(tdType);
+
+    const tdCheck = document.createElement('td');
+    tdCheck.id = `check-${i}`;
+    tdCheck.style.textAlign = 'center';
+    tdCheck.innerHTML = f.complete
+      ? '<span class="status-ok">✓</span>'
+      : '<span class="status-partial">⚠</span>';
+    tr.appendChild(tdCheck);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function showPreviewTable(){
+  document.getElementById('previewCard').style.display = 'block';
+  document.getElementById('previewCard').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// ── COPY / DOWNLOAD ────────────────────────────────────────────────
+function copyOutput(){
+  const el = document.getElementById('outputArea');
+  if(!el.value.trim()){ toast('Belum ada output untuk disalin.', 'info'); return; }
+  navigator.clipboard ? navigator.clipboard.writeText(el.value) : (el.select(), document.execCommand('copy'));
+  toast('Output berhasil disalin ke clipboard.');
+}
+
+function downloadOutput(){
+  const text = document.getElementById('outputArea').value;
+  if(!text.trim()) return;
+  
+  let mime = 'text/plain';
+  let ext = 'txt';
+  
+  if(currentFmt === 'bibtex'){ mime = 'text/x-bibtex'; ext = 'bib'; }
+  else if(currentFmt === 'ris'){ mime = 'application/x-research-info-systems'; ext = 'ris'; }
+
+  const blob = new Blob([text], {type: `${mime};charset=utf-8`});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `referensi.${ext}`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+  toast(`File referensi.${ext} berhasil diunduh.`);
+}
+
+// PWA Service Worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js')
+      .then(()=>console.log('CiteShift SW aktif'))
+      .catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
