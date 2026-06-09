@@ -628,7 +628,10 @@ ${content}
 """`;
 
   try {
-    const response = await fetch('/api/gemini', {
+    // Arahkan tembakan langsung ke domain Vercel Anda
+    const URL_VERCEL = 'https://aquaculture-research-ecosystem.vercel.app'; 
+    
+    const response = await fetch(`${URL_VERCEL}/api/gemini`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt })
