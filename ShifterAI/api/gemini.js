@@ -1,5 +1,20 @@
 export default async function handler(req, res) {
-  // 1. Keamanan Dasar: Hanya izinkan POST
+  // =====================================================================
+  // 1. PENGATURAN CORS (MENGIZINKAN GITHUB MENGAKSES VERCEL)
+  // =====================================================================
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Mengizinkan semua domain, termasuk GitHub Pages Anda
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+
+  // Menangani permintaan 'Preflight' dari browser (wajib untuk keamanan lintas-domain)
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // =====================================================================
+  // 2. LOGIKA UTAMA GEMINI AI
+  // =====================================================================
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method tidak diizinkan. Harap gunakan POST.' });
   }
@@ -10,13 +25,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Prompt tidak boleh kosong.' });
     }
 
-    // Ambil API Key dari Brankas Vercel
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return res.status(500).json({ error: 'API Key tidak ditemukan di Vercel Environment.' });
     }
 
-    // 2. NATIVE FETCH: Upgrade ke gemini-2.5-flash yang aktif saat ini!
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const apiResponse = await fetch(endpoint, {
@@ -27,10 +40,8 @@ export default async function handler(req, res) {
       })
     });
 
-    // 3. Parsing jawaban dari Google
     const data = await apiResponse.json();
 
-    // Jika Google menolak permintaan (misal: API key salah / kuota habis)
     if (!apiResponse.ok) {
       console.error("Google API Error:", data);
       return res.status(500).json({ 
@@ -38,15 +49,11 @@ export default async function handler(req, res) {
       });
     }
 
-    // 4. Ekstrak teks naskah dan kirim ke Frontend (ShifterAI)
     const responseText = data.candidates[0].content.parts[0].text;
     return res.status(200).json({ result: responseText });
 
   } catch (error) {
-    // Tangkap jika terjadi server crash
     console.error("Terjadi kesalahan sistem di Vercel:", error);
-    return res.status(500).json({ 
-      error: `Kegagalan Server: ${error.message}` 
-    });
+    return res.status(500).json({ error: `Kegagalan Server: ${error.message}` });
   }
 }
