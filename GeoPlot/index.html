@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GeoPlot — Cartographic Workspace by DSW</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%23FCD34D%22>📍</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Times+New+Roman&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<style>
+/* ============================================================
+   AREs DESIGN SYSTEM — GeoPlot 11.1 (Geolocation Patch)
+   ============================================================ */
+:root {
+  --bg: #F8FAFC; --surface: #FFFFFF; --surface-hover: #F1F5F9;
+  --border: #E2E8F0; --border-focus: #94A3B8;
+  --text: #0F172A; --text2: #475569; --text3: #94A3B8;
+  --primary: #D97706; --primary-light: #FEF3C7; --primary-dark: #B45309; 
+  --success: #16A34A; --danger: #DC2626; --warning: #F59E0B; --info: #3B82F6;
+  --font-sans: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; --font-serif: 'Fraunces', serif;
+  --radius: 8px;
+  --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+}
+
+[data-theme="dark"] {
+  --bg: #0F172A; --surface: #1E293B; --surface-hover: #334155;
+  --border: #334155; --border-focus: #475569;
+  --text: #F8FAFC; --text2: #CBD5E1; --text3: #94A3B8;
+  --primary: #FCD34D; --primary-light: #451A03; --primary-dark: #FDE047;
+  --success: #4ADE80; --danger: #F87171; --warning: #FBBF24; --info: #60A5FA;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100vh; overflow: hidden; }
+body { font-family: var(--font-sans); background: var(--bg); color: var(--text); display: flex; flex-direction: column; font-size: 14px; transition: background 0.3s, color 0.3s; }
+
+.dsw-icon-styled { filter: grayscale(100%); display: inline-block; vertical-align: middle; margin-right: 4px; transition: filter 0.3s ease; }
+[data-theme="dark"] .dsw-icon-styled { filter: grayscale(100%) brightness(1.3) sepia(1) hue-rotate(35deg) saturate(5); }
+[data-theme="light"] .dsw-icon-styled { filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(35deg) saturate(4); }
+
+/* Header Utama */
+header { background: var(--surface); padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 50; box-shadow: var(--shadow); }
+.brand { display: flex; align-items: center; gap: 6px; }
+.brand-text { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+.brand-text span { color: var(--primary); }
+.brand-sub { font-family: var(--font-sans); font-size: 11px; color: var(--text3); margin-left: 6px; margin-top: 2px; }
+.header-actions { display: flex; gap: 6px; }
+
+/* Tombol Dasar */
+.btn { padding: 7px 14px; border-radius: 6px; font-family: var(--font-sans); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
+.btn-primary { background: var(--primary); color: #000; border-color: var(--primary); box-shadow: 0 4px 10px rgba(252, 211, 77, 0.15); }
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.btn-outline { background: transparent; border-color: var(--border); color: var(--text2); }
+.btn-outline:hover { background: var(--surface-hover); color: var(--text); }
+.btn-success { background: var(--success); color: #fff; box-shadow: 0 4px 10px rgba(74, 222, 128, 0.2); }
+.btn-success:hover { background: #15803d; transform: translateY(-1px); }
+.btn-info { background: transparent; color: var(--info); border: 1px dashed var(--info); }
+.btn-info.active { background: rgba(59, 130, 246, 0.15); border: 1px solid var(--info); }
+.btn-warning { background: transparent; color: var(--warning); border: 1px solid var(--warning); }
+.btn-warning:hover { background: var(--warning); color: #000; }
+.btn-sm { padding: 5px 10px; font-size: 11px; }
+.btn-toggle { background: transparent; border: 1px dashed var(--border-focus); color: var(--text2); width: 100%; transition: all 0.3s; }
+.btn-toggle.active { background: rgba(252, 211, 77, 0.15); border: 1px solid var(--primary); color: var(--primary); box-shadow: inset 0 0 8px rgba(252, 211, 77, 0.1); }
+
+/* Layout Workspace Utama */
+.main-wrap { flex: 1; display: flex; flex-direction: column; width: 100%; max-width: 1750px; margin: 0 auto; padding: 12px 20px; overflow: hidden; }
+
+/* Page Header & Actions */
+.page-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; flex-shrink: 0; }
+.page-title { font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--text); letter-spacing: -0.4px; margin-bottom: 2px; }
+.page-title .accent { color: var(--primary); }
+
+.geo-layout { flex: 1; display: flex; gap: 15px; overflow: hidden; min-height: 0; }
+
+/* PANEL KIRI (Scrollable Setup) */
+.panel-pengaturan { width: 420px; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding-right: 8px; padding-bottom: 20px; }
+.panel-pengaturan::-webkit-scrollbar { width: 5px; }
+.panel-pengaturan::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius: 10px; }
+
+/* Cards & Forms */
+.card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 16px; flex-shrink: 0; }
+.card-title { font-size: 11px; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; font-family: var(--font-mono); display: flex; align-items: center; gap: 6px; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.form-group { margin-bottom: 12px; }
+.form-group:last-child { margin-bottom: 0; }
+.form-group label { display: block; font-family: var(--font-sans); font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.form-control { width: 100%; padding: 6px 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 4px; font-family: var(--font-mono); font-size: 12px; outline: none; transition: border-color 0.2s; }
+.form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(252, 211, 77, 0.15); background: var(--surface); }
+.flex-row { display: flex; gap: 10px; align-items: flex-start; }
+
+input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28px; }
+
+/* Tabel Input Data User-Friendly */
+.table-data-wrap { max-height: 180px; overflow-y: auto; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); margin-top: 10px;}
+.table-data-wrap::-webkit-scrollbar { width: 4px; }
+.table-data-wrap::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius: 4px; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 10px; text-align: left; }
+.data-table th { background: var(--surface-hover); padding: 6px; border-bottom: 1px solid var(--border); position: sticky; top: 0; color: var(--text3); font-weight: 700; text-transform: uppercase; z-index: 1;}
+.data-table td { padding: 6px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.badge-neutral { display: inline-block; padding: 2px 6px; background: var(--surface-hover); border: 1px solid var(--border-focus); border-radius: 4px; font-size: 9px; color: var(--text2); }
+
+/* PANEL KANAN (Kanvas Maksimal) */
+.panel-peta-wrapper { flex: 1; display: flex; flex-direction: column; background: var(--surface-hover); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); position: relative; }
+.peta-action-bar { padding: 10px 20px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
+.peta-workspace { flex: 1; display: flex; justify-content: center; align-items: center; overflow: hidden; padding: 20px; position: relative; }
+
+/* Status Bar Info Real-time Bawah */
+.map-status-bar { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); padding: 6px 16px; display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10px; color: #e2e8f0; z-index: 20; border-top: 1px solid var(--border-focus); }
+[data-theme="light"] .map-status-bar { background: rgba(255, 255, 255, 0.85); color: #334155; border-top: 1px solid var(--border); }
+.status-item { display: flex; align-items: center; gap: 6px; }
+
+/* =========================================================
+   GIS PRINT LAYOUT KERTAS PETA
+   ========================================================= */
+.map-paper { background: #FFFFFF; box-shadow: 0 10px 30px rgba(0,0,0,0.25); padding: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #cbd5e1; margin: auto; transition: width 0.3s ease, height 0.3s ease; }
+.layout-header { text-align: center; color: #000; border-bottom: 2px solid #000; padding-bottom: 6px; }
+.layout-title { font-family: 'Times New Roman', Times, serif; font-size: 18px; font-weight: bold; text-transform: uppercase; margin: 0; letter-spacing: 1px; }
+.layout-subtitle { font-family: 'Arial', sans-serif; font-size: 11px; color: #333; margin: 3px 0 0 0; }
+.layout-body { flex: 1; border: 2px solid #1e293b; position: relative; display: flex; padding: 2px; background: #fff; min-height: 0; }
+.map-canvas-border { flex: 1; border: 1px solid #475569; position: relative; min-height: 0; }
+#map { width: 100%; height: 100%; background: #f1f5f9; z-index: 1; }
+#map.crosshair-mode { cursor: crosshair !important; }
+#map.measure-mode { cursor: crosshair !important; }
+.layout-footer { display: flex; justify-content: space-between; align-items: flex-end; font-family: 'Arial', sans-serif; font-size: 9px; color: #000; }
+.footer-left { text-align: left; line-height: 1.4; }
+.footer-right { text-align: right; }
+
+/* Legenda & Skala Kartografi */
+.gis-legend { background: rgba(255, 255, 255, 0.95); border: 1px solid #1e293b; padding: 8px; font-family: 'Arial', sans-serif; color: #000; min-width: 100px; box-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
+.gis-legend h4 { margin: 0 0 6px 0; font-size: 11px; border-bottom: 1px solid #ccc; padding-bottom: 3px; text-transform: uppercase;}
+.gis-legend-item { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 10px; }
+.legend-color-box { width: 12px; height: 12px; border: 1px solid #000; border-radius: 50%; }
+
+.custom-fractional-scale { background: rgba(255, 255, 255, 0.9); padding: 3px 6px; border: 1px solid #1e293b; font-family: 'Arial', sans-serif; font-size: 11px; font-weight: bold; color: #000; box-shadow: 2px 2px 0px rgba(0,0,0,0.1); margin-bottom: 4px !important; margin-left: 10px !important; }
+.leaflet-control-scale-line { border: 2px solid #000 !important; border-top: none !important; background-color: rgba(255,255,255,0.75) !important; background-image: repeating-linear-gradient(90deg, #000 0%, #000 50%, transparent 50%, transparent 100%) !important; background-size: 20% 6px !important; background-position: bottom left !important; background-repeat: no-repeat !important; height: 20px !important; color: #000 !important; font-weight: 900 !important; font-size: 11px !important; line-height: 10px !important; text-shadow: 1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff !important; box-shadow: 2px 2px 4px rgba(0,0,0,0.3) !important; padding-bottom: 6px !important; box-sizing: border-box !important; overflow: hidden !important; }
+
+/* Kompas */
+.north-arrow { width: 35px; height: 45px; background-size: contain; background-repeat: no-repeat; background-position: center; filter: drop-shadow(1px 1px 2px rgba(255,255,255,0.9)); margin: 10px; }
+.north-classic { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 2L16 22L12 17L8 22L12 2Z"/></svg>'); }
+.north-minimal { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black"><path d="M12 2L22 22H2L12 2Z"/><text x="12" y="23" font-family="Arial" font-weight="bold" font-size="8" text-anchor="middle" fill="black">N</text></svg>'); }
+.north-compass { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,5 60,40 95,50 60,60 50,95 40,60 5,50 40,40" fill="white" stroke="black" stroke-width="2"/><polygon points="50,5 50,50 40,40" fill="black"/><polygon points="95,50 50,50 60,40" fill="black"/><polygon points="50,95 50,50 60,60" fill="black"/><polygon points="5,50 50,50 40,60" fill="black"/><text x="50" y="25" font-family="Arial" font-weight="bold" font-size="16" text-anchor="middle" fill="white">N</text></svg>'); width: 45px; height: 45px; }
+
+/* Tooltip Penggaris & Deskripsi Peta */
+.measure-tooltip { background: rgba(0,0,0,0.85); border: 1px solid var(--danger); color: #fff; padding: 6px 10px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; font-weight: bold; white-space: nowrap; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+.leaflet-tooltip-left.measure-tooltip::before { border-left-color: var(--danger); }
+.leaflet-tooltip-right.measure-tooltip::before { border-right-color: var(--danger); }
+
+/* Atribusi Label Marker Deskripsi */
+.custom-point-tooltip { background: rgba(255, 255, 255, 0.95); border: 1px solid #1e293b; color: #000; font-family: 'Arial', sans-serif; font-size: 10px; padding: 4px 6px; border-radius: 4px; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+[data-theme="dark"] .custom-point-tooltip { background: rgba(15, 23, 42, 0.85); color: #f8fafc; border-color: #475569; }
+
+/* Toast Notifikasi */
+.toast-container{position:fixed;bottom:40px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--surface);border:1px solid var(--border);padding:11px 16px;border-radius:8px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;pointer-events:all;box-shadow:var(--shadow-md);animation:toastIn .25s ease}
+@keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.toast.hide{animation:toastOut .25s forwards}
+@keyframes toastOut{to{opacity:0;transform:translateX(16px)}}
+
+/* MODAL PANDUAN */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+.modal-window { background: var(--surface); width: 90%; max-width: 650px; max-height: 85vh; border-radius: 12px; display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.4); border: 1px solid var(--border); transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.modal-overlay.show .modal-window { transform: translateY(0); }
+.modal-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--surface-hover); border-radius: 12px 12px 0 0; }
+.modal-header h2 { font-family: var(--font-serif); font-size: 18px; color: var(--text); margin: 0; }
+.modal-close { background: transparent; border: none; color: var(--text3); font-size: 20px; cursor: pointer; transition: color 0.2s; }
+.modal-close:hover { color: var(--danger); }
+.modal-body { padding: 24px; overflow-y: auto; line-height: 1.7; color: var(--text2); font-size: 13.5px; }
+.modal-body h3 { font-size: 15px; color: var(--primary); margin: 20px 0 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+.modal-body h3:first-child { margin-top: 0; }
+.modal-body ul { padding-left: 20px; margin-bottom: 15px; }
+.modal-body li { margin-bottom: 6px; }
+.changelog-item { border-left: 3px solid var(--primary); padding-left: 12px; margin-bottom: 15px; }
+.changelog-ver { font-weight: bold; color: var(--text); font-family: var(--font-mono); font-size: 13px; }
+
+/* Responsivitas HP */
+@media(max-width: 900px) {
+  html, body { overflow: auto; height: auto; }
+  .geo-layout { flex-direction: column; height: auto; overflow: visible; }
+  .panel-pengaturan { width: 100%; overflow: visible; padding-right: 0; }
+  .panel-peta-wrapper { border: none; background: transparent; height: auto; overflow: visible; }
+  .peta-workspace { padding: 0; height: 500px; overflow: hidden; margin-bottom: 40px;}
+  .map-paper { height: 100% !important; width: 100% !important; }
+  .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .page-header > div:last-child { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-icon dsw-icon-styled">📍</span>
+    <span class="brand-text">Geo<span class="accent">Plot</span></span>
+    <span class="brand-sub">by DSW</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-outline btn-sm" onclick="openGuide()"><span class="dsw-icon-styled">📖</span> <span data-i18n="btnGuide">Panduan</span></button>
+    <button class="btn btn-outline btn-sm" onclick="toggleLanguage()"><span class="dsw-icon-styled">🌐</span> <span id="langIndicator">ID</span></button>
+    <button class="btn btn-outline btn-sm" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> <span data-i18n="theme">Tema</span></button>
+  </div>
+</header>
+
+<div class="main-wrap">
+    
+    <div class="page-header">
+      <div>
+          <div class="page-title"><span data-i18n="pageTitle">Cartographic Layout Generator</span></div>
+          <div class="brand-sub" style="margin:0; font-size: 12px;" data-i18n="pageDesc">Platform Pemetaan Spasial Interaktif untuk Visualisasi Riset Akuakultur & Ekologi.</div>
+      </div>
+      <div style="display:flex; gap: 8px;">
+          <button class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);" onclick="generateMap(true)">
+              <span style="font-size: 16px;">🚀</span> <span data-i18n="btnRender">Render Peta</span>
+          </button>
+          <button class="btn btn-success" onclick="exportToPNG()">
+              <span style="font-size: 16px;">🖼️</span> <span data-i18n="btnExport">Ekspor Peta Publikasi (PNG)</span>
+          </button>
+          <button class="btn btn-outline" style="border-color: var(--info); color: var(--info);" onclick="exportToSVG()">
+              <span style="font-size: 16px;">📉</span> <span data-i18n="btnExportSVG">Ekspor Vektor (SVG)</span>
+          </button>
+      </div>
+    </div>
+
+    <div class="geo-layout">
+        
+        <div class="panel-pengaturan">
+            
+            <div class="card">
+                <div class="card-title">🎨 <span data-i18n="titleAttr">1. Visual Kartografi</span></div>
+                <div class="form-group">
+                    <input type="text" id="mapTitle" class="form-control" placeholder="PETA ZONASI PENELITIAN..." oninput="updateLayout()">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="mapSubtitle" class="form-control" placeholder="Desa X, Kabupaten Y, Provinsi Z" oninput="updateLayout()">
+                </div>
+                <div class="form-group" style="margin-top:8px;">
+                    <label data-i18n="lblBasemap">Peta Dasar (Basemap)</label>
+                    <select id="mapStyleSelector" class="form-control" onchange="changeMapStyle()">
+                        <optgroup label="Satelit & Citra">
+                            <option value="esriSatellite" selected>Esri World Imagery</option>
+                        </optgroup>
+                        <optgroup label="Perairan & Laut (Akuakultur)">
+                            <option value="esriOcean">Esri Ocean Base</option>
+                        </optgroup>
+                        <optgroup label="Topografi & Darat">
+                            <option value="esriTopo">Esri World Topo Map</option>
+                            <option value="esriNatGeo">National Geographic</option>
+                            <option value="openTopo">OpenTopoMap (Kontur)</option>
+                        </optgroup>
+                        <optgroup label="Peta Jalan & Minimalis">
+                            <option value="osmStandard">OpenStreetMap (Street)</option>
+                            <option value="cartoDark">CartoDB Dark Matter</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top: 8px; margin-bottom: 0;">
+                    <label data-i18n="lblMode">Bentuk Sebaran Data (Simbol Utama)</label>
+                    <select id="plotMode" class="form-control" onchange="generateMap(false)">
+                        <option value="marker" data-i18n="optPoint">Titik Stasiun (Marker Simbol)</option>
+                        <option value="polyline" data-i18n="optLine">Jalur Transek (Polyline)</option>
+                        <option value="polygon" data-i18n="optPoly">Area Terhubung (Blok Poligon)</option>
+                    </select>
+                </div>
+                <div class="form-group" style="margin-top: 8px; margin-bottom: 0;">
+                    <button class="btn btn-outline btn-sm" style="width:100%; border-style:dashed;" onclick="toggleLabels()">
+                        🏷️ <span id="lblToggleText" data-i18n="btnLabelToggle">Sembunyikan Label Nama di Peta</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📐 <span data-i18n="titleRes">2. Tata Letak Kertas & Instrumen</span></div>
+                <div class="flex-row">
+                    <div class="form-group" style="flex: 1;">
+                        <label data-i18n="lblRatio">Rasio Kertas Peta</label>
+                        <select id="paperSize" class="form-control" onchange="changePaperSize()">
+                            <option value="1.414 / 1" selected data-i18n="optA4L">A4 Landscape</option>
+                            <option value="0.707 / 1" data-i18n="optA4P">A4 Portrait</option>
+                            <option value="16 / 9" data-i18n="opt169">Layar Lebar (16:9)</option>
+                            <option value="1 / 1" data-i18n="opt11">Persegi (1:1)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label data-i18n="lblLegend">Posisi Legenda</label>
+                        <select id="legendPos" class="form-control" onchange="generateMap(false)">
+                            <option value="bottomright" selected data-i18n="optBR">Kanan Bawah</option>
+                            <option value="bottomleft" data-i18n="optBL">Kiri Bawah</option>
+                            <option value="topright" data-i18n="optTR">Kanan Atas</option>
+                            <option value="topleft" data-i18n="optTL">Kiri Atas</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex-row" style="margin-top: 4px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label data-i18n="lblScale">Tampilan Skala</label>
+                        <select id="scaleOpt" class="form-control" onchange="updateInstruments()">
+                            <option value="fractional" selected data-i18n="optFrac">Hanya Angka (1:X)</option>
+                            <option value="both" data-i18n="optBoth">Lengkap (1:X & Grafis)</option>
+                            <option value="metric" data-i18n="optMet">Hanya Grafis (km/m)</option>
+                            <option value="none" data-i18n="optHide">Sembunyikan</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label data-i18n="lblSetScale">Kunci Skala 1 : X</label>
+                        <div style="display:flex; gap:4px;">
+                            <input type="number" id="customScaleInput" class="form-control" placeholder="Cth: 25000" style="font-family:var(--font-mono); padding: 4px 6px;">
+                            <button class="btn btn-outline" style="padding:4px 8px; font-size:10px;" onclick="applyCustomScale()" data-i18n="btnSet">Set</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-row" style="margin-top: 4px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label data-i18n="lblNorth">Arah Utara</label>
+                        <select id="northOpt" class="form-control" onchange="updateInstruments()">
+                            <option value="topright" selected data-i18n="optTR">Kanan Atas</option>
+                            <option value="topleft" data-i18n="optTL">Kiri Atas</option>
+                            <option value="none" data-i18n="optHide">Sembunyikan</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label data-i18n="lblNorthStyle">Gaya Mata Angin</label>
+                        <select id="northStyle" class="form-control" onchange="updateInstruments()">
+                            <option value="north-classic" selected data-i18n="optNClass">Panah Klasik</option>
+                            <option value="north-minimal" data-i18n="optNMin">Minimalis</option>
+                            <option value="north-compass" data-i18n="optNComp">Compass Rose</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔬 <span data-i18n="titleTools">3. Interaksi Peta & Analisis</span></div>
+                
+                <div class="form-group">
+                    <button id="btnMeasureMode" class="btn btn-info" style="width: 100%; margin-bottom: 8px;" onclick="toggleMeasureMode()">
+                        <span style="font-size: 14px;">📏</span> <span id="measureBtnText" data-i18n="btnMeasure">Aktifkan Penggaris Jarak & Area</span>
+                    </button>
+                </div>
+
+                <div class="form-group" style="padding: 10px; background: var(--surface-hover); border-radius: 6px; border: 1px solid var(--border); margin-bottom: 0;">
+                    <button id="btnClickMode" class="btn btn-toggle" onclick="toggleClickMode()">
+                        <span style="font-size: 16px;">🎯</span> <span id="clickBtnText" data-i18n="btnClick">Aktifkan Klik Tambah Titik</span>
+                    </button>
+                    <div id="interactiveSettings" style="display:none; margin-top: 8px;">
+                        <div class="flex-row">
+                            <input type="text" id="clickCategory" class="form-control" placeholder="Kategori (Opsional)" style="flex:2; padding: 6px 10px; font-size:11px;">
+                            <input type="color" id="clickColor" class="form-control" value="#FCD34D" style="flex:1;" title="Warna Custom">
+                        </div>
+                        <input type="text" id="clickDesc" class="form-control" placeholder="Catatan Lapangan (Opsional)" style="padding: 6px 10px; font-size:11px; margin-top:6px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📥 <span data-i18n="lblAddPoint">4. Kelola Data Stasiun</span></div>
+                
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <button id="btnGeoLocate" class="btn btn-warning" style="width: 100%; padding: 8px;" onclick="getLocation()">
+                        <span style="font-size: 14px;">📡</span> <span data-i18n="btnGPS">Deteksi GPS Perangkat Saya</span>
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <div style="display:flex; flex-wrap:wrap; gap:6px; background:var(--surface-hover); padding:10px; border-radius:6px; border:1px solid var(--border); margin-bottom:10px;">
+                        <input type="text" id="inName" placeholder="Nama Titik" class="form-control" style="flex: 1 1 30%; font-size:11px;" data-i18n="plcName">
+                        <input type="text" id="inCat" placeholder="Kategori" class="form-control" style="flex: 1 1 30%; font-size:11px;" data-i18n="plcCat">
+                        <input type="color" id="inColor" class="form-control" value="#FCD34D" style="flex: 1 1 20%;" title="Warna Custom">
+                        
+                        <input type="number" id="inLat" placeholder="Lintang" class="form-control" style="flex: 1 1 45%; font-size:11px;" data-i18n="plcLat">
+                        <input type="number" id="inLng" placeholder="Bujur" class="form-control" style="flex: 1 1 45%; font-size:11px;" data-i18n="plcLng">
+                        
+                        <select id="inShape" class="form-control" style="flex: 1 1 45%; font-size:11px;">
+                            <option value="circle" data-i18n="optShapeC">⚫ Lingkaran</option>
+                            <option value="square" data-i18n="optShapeS">⬛ Persegi</option>
+                            <option value="triangle" data-i18n="optShapeT">▲ Segitiga</option>
+                        </select>
+                        <input type="number" id="inBuffer" placeholder="Buffer (m)" class="form-control" style="flex: 1 1 45%; font-size:11px;" title="Radius Dampak (Meter)">
+                        
+                        <input type="text" id="inDesc" placeholder="Catatan/Deskripsi" class="form-control" style="flex: 1 1 100%; font-size:11px;" data-i18n="plcDesc">
+
+                        <button class="btn btn-primary" style="width:100%; font-size:11px;" onclick="addPointManual()" data-i18n="btnAdd">+ Tambah Manual</button>
+                    </div>
+                    
+                    <div class="table-data-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="thName">Nama</th>
+                                    <th data-i18n="thCoord">Koordinat</th>
+                                    <th>Info</th>
+                                    <th style="text-align:center;" data-i18n="thAct">Hapus</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dataTableBody">
+                                <tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text3);" data-i18n="noData">Belum ada data stasiun.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div style="display:flex; gap: 6px; margin-top: 10px;">
+                    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="clearMap()">🗑 <span data-i18n="btnReset">Kosongkan Peta</span></button>
+                    <button class="btn btn-outline btn-sm" style="flex:1; border-color:var(--primary); color:var(--primary);" onclick="loadSampleData()">📝 <span data-i18n="btnSample">Isi Data Contoh</span></button>
+                </div>
+
+                <div class="divider" style="display: flex; align-items: center; text-align: center; margin: 15px 0; color: var(--text3); font-size: 10px; font-weight: 700;">
+                    <span style="flex: 1; border-bottom: 1px solid var(--border); margin-right: 10px;"></span>
+                    <span>IMPOR / EKSPOR KOORDINAT</span>
+                    <span style="flex: 1; border-bottom: 1px solid var(--border); margin-left: 10px;"></span>
+                </div>
+
+                <div class="flex-row" style="gap: 6px;">
+                    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportData('csv')">⬇️ <span data-i18n="btnCSV">CSV</span></button>
+                    <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportData('geojson')">⬇️ <span data-i18n="btnGeo">GeoJSON</span></button>
+                    <label class="btn btn-outline btn-sm" style="flex:1; cursor:pointer; margin:0;">
+                        ⬆️ <span data-i18n="btnImport">Impor</span>
+                        <input type="file" id="importFile" accept=".csv,.geojson" style="display:none;" onchange="importData(event)">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-peta-wrapper" id="petaContainer">
+            
+            <div class="peta-action-bar" style="padding: 10px 20px;">
+                <div style="font-family: var(--font-sans); font-size: 13px; font-weight: 700; color: var(--text);">
+                    <span style="color:var(--text3); font-weight:500;" data-i18n="lblPreview">Pratinjau Kertas Peta</span>
+                </div>
+            </div>
+
+            <div class="peta-workspace">
+                <div class="map-paper" id="paper-layout">
+                    <div class="layout-header">
+                        <h2 class="layout-title" id="displayTitle">PETA LOKASI PENELITIAN</h2>
+                        <p class="layout-subtitle" id="displaySubtitle">Provinsi Jawa Tengah, Indonesia</p>
+                    </div>
+                    <div class="layout-body">
+                        <div class="map-canvas-border">
+                            <div id="map"></div>
+                        </div>
+                    </div>
+                    <div class="layout-footer">
+                        <div class="footer-left">
+                            <b data-i18n="ftCoord">Sistem Koordinat:</b> WGS 84 (EPSG:4326)<br>
+                            <b data-i18n="ftSource">Sumber Peta:</b> <span id="basemapSource">Esri World Imagery</span><br>
+                            <b data-i18n="ftCreated">Dibuat oleh:</b> AREs
+                        </div>
+                        <div class="footer-right">
+                            <span data-i18n="ftDate">Tanggal Render:</span> <span id="currentDate"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="map-status-bar">
+                <div class="status-item">
+                    <span style="color:var(--primary);">🖱️</span>
+                    <span id="hoverCoords">Lintang: 0.00000 | Bujur: 0.00000</span>
+                </div>
+                <div class="status-item" id="clickStatusInd" style="color: var(--text3);">
+                    🎯 Mode Klik: Nonaktif
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="guideModal" class="modal-overlay" onclick="closeGuideOutside(event)">
+    <div class="modal-window">
+        <div class="modal-header">
+            <h2>📖 Buku Panduan & Sejarah Versi</h2>
+            <button class="modal-close" onclick="closeGuide()">✖</button>
+        </div>
+        <div class="modal-body">
+            <h3 data-i18n="guideH1">Cara Menggunakan GeoPlot</h3>
+            <p>GeoPlot adalah generator tata letak kartografi <i>client-side</i>. Semua data yang Anda masukkan diproses murni di perangkat Anda tanpa dikirim ke server (100% Privat).</p>
+            <ul>
+                <li><b>Menambah Stasiun:</b> Anda dapat memasukkan koordinat Lintang/Bujur secara manual di "Blok 4", mengaktifkan fitur <b>🎯 Klik Tambah Titik</b> di "Blok 3", atau menekan tombol <b>📡 Deteksi GPS</b> jika Anda sedang berada di lapangan.</li>
+                <li><b>Mengukur Jarak & Luas:</b> Aktifkan <b>📏 Penggaris Jarak & Area</b>. Klik titik-titik di peta untuk membentuk garis ukur. Klik ganda (Double-Click) untuk mereset ukuran.</li>
+                <li><b>Kustomisasi Simbol:</b> Anda bisa memilih ikon stasiun (Lingkaran, Persegi, Segitiga) dan menambahkan <b>Radius Buffer</b> (misal 500m) untuk mensimulasikan zona dampak limbah.</li>
+                <li><b>Skala Presisi:</b> Gunakan fitur "Kunci Skala 1 : X" (misal ketik 50000) untuk memfokuskan peta sesuai standar jurnal ilmiah.</li>
+            </ul>
+
+            <h3 style="margin-top: 30px;">Rekam Jejak Pembaruan (Changelog)</h3>
+            
+            <div class="changelog-item">
+                <div class="changelog-ver">v11.1 — Geolocation Update (Rilis Saat Ini)</div>
+                <div><b>[FITUR]</b> Menambahkan fitur pendeteksian lokasi GPS Perangkat untuk memudahkan pengambilan titik sampel di lapangan secara langsung.</div>
+            </div>
+
+            <div class="changelog-item">
+                <div class="changelog-ver">v11.0 — Professional Edition</div>
+                <div>Perbaikan JS Color Leaflet & Kalkulasi luas Haversine. Penambahan fitur Jalur Transek (Polyline), Ekspor Vektor SVG, Teks Atribusi Deskripsi (*Field Notes*), dan Status Bar Koordinat.</div>
+            </div>
+            
+            <div class="changelog-item">
+                <div class="changelog-ver">v10.3 — Final UX & SVG Engine</div>
+                <div>Merombak metode *rendering* Leaflet dari Canvas kembali ke SVG untuk mengatasi bug *blank tiles* dan akurasi saat kanvas berubah ukuran. Pemindahan tata letak tombol Ekspor PNG.</div>
+            </div>
+            
+            <div class="changelog-item">
+                <div class="changelog-ver">v10.0 (X) — Ultimate Analysis</div>
+                <div>Evolusi besar. Penambahan fitur Buffer Zones (Radius Zonasi), variasi Simbologi Marker (Persegi/Segitiga), Alat Penggaris Interaktif, dan dukungan penuh Impor/Ekspor GeoJSON & CSV.</div>
+            </div>
+
+            <div class="changelog-item">
+                <div class="changelog-ver">v9.0 — Interactive Data Management</div>
+                <div>Penghapusan input textarea mentah. Digantikan dengan UI Formulir Mini dan Tabel Interaktif yang sangat ramah pengguna. Fitur input skala absolut (1:X Calculator).</div>
+            </div>
+
+            <div class="changelog-item">
+                <div class="changelog-ver">v3.0 - v8.0 — Cartographic Perfection</div>
+                <div>Perombakan total dari sekadar web map menjadi *Print Layout* QGIS. Desain viewport 100vh tanpa scroll vertikal. Skala Zebra gaya ArcGIS. Tambahan basemap spesifik akuakultur (Esri Ocean Base).</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+    // ── KAMUS BILINGUAL (i18n) ──
+    const i18n = {
+        id: {
+            theme: "Tema", pageTitle: "Cartographic Layout Generator", pageDesc: "Platform Pemetaan Spasial Interaktif untuk Visualisasi Riset Akuakultur & Ekologi.",
+            titleAttr: "1. Visual Kartografi", lblBasemap: "Peta Dasar (Basemap)",
+            titleRes: "2. Tata Letak Kertas & Instrumen", lblRatio: "Rasio Kertas Peta", lblLegend: "Posisi Legenda",
+            lblScale: "Tampilan Skala", lblNorth: "Arah Utara", lblNorthStyle: "Gaya Mata Angin", lblSetScale: "Kunci Skala 1 : X",
+            titleTools: "3. Interaksi Peta & Analisis", btnMeasure: "Aktifkan Penggaris Jarak & Area", btnMeasureOff: "Matikan Penggaris",
+            btnCSV: "CSV", btnGeo: "GeoJSON", btnImport: "Impor", btnExportSVG: "Ekspor Vektor (SVG)",
+            titleInput: "4. Kelola Data Stasiun", btnClick: "Aktifkan Klik Tambah Titik", btnClickOff: "Matikan Klik", lblAddPoint: "Kelola Data Stasiun",
+            plcName: "Nama Titik", plcLat: "Lintang", plcLng: "Bujur", plcCat: "Kategori (Ops)", plcDesc: "Catatan Lapangan (Opsional)",
+            optShapeC: "⚫ Lingkaran", optShapeS: "⬛ Persegi", optShapeT: "▲ Segitiga",
+            btnAdd: "+ Tambah Manual", thName: "Nama", thCoord: "Koordinat", thCat: "Kategori", thAct: "Hapus",
+            btnSet: "Set", btnReset: "Kosongkan Peta", btnSample: "Isi Data Contoh", btnRender: "Render Peta", btnExport: "Ekspor Peta Publikasi (PNG)",
+            lblPreview: "Pratinjau Kertas Peta", lblMode: "Bentuk Sebaran Data (Simbol Utama)", btnLabelToggle: "Sembunyikan Label Nama di Peta", btnLabelToggleOff: "Tampilkan Label Nama",
+            optA4L: "A4 Landscape", optA4P: "A4 Portrait", opt169: "Layar Lebar (16:9)", opt11: "Persegi (1:1)",
+            optBR: "Kanan Bawah", optBL: "Kiri Bawah", optTR: "Kanan Atas", optTL: "Kiri Atas",
+            optFrac: "Hanya Angka (1:X)", optBoth: "Lengkap (1:X & Grafis)", optMet: "Hanya Grafis (km/m)", optImp: "Imperial (mi/ft)", optHide: "Sembunyikan",
+            optNClass: "Panah Klasik", optNMin: "Minimalis", optNComp: "Compass Rose",
+            optPoint: "Titik Stasiun (Marker Simbol)", optLine: "Jalur Transek (Polyline)", optPoly: "Area Terhubung (Blok Poligon)",
+            ftCoord: "Sistem Koordinat:", ftSource: "Sumber Peta:", ftCreated: "Dibuat oleh:", ftDate: "Tanggal Render:",
+            t_sample: "Data sampel dimuat.", t_paper: "Tata letak kertas diubah.", t_map: "Peta diperbarui.",
+            t_clear: "Peta dibersihkan.", t_point: "ditambahkan.", t_export: "Peta berhasil diunduh.", t_meas_on: "Klik di peta untuk mengukur. Klik 2x untuk selesai.",
+            t_err_fmt: "Latitude & Longitude harus angka.", t_mode_on: "Klik area manapun di peta untuk menandai.",
+            noData: "Belum ada data stasiun.", def_title: "PETA LOKASI PENELITIAN", def_sub: "Provinsi Jawa Tengah, Indonesia", def_cat: "Kategori Titik...",
+            scalePrefix: "Skala 1 :", btnGuide: "Panduan", guideH1: "Cara Menggunakan GeoPlot", hoverL: "Lintang:", hoverB: "Bujur:",
+            btnGPS: "Deteksi GPS Perangkat Saya", t_gps_ok: "Lokasi GPS berhasil ditemukan.", t_gps_err: "Akses GPS ditolak atau gagal."
+        },
+        en: {
+            theme: "Theme", pageTitle: "Cartographic Layout Generator", pageDesc: "Interactive Spatial Mapping Platform for Aquaculture & Ecology Research Visualization.",
+            titleAttr: "1. Cartographic Visuals", lblBasemap: "Basemap Style",
+            titleRes: "2. Paper Layout & Instruments", lblRatio: "Paper Ratio", lblLegend: "Legend Position",
+            lblScale: "Map Scale Display", lblNorth: "North Arrow", lblNorthStyle: "North Arrow Style", lblSetScale: "Lock Scale 1 : X",
+            titleTools: "3. Map Interaction & Analysis", btnMeasure: "Enable Distance & Area Ruler", btnMeasureOff: "Disable Ruler",
+            btnCSV: "CSV", btnGeo: "GeoJSON", btnImport: "Import", btnExportSVG: "Export Vector (SVG)",
+            titleInput: "4. Manage Station Data", btnClick: "Enable Click-to-Map", btnClickOff: "Disable Click", lblAddPoint: "Manage Station Data",
+            plcName: "Point Name", plcLat: "Latitude", plcLng: "Longitude", plcCat: "Category (Opt)", plcDesc: "Field Notes (Optional)",
+            optShapeC: "⚫ Circle", optShapeS: "⬛ Square", optShapeT: "▲ Triangle",
+            btnAdd: "+ Add Manually", thName: "Name", thCoord: "Coordinates", thCat: "Category", thAct: "Del",
+            btnSet: "Set", btnReset: "Clear Map", btnSample: "Load Sample", btnRender: "Render Map", btnExport: "Export Publication Map (PNG)",
+            lblPreview: "Print Paper Preview", lblMode: "Data Distribution Form (Main Symbol)", btnLabelToggle: "Hide Name Labels on Map", btnLabelToggleOff: "Show Name Labels",
+            optA4L: "A4 Landscape", optA4P: "A4 Portrait", opt169: "Widescreen (16:9)", opt11: "Square (1:1)",
+            optBR: "Bottom Right", optBL: "Bottom Left", optTR: "Top Right", optTL: "Top Left",
+            optFrac: "Numbers Only (1:X)", optBoth: "Full (1:X & Graphic)", optMet: "Graphic Only (km/m)", optImp: "Imperial (mi/ft)", optHide: "Hide",
+            optNClass: "Classic Arrow", optNMin: "Minimalist", optNComp: "Compass Rose",
+            optPoint: "Station Points (Marker)", optLine: "Transect Line (Polyline)", optPoly: "Connected Area (Polygon)",
+            ftCoord: "Coordinate System:", ftSource: "Basemap Source:", ftCreated: "Created by:", ftDate: "Render Date:",
+            t_sample: "Sample data loaded.", t_paper: "Paper layout changed.", t_map: "Map updated successfully.",
+            t_clear: "Workspace cleared.", t_point: "added.", t_export: "Map downloaded successfully.", t_meas_on: "Click map to measure. Double click to finish.",
+            t_err_fmt: "Latitude & Longitude must be valid numbers.", t_mode_on: "Click any area on the map to mark a station.",
+            noData: "No station data yet.", def_title: "RESEARCH LOCATION MAP", def_sub: "Central Java Province, Indonesia", def_cat: "Point Category...",
+            scalePrefix: "Scale 1 :", btnGuide: "Guide", guideH1: "How to use GeoPlot", hoverL: "Lat:", hoverB: "Lng:",
+            btnGPS: "Detect My Device GPS", t_gps_ok: "GPS location successfully found.", t_gps_err: "GPS access denied or failed."
+        }
+    };
+    let currentLang = 'id';
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'id' ? 'en' : 'id';
+        document.getElementById('langIndicator').textContent = currentLang.toUpperCase();
+        
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (i18n[currentLang][key]) {
+                if(el.tagName === 'INPUT') el.placeholder = i18n[currentLang][key];
+                else el.textContent = i18n[currentLang][key];
+            }
+        });
+
+        document.getElementById('clickCategory').placeholder = i18n[currentLang].def_cat;
+        
+        const titleInput = document.getElementById('mapTitle');
+        const subInput = document.getElementById('mapSubtitle');
+        if(!titleInput.value) document.getElementById('displayTitle').textContent = i18n[currentLang].def_title;
+        if(!subInput.value) document.getElementById('displaySubtitle').textContent = i18n[currentLang].def_sub;
+
+        if (isInteractiveMode) document.getElementById('clickBtnText').textContent = i18n[currentLang].btnClickOff;
+        if (isMeasuring) document.getElementById('measureBtnText').textContent = i18n[currentLang].btnMeasureOff;
+
+        if(legendControlObj) buildLegend(currentCategories); 
+        updateInstruments(); 
+        updateDateLabel();
+        renderDataTable(); 
+    }
+
+    function toast(msg, type='ok'){
+        const colors = {ok:'var(--success)', success:'var(--success)', err:'var(--danger)', warn:'var(--warning)', info:'var(--info)'};
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.innerHTML = `<span style="color:${colors[type]||colors.ok}; font-size:16px;">${type==='ok'||type==='success'?'✓':type==='err'?'✖':'ℹ'}</span> ${msg}`;
+        document.getElementById('toastContainer').appendChild(t);
+        setTimeout(()=>{ t.classList.add('hide'); setTimeout(()=>t.remove(),300); }, 2500);
+    }
+
+    function toggleTheme() {
+        const html = document.documentElement;
+        html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        generateMap(false); 
+    }
+
+    function updateDateLabel() {
+        const options = {day: 'numeric', month: 'long', year: 'numeric'};
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString(currentLang === 'id' ? 'id-ID' : 'en-US', options);
+    }
+    updateDateLabel();
+
+    // ── MODAL PANDUAN ──
+    function openGuide() {
+        const modal = document.getElementById('guideModal');
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('show'), 10);
+    }
+    function closeGuide() {
+        const modal = document.getElementById('guideModal');
+        modal.classList.remove('show');
+        setTimeout(() => modal.style.display = 'none', 300); 
+    }
+    function closeGuideOutside(e) { if(e.target.classList.contains('modal-overlay')) closeGuide(); }
+
+    // ── AUTO-SCALE LAYOUT KERTAS ──
+    function resizePaper() {
+        const wrapper = document.querySelector('.peta-workspace');
+        const paper = document.getElementById('paper-layout');
+        if(window.innerWidth <= 900) {
+            paper.style.width = '100%'; paper.style.height = '100%';
+            setTimeout(() => { map.invalidateSize(); }, 300);
+            return; 
+        }
+        
+        const ratioStr = document.getElementById('paperSize').value;
+        const [wStr, hStr] = ratioStr.split('/');
+        const targetRatio = parseFloat(wStr) / parseFloat(hStr);
+        const wrapW = wrapper.clientWidth - 40; 
+        const wrapH = wrapper.clientHeight - 40;
+        const wrapRatio = wrapW / wrapH;
+        
+        if (wrapRatio > targetRatio) {
+            paper.style.height = wrapH + 'px';
+            paper.style.width = (wrapH * targetRatio) + 'px';
+        } else {
+            paper.style.width = wrapW + 'px';
+            paper.style.height = (wrapW / targetRatio) + 'px';
+        }
+        
+        let step = 0;
+        const resizeInterval = setInterval(() => { map.invalidateSize(); step++; if(step >= 8) clearInterval(resizeInterval); }, 50);
+    }
+    window.addEventListener('resize', resizePaper);
+    window.addEventListener('load', resizePaper); 
+
+    function changePaperSize() {
+        const ratio = document.getElementById('paperSize').value;
+        document.getElementById('paper-layout').style.aspectRatio = ratio;
+        const currentCenter = map.getCenter();
+        resizePaper();
+        setTimeout(() => { map.invalidateSize(); map.setView(currentCenter, map.getZoom(), {animate: false}); }, 400);
+        toast(i18n[currentLang].t_paper);
+    }
+
+    // ── INISIALISASI PETA ──
+    let map = L.map('map', { preferCanvas: false, zoomControl: false, zoomSnap: 0.1, doubleClickZoom: false }).setView([-7.424, 109.230], 12);
+    
+    let scaleControlObj = null; let fractionalScaleObj = null; let northArrowObj = null; let legendControlObj = null;
+    let currentCategories = {}; 
+    let mapData = []; 
+    let labelsVisible = true; 
+    let myLocationCircle = null; // Menyimpan layer akurasi GPS
+
+    const basemaps = {
+        esriSatellite: { layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }), name: "Esri World Imagery" },
+        esriOcean: { layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 13 }), name: "Esri Ocean Base" },
+        esriTopo: { layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }), name: "Esri World Topo Map" },
+        esriNatGeo: { layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16 }), name: "National Geographic" },
+        openTopo: { layer: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 17 }), name: "OpenTopoMap" },
+        osmStandard: { layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }), name: "OpenStreetMap" },
+        cartoDark: { layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19 }), name: "CartoDB Dark Matter" }
+    };
+
+    let currentLayer = basemaps.esriSatellite.layer; currentLayer.addTo(map);
+    let markersGroup = L.featureGroup().addTo(map);
+    let measureGroup = L.featureGroup().addTo(map); 
+    
+    // Status Bar Hover Coordinate
+    map.on('mousemove', function(e) {
+        document.getElementById('hoverCoords').innerHTML = `${i18n[currentLang].hoverL} ${e.latlng.lat.toFixed(5)} | ${i18n[currentLang].hoverB} ${e.latlng.lng.toFixed(5)}`;
+    });
+
+    L.Control.FractionalScale = L.Control.extend({
+        options: { position: 'bottomleft' },
+        onAdd: function(map) {
+            this._container = L.DomUtil.create('div', 'custom-fractional-scale');
+            map.on('moveend zoomend', this._update, this); this._update();
+            return this._container;
+        },
+        _update: function() {
+            const center = map.getCenter(); const zoom = map.getZoom();
+            const metersPerPixel = 156543.03392 * Math.cos(center.lat * Math.PI / 180) / Math.pow(2, zoom);
+            let scaleVal = Math.round(metersPerPixel / 0.000264583);
+            if (scaleVal > 10000) scaleVal = Math.round(scaleVal / 1000) * 1000;
+            else if (scaleVal > 1000) scaleVal = Math.round(scaleVal / 100) * 100;
+            else if (scaleVal > 100) scaleVal = Math.round(scaleVal / 10) * 10;
+            this._container.innerHTML = `<b>${i18n[currentLang].scalePrefix} ` + scaleVal.toLocaleString(currentLang === 'id' ? 'id-ID' : 'en-US') + `</b>`;
+        }
+    });
+
+    function updateInstruments() {
+        const scaleVal = document.getElementById('scaleOpt').value;
+        const northVal = document.getElementById('northOpt').value;
+        const northStyle = document.getElementById('northStyle').value;
+
+        if (scaleControlObj) { map.removeControl(scaleControlObj); scaleControlObj = null; }
+        if (fractionalScaleObj) { map.removeControl(fractionalScaleObj); fractionalScaleObj = null; }
+
+        if (scaleVal === 'fractional' || scaleVal === 'both') fractionalScaleObj = new L.Control.FractionalScale().addTo(map);
+        if (scaleVal === 'metric' || scaleVal === 'both') {
+            scaleControlObj = L.control.scale({ metric: true, imperial: false, position: 'bottomleft', updateWhenIdle: true }).addTo(map);
+        }
+        if (northArrowObj) { map.removeControl(northArrowObj); northArrowObj = null; }
+        if (northVal !== 'none') {
+            northArrowObj = L.control({ position: northVal });
+            northArrowObj.onAdd = function() { return L.DomUtil.create('div', `north-arrow ${northStyle}`); };
+            northArrowObj.addTo(map);
+        }
+    }
+    updateInstruments();
+
+    function applyCustomScale() {
+        const targetScale = parseFloat(document.getElementById('customScaleInput').value);
+        if(isNaN(targetScale) || targetScale <= 0) return toast("Nilai skala tidak valid.", "err");
+        const center = map.getCenter();
+        const resolution = (targetScale * 0.000264583) / Math.cos(center.lat * Math.PI / 180);
+        map.setZoom(Math.log2(156543.03392 / resolution), {animate: false});
+        toast(`${i18n[currentLang].scalePrefix} ${targetScale.toLocaleString(currentLang === 'id' ? 'id-ID' : 'en-US')} disetel.`, "info");
+    }
+
+    function changeMapStyle() {
+        const key = document.getElementById('mapStyleSelector').value;
+        map.removeLayer(currentLayer); currentLayer = basemaps[key].layer; currentLayer.addTo(map);
+        document.getElementById('basemapSource').textContent = basemaps[key].name;
+    }
+
+    function updateLayout() {
+        document.getElementById('displayTitle').textContent = document.getElementById('mapTitle').value.trim() || i18n[currentLang].def_title;
+        document.getElementById('displaySubtitle').textContent = document.getElementById('mapSubtitle').value.trim() || i18n[currentLang].def_sub;
+    }
+
+    function createCustomIcon(shape, color) {
+        const size = 14; let svg = '';
+        if(shape === 'square') {
+            svg = `<svg width="${size}" height="${size}"><rect x="1" y="1" width="12" height="12" fill="${color}" stroke="#000" stroke-width="1.5"/></svg>`;
+        } else if(shape === 'triangle') {
+            svg = `<svg width="${size}" height="${size}"><polygon points="7,1 13,13 1,13" fill="${color}" stroke="#000" stroke-width="1.5"/></svg>`;
+        } else { 
+            svg = `<svg width="${size}" height="${size}"><circle cx="7" cy="7" r="6" fill="${color}" stroke="#000" stroke-width="1.5"/></svg>`;
+        }
+        return L.divIcon({ html: svg, className: '', iconSize: [size, size], iconAnchor: [size/2, size/2], tooltipAnchor: [0, -size/2] });
+    }
+
+    // ── FITUR BARU: GEOLOKASI (GPS) ──
+    function getLocation() {
+        if (!navigator.geolocation) {
+            toast("Geolocation tidak didukung oleh browser Anda.", "err");
+            return;
+        }
+
+        const btn = document.getElementById('btnGeoLocate');
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = `<span style="font-size: 14px;">⏳</span> Mencari Satelit GPS...`;
+        btn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = parseFloat(position.coords.latitude.toFixed(6));
+                const lng = parseFloat(position.coords.longitude.toFixed(6));
+                const accuracy = position.coords.accuracy; // Akurasi dalam meter
+
+                // Isi ke dalam kotak teks manual
+                document.getElementById('inLat').value = lat;
+                document.getElementById('inLng').value = lng;
+                document.getElementById('inName').value = currentLang === 'id' ? "Titik GPS Saya" : "My GPS Point";
+                document.getElementById('inCat').value = "Ground Truth";
+                document.getElementById('inBuffer').value = Math.round(accuracy); // Buffer otomatis pakai radius akurasi
+                
+                // Tambahkan langsung ke data stasiun dan render
+                addPointManual();
+
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+                toast(i18n[currentLang].t_gps_ok, "success");
+            },
+            (error) => {
+                console.warn(`ERROR(${error.code}): ${error.message}`);
+                toast(i18n[currentLang].t_gps_err, "err");
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    }
+
+    // ── DATA MANAGEMENT ──
+    function renderDataTable() {
+        const tbody = document.getElementById('dataTableBody');
+        if(mapData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:15px; color:var(--text3);">${i18n[currentLang].noData}</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = mapData.map(d => {
+            let infoBadge = d.cat ? `<span class="badge-neutral" style="border-left: 3px solid ${d.color};">${d.cat}</span>` : '';
+            if(d.buffer) infoBadge += ` <span class="badge-neutral" style="color:var(--info);">Buf: ${d.buffer}m</span>`;
+            if(d.desc) infoBadge += ` <div style="font-size:8px; color:var(--text3); margin-top:2px; max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${d.desc}">${d.desc}</div>`;
+            return `
+            <tr>
+                <td style="font-weight:600;">${d.shape==='triangle'?'▲':d.shape==='square'?'⬛':'⚫'} ${d.name}</td>
+                <td style="font-family:var(--font-mono); font-size:9px;">${d.lat.toFixed(4)}, ${d.lng.toFixed(4)}</td>
+                <td>${infoBadge || '-'}</td>
+                <td style="text-align:center;">
+                    <button style="background:transparent; border:none; color:var(--danger); cursor:pointer; font-size:12px;" onclick="removePoint(${d.id})">✖</button>
+                </td>
+            </tr>
+        `}).join('');
+    }
+
+    function addPointManual() {
+        const name = document.getElementById('inName').value || `${currentLang === 'id' ? 'Titik' : 'Point'} ${mapData.length + 1}`;
+        const lat = parseFloat(document.getElementById('inLat').value);
+        const lng = parseFloat(document.getElementById('inLng').value);
+        const cat = document.getElementById('inCat').value.trim();
+        const shape = document.getElementById('inShape').value;
+        const color = document.getElementById('inColor').value;
+        const desc = document.getElementById('inDesc').value.trim();
+        const buffer = parseFloat(document.getElementById('inBuffer').value) || 0;
+        
+        if(isNaN(lat) || isNaN(lng)) return toast(i18n[currentLang].t_err_fmt, "err");
+        
+        mapData.push({ id: Date.now(), name, lat, lng, cat, shape, color, buffer, desc });
+        
+        document.getElementById('inName').value = ''; document.getElementById('inLat').value = '';
+        document.getElementById('inLng').value = ''; document.getElementById('inDesc').value = '';
+        
+        renderDataTable(); generateMap(false);
+    }
+
+    function removePoint(id) { mapData = mapData.filter(d => d.id !== id); renderDataTable(); generateMap(false); }
+
+    function toggleLabels() {
+        labelsVisible = !labelsVisible;
+        const btn = document.getElementById('lblToggleText');
+        if (labelsVisible) {
+            btn.textContent = currentLang === 'id' ? 'Sembunyikan Label Nama di Peta' : 'Hide Name Labels on Map';
+        } else {
+            btn.textContent = currentLang === 'id' ? 'Tampilkan Label Nama' : 'Show Name Labels';
+        }
+        generateMap(false);
+    }
+
+    // ── PENGUKUR (MEASURE TOOL) HA-VERSINE MURNI ──
+    let isMeasuring = false;
+    let measurePoints = [];
+    let measurePolyline = null;
+    let measurePolygon = null;
+
+    function toggleMeasureMode() {
+        if (isInteractiveMode) toggleClickMode(); 
+        
+        isMeasuring = !isMeasuring;
+        const btn = document.getElementById('btnMeasureMode');
+        const mapContainer = document.getElementById('map');
+
+        if (isMeasuring) {
+            btn.classList.add('active');
+            btn.innerHTML = `<span style="font-size: 14px;">🛑</span> <span id="measureBtnText" data-i18n="btnMeasureOff">${i18n[currentLang].btnMeasureOff}</span>`;
+            mapContainer.classList.add('measure-mode');
+            measurePoints = [];
+            measureGroup.clearLayers();
+            toast(i18n[currentLang].t_meas_on, "info");
+        } else {
+            btn.classList.remove('active');
+            btn.innerHTML = `<span style="font-size: 14px;">📏</span> <span id="measureBtnText" data-i18n="btnMeasure">${i18n[currentLang].btnMeasure}</span>`;
+            mapContainer.classList.remove('measure-mode');
+            measureGroup.clearLayers(); 
+        }
+    }
+
+    function calcArea(coords) {
+        const R = 6378137; let area = 0;
+        if(coords.length < 3) return 0;
+        for (let i = 0; i < coords.length; i++) {
+            let p1 = coords[i]; let p2 = coords[(i + 1) % coords.length];
+            area += (p2.lng - p1.lng) * (Math.PI/180) * (2 + Math.sin(p1.lat * Math.PI/180) + Math.sin(p2.lat * Math.PI/180));
+        }
+        return Math.abs(area * R * R / 2.0);
+    }
+
+    map.on('click', function(e) {
+        if (isMeasuring) {
+            measurePoints.push(e.latlng);
+            L.circleMarker(e.latlng, {radius: 4, color: '#fff', fillColor: 'var(--danger)', fillOpacity: 1, weight: 2}).addTo(measureGroup);
+            
+            if (measurePoints.length > 1) {
+                if(measurePolyline) measureGroup.removeLayer(measurePolyline);
+                if(measurePolygon) measureGroup.removeLayer(measurePolygon);
+                
+                measurePolyline = L.polyline(measurePoints, {color: 'var(--danger)', weight: 3, dashArray: '5, 5'}).addTo(measureGroup);
+                
+                let distM = 0;
+                for(let i=0; i<measurePoints.length-1; i++) { distM += measurePoints[i].distanceTo(measurePoints[i+1]); }
+                
+                let txt = currentLang === 'id' ? `Jarak: ${(distM/1000).toFixed(2)} km` : `Dist: ${(distM/1000).toFixed(2)} km`;
+                
+                if (measurePoints.length > 2) {
+                    measurePolygon = L.polygon(measurePoints, {color: 'var(--danger)', fillColor: 'var(--danger)', fillOpacity: 0.15, weight: 0}).addTo(measureGroup);
+                    let areaM2 = calcArea(measurePoints);
+                    txt += currentLang === 'id' ? `<br>Luas: ${(areaM2/10000).toFixed(2)} Ha` : `<br>Area: ${(areaM2/10000).toFixed(2)} Ha`;
+                }
+                
+                L.tooltip({permanent: true, direction: 'right', className: 'measure-tooltip'}).setLatLng(e.latlng).setContent(txt).addTo(measureGroup);
+            }
+            return;
+        }
+
+        if (!isInteractiveMode) return;
+        const lat = parseFloat(e.latlng.lat.toFixed(5)); const lng = parseFloat(e.latlng.lng.toFixed(5));
+        const name = (currentLang === 'id' ? "Titik " : "Point ") + (mapData.length + 1);
+        const cat = document.getElementById('clickCategory').value.trim();
+        const color = document.getElementById('clickColor').value;
+        const desc = document.getElementById('clickDesc').value.trim();
+        const shape = document.getElementById('inShape').value; 
+        const buffer = 0;
+        
+        mapData.push({ id: Date.now(), name, lat, lng, cat, shape, color, buffer, desc });
+        renderDataTable(); generateMap(false); 
+        toast(`${name} ${i18n[currentLang].t_point}`);
+    });
+
+    map.on('dblclick', function(e) {
+        if(isMeasuring) { measurePoints = []; measureGroup.clearLayers(); toast(currentLang === 'id'?'Pengukuran di-reset.':'Measurement reset.', 'info'); }
+    });
+
+    // ── EKSPOR/IMPOR DATA & VEKTOR ──
+    function exportData(format) {
+        if(mapData.length === 0) return toast(i18n[currentLang].noData, "warn");
+        
+        let content = '', filename = '', mimeType = '';
+        
+        if(format === 'csv') {
+            content = "id,name,lat,lng,category,shape,color,buffer_m,desc\n" + mapData.map(d => `${d.id},"${d.name}",${d.lat},${d.lng},"${d.cat}","${d.shape}","${d.color||''}",${d.buffer},"${d.desc||''}"`).join('\n');
+            filename = `GeoPlot_Data_${new Date().toISOString().slice(0,10)}.csv`;
+            mimeType = 'text/csv;charset=utf-8;';
+        } else if(format === 'geojson') {
+            const geojson = {
+                type: "FeatureCollection",
+                features: mapData.map(d => ({
+                    type: "Feature", geometry: { type: "Point", coordinates: [d.lng, d.lat] },
+                    properties: { id: d.id, name: d.name, category: d.cat, shape: d.shape, color: d.color, buffer_radius_m: d.buffer, description: d.desc }
+                }))
+            };
+            content = JSON.stringify(geojson, null, 2);
+            filename = `GeoPlot_Features_${new Date().toISOString().slice(0,10)}.geojson`;
+            mimeType = 'application/json;charset=utf-8;';
+        }
+
+        const blob = new Blob([content], { type: mimeType });
+        const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = filename; link.click(); URL.revokeObjectURL(link.href);
+        toast(`Data exported to ${filename}`);
+    }
+
+    function exportToSVG() {
+        const svgElement = document.querySelector('.leaflet-overlay-pane svg');
+        if(!svgElement || mapData.length === 0) return toast("Tidak ada data bentuk di peta untuk diekspor ke SVG.", "warn");
+        
+        const serializer = new XMLSerializer();
+        let source = serializer.serializeToString(svgElement);
+        if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+        source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+        
+        const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+        const link = document.createElement("a"); link.download = `GeoPlot_Vector_${new Date().toISOString().slice(0,10)}.svg`;
+        link.href = url; link.click();
+        toast("Vektor SVG berhasil diekspor.");
+    }
+
+    function importData(event) {
+        const file = event.target.files[0]; if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const text = e.target.result;
+                if(file.name.endsWith('.geojson')) {
+                    const data = JSON.parse(text);
+                    data.features.forEach(f => {
+                        if(f.geometry && f.geometry.type === 'Point') {
+                            mapData.push({
+                                id: Date.now() + Math.random(),
+                                name: f.properties.name || 'Imported Point', lng: f.geometry.coordinates[0], lat: f.geometry.coordinates[1],
+                                cat: f.properties.category || '', shape: f.properties.shape || 'circle', color: f.properties.color || '#FCD34D',
+                                buffer: f.properties.buffer_radius_m || 0, desc: f.properties.description || ''
+                            });
+                        }
+                    });
+                } else if(file.name.endsWith('.csv')) {
+                    const lines = text.split('\n');
+                    for(let i=1; i<lines.length; i++) { 
+                        if(!lines[i].trim()) continue;
+                        const p = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g).map(s => s.replace(/^"|"$/g, ''));
+                        if(p.length >= 4) {
+                            mapData.push({
+                                id: Date.now() + i, name: p[1], lat: parseFloat(p[2]), lng: parseFloat(p[3]),
+                                cat: p[4]||'', shape: p[5]||'circle', color: p[6]||'#FCD34D', buffer: parseFloat(p[7])||0, desc: p[8]||''
+                            });
+                        }
+                    }
+                }
+                renderDataTable(); generateMap(true);
+                toast(currentLang === 'id' ? "File berhasil diimpor." : "File imported successfully.", "success");
+            } catch (error) { toast(currentLang === 'id' ? "Gagal membaca file." : "Failed to read file.", "err"); console.error(error); }
+            event.target.value = ''; 
+        };
+        reader.readAsText(file);
+    }
+
+    // ── INTERAKSI MAP KLIK ──
+    let isInteractiveMode = false;
+    function toggleClickMode() {
+        if(isMeasuring) toggleMeasureMode(); 
+
+        isInteractiveMode = !isInteractiveMode;
+        const btn = document.getElementById('btnClickMode');
+        const settings = document.getElementById('interactiveSettings');
+        const mapContainer = document.getElementById('map');
+        const ind = document.getElementById('clickStatusInd');
+
+        if (isInteractiveMode) {
+            btn.classList.add('active');
+            btn.innerHTML = `<span style="font-size: 16px;">🛑</span> <span id="clickBtnText" data-i18n="btnClickOff">${i18n[currentLang].btnClickOff}</span>`;
+            settings.style.display = 'block';
+            mapContainer.classList.add('crosshair-mode');
+            ind.innerHTML = `🎯 Mode Klik: <span style="color:var(--success);">Aktif</span>`;
+            toast(i18n[currentLang].t_mode_on, "info");
+        } else {
+            btn.classList.remove('active');
+            btn.innerHTML = `<span style="font-size: 16px;">🎯</span> <span id="clickBtnText" data-i18n="btnClick">${i18n[currentLang].btnClick}</span>`;
+            settings.style.display = 'none';
+            mapContainer.classList.remove('crosshair-mode');
+            ind.innerHTML = `🎯 Mode Klik: Nonaktif`;
+        }
+    }
+
+    function loadSampleData() {
+        document.getElementById('mapTitle').value = currentLang === 'id' ? 'PETA ZONASI STASIUN PENGAMATAN' : 'OBSERVATION STATION ZONING MAP';
+        document.getElementById('mapSubtitle').value = currentLang === 'id' ? 'Kawasan Akuakultur Banyumas, Jawa Tengah' : 'Banyumas Aquaculture Area, Central Java';
+        
+        const catInlet = currentLang === 'id' ? 'Zona Inlet' : 'Inlet Zone';
+        const catPond = currentLang === 'id' ? 'Kolam Pembesaran' : 'Grow-out Pond';
+        const catOut = currentLang === 'id' ? 'Zona Outlet IPAL' : 'WWTP Outlet Zone';
+        const descOut = currentLang === 'id' ? 'Stasiun pengukur limbah' : 'Waste measurement station';
+
+        mapData = [
+            { id: 1, name: 'Stasiun 1A', lat: -7.4215, lng: 109.2285, cat: catInlet, color: '#3cb44b', shape: 'circle', buffer: 250, desc: '' },
+            { id: 2, name: 'Stasiun 1B', lat: -7.4225, lng: 109.2290, cat: catInlet, color: '#3cb44b', shape: 'circle', buffer: 250, desc: '' },
+            { id: 3, name: 'Pusat Tambak A', lat: -7.4242, lng: 109.2301, cat: catPond, color: '#f58231', shape: 'square', buffer: 0, desc: '' },
+            { id: 4, name: 'Pusat Tambak B', lat: -7.4250, lng: 109.2320, cat: catPond, color: '#f58231', shape: 'square', buffer: 0, desc: '' },
+            { id: 5, name: 'Outlet Control',  lat: -7.4310, lng: 109.2392, cat: catOut, color: '#e6194B', shape: 'triangle', buffer: 500, desc: descOut }
+        ];
+
+        renderDataTable(); updateLayout(); generateMap(true);
+        toast(i18n[currentLang].t_sample, "info");
+    }
+
+    function buildLegend(categories) {
+        if (legendControlObj) map.removeControl(legendControlObj);
+        currentCategories = categories; 
+        
+        const catKeys = Object.keys(categories);
+        if (catKeys.length === 0) return;
+
+        const position = document.getElementById('legendPos').value;
+        const titleText = currentLang === 'id' ? 'LEGENDA' : 'LEGEND';
+        
+        legendControlObj = L.control({ position: position });
+        legendControlObj.onAdd = function () {
+            let div = L.DomUtil.create('div', 'gis-legend');
+            let html = `<h4>${titleText}</h4>`;
+            catKeys.forEach(cat => {
+                const color = categories[cat];
+                html += `<div class="gis-legend-item"><div class="legend-color-box" style="background:${color};"></div><span>${cat}</span></div>`;
+            });
+            div.innerHTML = html;
+            return div;
+        };
+        legendControlObj.addTo(map);
+    }
+
+    function generateMap(autoZoom = false) {
+        markersGroup.clearLayers();
+        if (legendControlObj) { map.removeControl(legendControlObj); legendControlObj = null; currentCategories = {}; }
+
+        if(mapData.length === 0) return;
+
+        const mode = document.getElementById('plotMode').value;
+        let polyCoords = []; 
+        let categories = {}; 
+
+        // Menggambar radius Buffer (Di bawah marker)
+        mapData.forEach(d => {
+            if (d.buffer && d.buffer > 0) {
+                let color = d.color || '#3B82F6'; 
+                if (d.cat) { categories[d.cat] = color; }
+                L.circle([d.lat, d.lng], { radius: d.buffer, color: color, fillColor: color, fillOpacity: 0.15, weight: 1, dashArray: '4' }).addTo(markersGroup);
+            }
+        });
+
+        // Menggambar Transek Polyline
+        if (mode === 'polyline') {
+            mapData.forEach(d => polyCoords.push([d.lat, d.lng]));
+            if (polyCoords.length > 1) {
+                L.polyline(polyCoords, { color: '#FCD34D', weight: 3, opacity: 0.8 }).addTo(markersGroup);
+            }
+        }
+
+        // Menggambar Markers / Polygons
+        mapData.forEach(d => {
+            let markerColor = d.color || '#FCD34D';
+            if (d.cat) { categories[d.cat] = markerColor; }
+
+            // Teks Atribusi Custom Label Tooltip
+            let ttpText = `<div class="custom-point-tooltip"><b>${d.name}</b>`;
+            if(d.cat) ttpText += `<br><span style="color:#666;">${d.cat}</span>`;
+            if(d.desc) ttpText += `<br><i>"${d.desc}"</i>`;
+            if(d.buffer) ttpText += `<br>Buf: ${d.buffer}m`;
+            ttpText += `</div>`;
+
+            if (mode === 'marker' || mode === 'polyline') {
+                const icon = createCustomIcon(d.shape, markerColor);
+                let m = L.marker([d.lat, d.lng], { icon: icon }).addTo(markersGroup);
+                if(labelsVisible) {
+                    m.bindTooltip(ttpText, {permanent: true, direction: 'top', offset: [0, -10], className: 'leaflet-tooltip-own'});
+                } else {
+                    m.bindPopup(ttpText);
+                }
+            } else if (mode === 'polygon') {
+                polyCoords.push([d.lat, d.lng]);
+                let m = L.circleMarker([d.lat, d.lng], { radius: 4, fillColor: markerColor, color: '#000', weight: 1, fillOpacity: 1 }).addTo(markersGroup);
+                if(labelsVisible) {
+                    m.bindTooltip(ttpText, {permanent: true, direction: 'top', offset: [0, -5], className: 'leaflet-tooltip-own'});
+                } else {
+                    m.bindPopup(ttpText);
+                }
+            }
+        });
+
+        // Menggambar Area Poligon (Blok)
+        if (mode === 'polygon') {
+            if (polyCoords.length > 2) {
+                L.polygon(polyCoords, { color: '#FCD34D', fillColor: '#FCD34D', fillOpacity: 0.35, weight: 2.5 }).addTo(markersGroup);
+            } else if (autoZoom) {
+                toast(i18n[currentLang].t_err_poly, "warn");
+            }
+        }
+
+        if (Object.keys(categories).length > 0) buildLegend(categories);
+
+        if (mapData.length > 0 && autoZoom) {
+            // Memberi sedikit jeda agar Leaflet merender titik baru sebelum mengkalkulasi Bounds
+            setTimeout(() => {
+                map.flyToBounds(markersGroup.getBounds(), { padding: [50, 50], duration: 1 });
+            }, 100);
+            toast(i18n[currentLang].t_map, "success");
+        }
+    }
+
+    function clearMap() {
+        markersGroup.clearLayers(); measureGroup.clearLayers(); measurePoints = [];
+        if (legendControlObj) { map.removeControl(legendControlObj); legendControlObj = null; currentCategories = {}; }
+        mapData = []; renderDataTable(); toast(i18n[currentLang].t_clear, "info");
+    }
+
+    function exportToPNG() {
+        updateDateLabel(); 
+        const layoutWrapper = document.getElementById('paper-layout');
+        const btnNode = document.querySelector('.btn-success');
+        const originalHtml = btnNode.innerHTML;
+        
+        btnNode.innerHTML = 'Rendering...'; btnNode.disabled = true;
+
+        setTimeout(() => {
+            html2canvas(layoutWrapper, { useCORS: true, allowTaint: false, backgroundColor: '#ffffff', scale: 2 
+            }).then(canvas => {
+                const link = document.createElement('a'); link.download = `GeoPlot_Layout_${new Date().toISOString().slice(0,10)}.png`;
+                link.href = canvas.toDataURL('image/png'); link.click();
+                btnNode.innerHTML = originalHtml; btnNode.disabled = false; toast(i18n[currentLang].t_export, "success");
+            }).catch(err => {
+                console.error(err); toast("Export failed. Network error.", "err"); btnNode.innerHTML = originalHtml; btnNode.disabled = false;
+            });
+        }, 800);
+    }
+</script>
+</body>
+</html>
