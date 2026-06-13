@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="AREs%20Logo%20Outline.png?v=2">
     
     <meta property="og:title" content="Aquaculture Research Ecosystem">
-    <meta property="og:description" content="Platform komputasi terintegrasi berbasis client-side untuk analisis statistika, bioinformatika, dan manajemen akuakultur.">
+    <meta property="og:description" content="Platform komputasi terintegrasi berbasis client-side untuk analisis statistika, bioinformatika, pemetaan spasial, dan manajemen akuakultur.">
     <meta property="og:image" content="https://dandisw.github.io/Aquaculture-Research-Ecosystem/AREs%20Logo%20Outline.png?v=2">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -22,19 +22,19 @@
     <style>
         :root {
             --bg: #030914; 
-            --bg-card: rgba(10, 20, 38, 0.7); 
-            --border-base: rgba(0, 82, 201, 0.4); 
-            --border-hover-base: rgba(0, 82, 201, 0.9);
+            --bg-card: rgba(10, 20, 38, 0.4); 
+            --border-base: rgba(0, 82, 201, 0.3); 
+            --border-hover-base: rgba(0, 82, 201, 0.8);
             --text-main: #f8fafc; 
-            --text-muted: #8fa3c0;
+            --text-muted: #94a3b8;
             --blue: #38bdf8; 
             --purple: #a855f7; 
             --emerald: #10b981; 
             --amber: #f59e0b; 
             --red: #f43f5e;
-            /* Tambahan warna baru untuk CiteShift & ShifterAI */
             --cyan: #06b6d4;
             --pink: #ec4899;
+            --orange: #f97316; 
         }
         
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -47,368 +47,182 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(0, 82, 201, 0.25) 0%, transparent 50%),
-                radial-gradient(circle at 50% 100%, rgba(3, 105, 161, 0.12) 0%, transparent 50%),
-                linear-gradient(to bottom, #030914, #01040a);
-            background-attachment: fixed;
             overflow-x: hidden;
+            position: relative;
         }
 
-        /* HEADER / HERO SECTION */
+        /* ── EFEK AMBIEN SINEMATIK ── */
+        .ambient-glow-1 {
+            position: absolute; top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(2, 132, 199, 0.15), transparent 60%);
+            border-radius: 50%; z-index: -1; filter: blur(60px); pointer-events: none;
+            animation: pulse-glow 8s infinite alternate;
+        }
+        .ambient-glow-2 {
+            position: absolute; bottom: 10%; right: -10%; width: 40vw; height: 40vw;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.1), transparent 60%);
+            border-radius: 50%; z-index: -1; filter: blur(60px); pointer-events: none;
+            animation: pulse-glow 10s infinite alternate-reverse;
+        }
+        @keyframes pulse-glow { 0% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
+
+        /* ── HEADER / HERO SECTION ── */
         header {
-            position: relative; 
-            text-align: center;
-            padding: 80px 20px 30px;
-            border-bottom: 2px solid var(--border-base); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            background: rgba(3, 9, 20, 0.6);
+            position: relative; text-align: center; padding: 80px 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            background: linear-gradient(to bottom, rgba(3, 9, 20, 0.8), rgba(3, 9, 20, 0.4));
+            z-index: 10;
         }
 
-        .top-left-brand {
-            position: absolute;
-            top: 25px;
-            left: 30px;
-            z-index: 20;
-        }
-        
-        .acronim-logo {
-            height: 105px;
-            width: auto;
-            display: block;
-            transition: transform 0.3s ease;
-        }
+        .top-left-brand { position: absolute; top: 25px; left: 30px; z-index: 20; }
+        .acronim-logo { height: 105px; width: auto; display: block; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .acronim-logo:hover { transform: scale(1.05) rotate(-2deg); }
 
-        .acronim-logo:hover { transform: scale(1.03); }
-
-        .top-right-actions {
-            position: absolute;
-            top: 25px;
-            right: 30px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 20;
-        }
-
+        .top-right-actions { position: absolute; top: 25px; right: 30px; display: flex; align-items: center; gap: 12px; z-index: 20; }
         .header-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: rgba(0, 82, 201, 0.08);
-            border: 1px solid var(--border-base);
-            border-radius: 50px;
-            font-family: 'Syne', sans-serif;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: all 0.25s ease;
+            display: flex; align-items: center; gap: 8px; padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px; font-family: 'Syne', sans-serif; font-size: 0.75rem;
+            letter-spacing: 0.5px; color: var(--text-muted); text-decoration: none; transition: all 0.3s ease;
         }
-
         .header-btn.ig { text-transform: lowercase; font-weight: 600; }
         .header-btn.fb { text-transform: uppercase; letter-spacing: 1px; }
-
-        .header-btn:hover {
-            color: var(--text-main);
-            border-color: #0052c9;
-            background: rgba(0, 82, 201, 0.2);
-            box-shadow: 0 4px 12px rgba(0, 82, 201, 0.3);
-        }
+        .header-btn:hover { color: #fff; border-color: rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transform: translateY(-2px); }
         
-        .hero-title {
-            font-family: 'MuseoModerno', sans-serif;
-            font-size: 2.6rem;
-            font-weight: 800;
-            margin-bottom: 12px;
-            letter-spacing: -1px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 20px; 
-            margin-top: 40px; 
-        }
+        .hero-title { font-family: 'MuseoModerno', sans-serif; font-size: 2.8rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; margin-top: 40px; }
+        .title-text { background: linear-gradient(135deg, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative; z-index: 5; text-shadow: 0 4px 20px rgba(255,255,255,0.1); }
 
-        .title-text {
-            background: linear-gradient(90deg, #f8fafc, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-            z-index: 5;
-        }
+        .logo-link { display: flex; align-items: center; justify-content: center; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 5; }
+        .main-logo-img { display: block; width: 220px; height: auto; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0, 82, 201, 0.3)); }
+        .logo-link:hover { transform: scale(1.05) translateY(-5px); }
 
-        .logo-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 5;
-        }
-
-        .main-logo-img {
-            display: block;
-            width: 210px; 
-            height: auto;
-            object-fit: contain;
-            transition: transform 0.3s ease;
-        }
-
-        .logo-link:hover .main-logo-img { transform: scale(1.05); }
-
-        .hero-subtitle {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            max-width: 580px;
-            margin: 0 auto;
-            font-weight: 300;
-        }
+        .hero-subtitle { font-size: 1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; font-weight: 300; line-height: 1.6; }
         
-        .author-badge {
-            display: inline-block;
-            margin-top: 18px;
-            padding: 6px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-base);
-            border-radius: 50px;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: all 0.25s ease;
-        }
-        .author-badge:hover {
-            color: #ffffff;
-            border-color: #0052c9;
-            background: rgba(0, 82, 201, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 82, 201, 0.4);
-        }
-
-        /* MAIN CONTENT & GRID */
-        main {
-            flex: 1;
-            padding: 35px 20px 50px;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            display: flex;
-            align-items: center;
-        }
+        /* ── MAIN CONTENT & GRID ── */
+        main { flex: 1; padding: 40px 20px 60px; max-width: 1240px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; z-index: 10; position: relative;}
         
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 22px;
-            width: 100%;
+        /* SEARCH BAR */
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; width: 100%; gap: 15px; flex-wrap: wrap;}
+        .search-box {
+            position: relative; flex: 1; max-width: 400px;
         }
+        .search-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
+        .search-input {
+            width: 100%; padding: 12px 20px 12px 42px; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; color: var(--text-main);
+            font-family: var(--font-sans); font-size: 0.9rem; outline: none; transition: all 0.3s;
+        }
+        .search-input:focus { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.3); box-shadow: 0 0 0 4px rgba(255,255,255,0.05); }
+        .search-input::placeholder { color: var(--text-muted); }
 
-        /* KOTAK APP CARDS */
+        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; width: 100%; }
+
+        /* ── KOTAK APP CARDS (Bento Style) ── */
         .app-card {
-            background: var(--bg-card);
-            border: 1.5px solid var(--border-base); 
-            border-radius: 12px;
-            padding: 24px 26px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px;
+            padding: 28px 26px; text-decoration: none; color: inherit; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column; position: relative; overflow: hidden;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 6px rgba(0,0,0,0.1);
         }
-        
         .app-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 3px;
-            background: transparent;
-            transition: 0.25s ease;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: transparent; transition: 0.3s ease;
         }
 
         .app-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.6);
-            border-color: var(--border-hover-base);
-            background: rgba(0, 30, 70, 0.6);
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.1), 0 20px 40px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.15);
+            background: rgba(20, 30, 50, 0.6);
         }
 
         .app-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 14px;
-            transition: all 0.25s ease;
+            width: 54px; height: 54px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 18px; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .emoji-filter {
-            display: inline-block;
-            transition: filter 0.25s ease, transform 0.25s ease;
-        }
-
-        .app-card:hover .emoji-filter { transform: scale(1.15); }
+        .emoji-filter { display: inline-block; transition: filter 0.3s ease, transform 0.3s ease; }
+        .app-card:hover .emoji-filter { transform: scale(1.15) rotate(5deg); }
 
         /* THEME COLORS UNTUK MASING-MASING APP */
         .app-card.aqualab:hover::before { background: var(--blue); }
-        .app-card.aqualab .app-icon { background: rgba(56, 189, 248, 0.15); }
+        .app-card.aqualab .app-icon { background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0.05)); border-color: rgba(56, 189, 248, 0.2); }
         .app-card.aqualab .emoji-filter { filter: grayscale(100%) brightness(1.3) sepia(1) hue-rotate(200deg) saturate(6); }
         .app-card.aqualab .app-link-text { color: var(--blue); }
         
         .app-card.statwise:hover::before { background: var(--purple); }
-        .app-card.statwise .app-icon { background: rgba(168, 85, 247, 0.1); }
+        .app-card.statwise .app-icon { background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.05)); border-color: rgba(168, 85, 247, 0.2); }
         .app-card.statwise .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(250deg) saturate(5); }
         .app-card.statwise .app-link-text { color: var(--purple); }
         
         .app-card.biotools:hover::before { background: var(--emerald); }
-        .app-card.biotools .app-icon { background: rgba(16, 185, 129, 0.1); }
+        .app-card.biotools .app-icon { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05)); border-color: rgba(16, 185, 129, 0.2); }
         .app-card.biotools .emoji-filter { filter: grayscale(100%) brightness(1.1) sepia(1) hue-rotate(110deg) saturate(4); }
         .app-card.biotools .app-link-text { color: var(--emerald); }
 
         .app-card.ecometrics:hover::before { background: var(--amber); }
-        .app-card.ecometrics .app-icon { background: rgba(245, 158, 11, 0.1); }
+        .app-card.ecometrics .app-icon { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05)); border-color: rgba(245, 158, 11, 0.2); }
         .app-card.ecometrics .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(15deg) saturate(5); }
         .app-card.ecometrics .app-link-text { color: var(--amber); }
 
-        .app-card.mendeley:hover::before { background: var(--red); }
-        .app-card.mendeley .app-icon { background: rgba(244, 63, 94, 0.1); }
-        .app-card.mendeley .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(330deg) saturate(5); }
-        .app-card.mendeley .app-link-text { color: var(--red); }
-
         .app-card.citeshift:hover::before { background: var(--cyan); }
-        .app-card.citeshift .app-icon { background: rgba(6, 182, 212, 0.1); }
+        .app-card.citeshift .app-icon { background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.05)); border-color: rgba(6, 182, 212, 0.2); }
         .app-card.citeshift .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(180deg) saturate(5); }
         .app-card.citeshift .app-link-text { color: var(--cyan); }
 
         .app-card.shifterai:hover::before { background: var(--pink); }
-        .app-card.shifterai .app-icon { background: rgba(236, 72, 153, 0.1); }
+        .app-card.shifterai .app-icon { background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.05)); border-color: rgba(236, 72, 153, 0.2); }
         .app-card.shifterai .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(300deg) saturate(5); }
         .app-card.shifterai .app-link-text { color: var(--pink); }
 
-        .app-title {
-            font-family: 'MuseoModerno', sans-serif;
-            font-size: 1.35rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
+        .app-card.geoplot:hover::before { background: var(--orange); }
+        .app-card.geoplot .app-icon { background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.05)); border-color: rgba(249, 115, 22, 0.2); }
+        .app-card.geoplot .emoji-filter { filter: grayscale(100%) brightness(1.3) sepia(1) hue-rotate(35deg) saturate(5); }
+        .app-card.geoplot .app-link-text { color: var(--orange); }
 
-        .app-desc {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            flex: 1;
-            line-height: 1.6;
-        }
+        .app-card.mendeley:hover::before { background: var(--red); }
+        .app-card.mendeley .app-icon { background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(244, 63, 94, 0.05)); border-color: rgba(244, 63, 94, 0.2); }
+        .app-card.mendeley .emoji-filter { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(330deg) saturate(5); }
+        .app-card.mendeley .app-link-text { color: var(--red); }
 
-        .app-link-text {
-            margin-top: 16px;
-            font-size: 0.88rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color 0.2s;
-        }
+        .app-title { font-family: 'MuseoModerno', sans-serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
+        .app-desc { color: var(--text-muted); font-size: 0.9rem; flex: 1; line-height: 1.6; }
+        .app-link-text { margin-top: 20px; font-size: 0.88rem; font-weight: 700; display: flex; align-items: center; gap: 6px; transition: color 0.2s; opacity: 0.8; }
+        .app-card:hover .app-link-text { opacity: 1; transform: translateX(3px); }
 
         /* FOOTER SYSTEM */
-        footer {
-            text-align: center;
-            padding: 35px 20px 25px;
-            border-top: 2px solid var(--border-base);
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            flex-shrink: 0;
-            background: rgba(2, 6, 12, 0.9);
-            position: relative;
-        }
+        footer { text-align: center; padding: 35px 20px 25px; border-top: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0; background: rgba(2, 6, 12, 0.9); position: relative; z-index: 10;}
+        .footer-content-wrap { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .footer-socials { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; }
 
-        .footer-content-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
+        .footer-link { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 50%; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-size: 1.1rem; text-decoration: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .footer-link:hover { transform: translateY(-5px) scale(1.1); color: #ffffff; background: #0052c9; border-color: #0052c9; box-shadow: 0 10px 20px rgba(0, 82, 201, 0.4); }
+        .footer-link.secreto:hover { background: var(--amber); border-color: var(--amber); box-shadow: 0 10px 20px rgba(245,158,11,0.4); }
 
-        .footer-socials {
-            display: flex;
-            justify-content: center;
-            gap: 18px;
-            flex-wrap: wrap;
-        }
+        .feedback-text { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 14px; }
+        .feedback-text a { color: var(--amber); text-decoration: none; font-weight: 700; transition: color 0.2s; }
+        .feedback-text a:hover { color: #fbbf24; text-decoration: underline; }
 
-        .footer-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-base);
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            text-decoration: none;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .footer-link:hover {
-            transform: translateY(-4px);
-            color: #ffffff;
-            background: #0052c9;
-            border-color: #0052c9;
-            box-shadow: 0 4px 15px rgba(0, 82, 201, 0.4);
-        }
-        
-        .footer-link.secreto:hover { 
-            background: var(--amber); 
-            border-color: var(--amber); 
-            box-shadow: 0 4px 15px rgba(245,158,11,0.5); 
-        }
-
-        .feedback-text {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 14px;
-        }
-        .feedback-text a {
-            color: var(--amber);
-            text-decoration: none;
-            font-weight: 700;
-            transition: color 0.2s;
-        }
-        .feedback-text a:hover {
-            color: #fbbf24;
-            text-decoration: underline;
-        }
-
-        /* RESPONSIVE CONTROL UNTUK HP */
         @media (max-width: 768px) {
             header { padding: 65px 15px 20px; } 
-            .hero-title { font-size: 2rem; gap: 14px; margin-top: 55px; }
+            .hero-title { font-size: 2.2rem; gap: 14px; margin-top: 55px; }
             .main-logo-img { width: 170px; } 
-            
             .top-left-brand { top: 15px; left: 15px; }
             .acronim-logo { height: 80px; } 
-            
             .top-right-actions { top: 15px; right: 15px; gap: 8px; }
             .header-btn { padding: 6px 12px; font-size: 0.65rem; }
             .ig-text-hide { display: none; }
-            
-            main { padding: 15px 15px 30px; }
+            main { padding: 25px 15px 30px; }
             .app-grid { grid-template-columns: 1fr; gap: 16px; }
             .footer-socials { gap: 12px; }
+            .search-box { max-width: 100%; }
         }
     </style>
 </head>
 <body>
+
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
 
     <header>
         <div class="top-left-brand">
@@ -431,63 +245,75 @@
             <a href="https://dandisw.github.io/Profil-Dandi/" target="_blank" class="logo-link" title="Lihat Profil Dandi Setio Wibowo">
                 <img src="AREs%20Logo%20Outline.png" alt="Logo Aquaculture Research Ecosystem" class="main-logo-img">
             </a>
-            
             <span class="title-text">Aquaculture Research Ecosystem</span>
         </h1>
-        
         <p class="hero-subtitle">Platform komputasi terintegrasi berbasis <em>client-side</em> untuk menunjang analisis statistika, bioinformatika, dan manajemen laboratorium sains.</p>
         
-        <a href="https://dandisw.github.io/Profil-Dandi/" class="author-badge" target="_blank" title="Lihat Profil Dandi Setio Wibowo">
-            Developed by Dandi Setio Wibowo
-        </a>
     </header>
 
     <main>
-        <div class="app-grid">
+        <div class="toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Cari modul (Cth: Peta, Statistik, Sitasi)..." onkeyup="filterTools()">
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono);">
+                Menampilkan <span id="toolCount">8</span> Modul Aktif
+            </div>
+        </div>
+
+        <div class="app-grid" id="appGrid">
             
-            <a href="./AquaLab-Workspace/index.html" class="app-card aqualab">
+            <a href="./AquaLab-Workspace/index.html" class="app-card aqualab" data-keywords="laboratorium kualitas air vivo mikrobiologi molekuler">
                 <div class="app-icon"><span class="emoji-filter">🔬</span></div>
                 <h2 class="app-title">AquaLab Workspace</h2>
                 <p class="app-desc">Buku catatan laboratorium digital komprehensif. Dilengkapi EWS Kualitas Air, kalkulator performa In Vivo, biokinetika mikrobiologi, dan dokumentasi molekuler.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
-            <a href="./StatWise/index.html" class="app-card statwise">
+            <a href="./StatWise/index.html" class="app-card statwise" data-keywords="statistik data uji normalitas anova korelasi plot">
                 <div class="app-icon"><span class="emoji-filter">📊</span></div>
                 <h2 class="app-title">StatWise</h2>
                 <p class="app-desc">Mesin komputasi statistik murni JavaScript. Mendukung uji Normalitas, ANOVA, Korelasi, hingga visualisasi Scatter Plot tanpa memerlukan server backend.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
-            <a href="./BioTools/index.html" class="app-card biotools">
+            <a href="./BioTools/index.html" class="app-card biotools" data-keywords="genetika dna rna protein filogenetik msa orf">
                 <div class="app-icon"><span class="emoji-filter">⚗</span></div>
                 <h2 class="app-title">BioTools Suite</h2>
                 <p class="app-desc">Perangkat bioinformatika <em>end-to-end</em>. Menyediakan fitur ekstraksi ORF, penjajaran MSA, Fisikokimia Protein, dan pembuatan pohon filogenetik beresolusi tinggi.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
-            <a href="./EcoMetrics-Multivariat/index.html" class="app-card ecometrics">
+            <a href="./EcoMetrics-Multivariat/index.html" class="app-card ecometrics" data-keywords="ekologi lingkungan rapfish pca k-means mds">
                 <div class="app-icon"><span class="emoji-filter">🌿</span></div>
                 <h2 class="app-title">EcoMetrics Multivariat</h2>
                 <p class="app-desc">Pusat eksplorasi data multivariat. Mendukung kalkulasi Rapfish (MDS Keberlanjutan), Principal Component Analysis (PCA), K-Means, ANOSIM, dan LDA.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
-            <a href="./CiteShift/index.html" class="app-card citeshift">
+            <a href="./GeoPlot/index.html" class="app-card geoplot" data-keywords="peta spasial kartografi gis gps koordinat">
+                <div class="app-icon"><span class="emoji-filter">📍</span></div>
+                <h2 class="app-title">GeoPlot</h2>
+                <p class="app-desc">Platform pemetaan spasial dan kartografi interaktif. Dilengkapi fitur Geolocation GPS, pengukuran jarak/area, tata letak otomatis, dan ekspor vektor SVG.</p>
+                <div class="app-link-text">Buka Aplikasi &rarr;</div>
+            </a>
+
+            <a href="./CiteShift/index.html" class="app-card citeshift" data-keywords="sitasi daftar pustaka referensi mendeley zotero bibtex ris apa">
                 <div class="app-icon"><span class="emoji-filter">🗂️</span></div>
                 <h2 class="app-title">CiteShift</h2>
                 <p class="app-desc">Konverter sitasi ilmiah cerdas. Ubah teks daftar pustaka mentah menjadi format BibTeX, RIS, atau APA secara instan dilengkapi *Auto-Complete* metadata (Crossref).</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
-            <a href="./ShifterAI/index.html" class="app-card shifterai">
+            <a href="./ShifterAI/index.html" class="app-card shifterai" data-keywords="ai kecerdasan buatan naskah format teks paragraf gemini">
                 <div class="app-icon"><span class="emoji-filter">✨</span></div>
                 <h2 class="app-title">ShifterAI</h2>
                 <p class="app-desc">Asisten heuristik format teks. Otomatisasi restrukturisasi paragraf naskah, penghapusan karakter tersembunyi, dan penyesuaian gaya penulisan akademik yang presisi.</p>
                 <div class="app-link-text">Buka Aplikasi &rarr;</div>
             </a>
 
-            <a href="./Mendeley-Citation-Portal-FPIK-Unsoed-2018/index.html" class="app-card mendeley">
+            <a href="./Mendeley-Citation-Portal-FPIK-Unsoed-2018/index.html" class="app-card mendeley" data-keywords="skripsi unsoed fpik style csl sitasi">
                 <div class="app-icon"><span class="emoji-filter">📚</span></div>
                 <h2 class="app-title">Mendeley FPIK Portal</h2>
                 <p class="app-desc">Repositori distribusi digital CSL Style Tugas Akhir FPIK 2018 Resmi Universitas Jenderal Soedirman untuk instalasi Mendeley Cite secara instan.</p>
@@ -520,12 +346,34 @@
             <p class="feedback-text">
                 Punya masukan atau temuan bug selama penelitian? Tuliskan <a href="https://secreto.site/a8vwl7" target="_blank">Kritik, Saran, &amp; Feedback Anonim Anda di Sini</a>.
             </p>
-            
             <p>&copy; 2026 Aquaculture Research Ecosystem. All tools execute locally in your browser for absolute privacy.</p>
         </div>
     </footer>
 
     <script>
+        // Fitur Pencarian Dinamis
+        function filterTools() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.app-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const title = card.querySelector('.app-title').textContent.toLowerCase();
+                const desc = card.querySelector('.app-desc').textContent.toLowerCase();
+                const keywords = card.getAttribute('data-keywords') || "";
+                
+                if (title.includes(input) || desc.includes(input) || keywords.includes(input)) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('toolCount').textContent = visibleCount;
+        }
+
+        // Registrasi PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
