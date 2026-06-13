@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#D97706">
 <title>GeoPlot — Cartographic Workspace by DSW</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%23FCD34D%22>📍</text></svg>">
+<link rel="manifest" href="../manifest.json">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Times+New+Roman&display=swap" rel="stylesheet">
@@ -13,7 +15,7 @@
 
 <style>
 /* ============================================================
-   AREs DESIGN SYSTEM — GeoPlot 11.1 (Geolocation Patch)
+   AREs DESIGN SYSTEM — GeoPlot Final (PWA Edition)
    ============================================================ */
 :root {
   --bg: #F8FAFC; --surface: #FFFFFF; --surface-hover: #F1F5F9;
@@ -185,7 +187,8 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
   .peta-workspace { padding: 0; height: 500px; overflow: hidden; margin-bottom: 40px;}
   .map-paper { height: 100% !important; width: 100% !important; }
   .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .page-header > div:last-child { width: 100%; }
+  .page-header > div:last-child { width: 100%; flex-wrap: wrap; }
+  .page-header .btn { flex: 1; justify-content: center; }
 }
 </style>
 </head>
@@ -488,10 +491,10 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
             </ul>
 
             <h3 style="margin-top: 30px;">Rekam Jejak Pembaruan (Changelog)</h3>
-            
+
             <div class="changelog-item">
-                <div class="changelog-ver">v11.1 — Geolocation Update (Rilis Saat Ini)</div>
-                <div><b>[FITUR]</b> Menambahkan fitur pendeteksian lokasi GPS Perangkat untuk memudahkan pengambilan titik sampel di lapangan secara langsung.</div>
+                <div class="changelog-ver">v11.1 — PWA Edition (Rilis Saat Ini)</div>
+                <div><b>[FITUR]</b> Registrasi *Service Worker* dan file manifest. GeoPlot kini adalah Progressive Web App (PWA) sepenuhnya dan dapat diinstal di perangkat pengguna. Geolocation GPS aktif.</div>
             </div>
 
             <div class="changelog-item">
@@ -501,7 +504,7 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
             
             <div class="changelog-item">
                 <div class="changelog-ver">v10.3 — Final UX & SVG Engine</div>
-                <div>Merombak metode *rendering* Leaflet dari Canvas kembali ke SVG untuk mengatasi bug *blank tiles* dan akurasi saat kanvas berubah ukuran. Pemindahan tata letak tombol Ekspor PNG.</div>
+                <div>Merombak metode *rendering* Leaflet dari Canvas kembali ke SVG untuk mengatasi bug *blank tiles* dan akurasi saat kanvas berubah ukuran. Pemindahan tata letak tombol Ekspor PNG ke Title Bar.</div>
             </div>
             
             <div class="changelog-item">
@@ -695,7 +698,6 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
     let currentCategories = {}; 
     let mapData = []; 
     let labelsVisible = true; 
-    let myLocationCircle = null; // Menyimpan layer akurasi GPS
 
     const basemaps = {
         esriSatellite: { layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 }), name: "Esri World Imagery" },
@@ -790,7 +792,7 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
     // ── FITUR BARU: GEOLOKASI (GPS) ──
     function getLocation() {
         if (!navigator.geolocation) {
-            toast("Geolocation tidak didukung oleh browser Anda.", "err");
+            toast("Geolocation tidak didukung oleh browser.", "err");
             return;
         }
 
@@ -803,16 +805,14 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
             (position) => {
                 const lat = parseFloat(position.coords.latitude.toFixed(6));
                 const lng = parseFloat(position.coords.longitude.toFixed(6));
-                const accuracy = position.coords.accuracy; // Akurasi dalam meter
+                const accuracy = position.coords.accuracy; 
 
-                // Isi ke dalam kotak teks manual
                 document.getElementById('inLat').value = lat;
                 document.getElementById('inLng').value = lng;
                 document.getElementById('inName').value = currentLang === 'id' ? "Titik GPS Saya" : "My GPS Point";
                 document.getElementById('inCat').value = "Ground Truth";
-                document.getElementById('inBuffer').value = Math.round(accuracy); // Buffer otomatis pakai radius akurasi
+                document.getElementById('inBuffer').value = Math.round(accuracy); 
                 
-                // Tambahkan langsung ke data stasiun dan render
                 addPointManual();
 
                 btn.innerHTML = originalHtml;
@@ -825,11 +825,7 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
                 btn.innerHTML = originalHtml;
                 btn.disabled = false;
             },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
     }
 
@@ -949,7 +945,7 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
                     txt += currentLang === 'id' ? `<br>Luas: ${(areaM2/10000).toFixed(2)} Ha` : `<br>Area: ${(areaM2/10000).toFixed(2)} Ha`;
                 }
                 
-                L.tooltip({permanent: true, direction: 'right', className: 'measure-tooltip'}).setLatLng(e.latlng).setContent(txt).addTo(measureGroup);
+                L.tooltip({permanent: true, direction: 'auto', className: 'measure-tooltip'}).setLatLng(e.latlng).setContent(txt).addTo(measureGroup);
             }
             return;
         }
@@ -972,7 +968,7 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
         if(isMeasuring) { measurePoints = []; measureGroup.clearLayers(); toast(currentLang === 'id'?'Pengukuran di-reset.':'Measurement reset.', 'info'); }
     });
 
-    // ── EKSPOR/IMPOR DATA & VEKTOR ──
+    // ── EKSPOR/IMPOR DATA SPASIAL ──
     function exportData(format) {
         if(mapData.length === 0) return toast(i18n[currentLang].noData, "warn");
         
@@ -1196,7 +1192,6 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
         if (Object.keys(categories).length > 0) buildLegend(categories);
 
         if (mapData.length > 0 && autoZoom) {
-            // Memberi sedikit jeda agar Leaflet merender titik baru sebelum mengkalkulasi Bounds
             setTimeout(() => {
                 map.flyToBounds(markersGroup.getBounds(), { padding: [50, 50], duration: 1 });
             }, 100);
@@ -1228,6 +1223,15 @@ input[type="color"].form-control { padding: 2px 4px; cursor: pointer; height: 28
                 console.error(err); toast("Export failed. Network error.", "err"); btnNode.innerHTML = originalHtml; btnNode.disabled = false;
             });
         }, 800);
+    }
+
+    // ── PWA SERVICE WORKER ──
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('../sw.js')
+                .then(reg => console.log('Service Worker AREs aktif di GeoPlot!'))
+                .catch(err => console.error('Pendaftaran Service Worker gagal:', err));
+        });
     }
 </script>
 </body>
