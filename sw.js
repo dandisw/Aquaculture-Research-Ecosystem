@@ -1,5 +1,5 @@
-// Ganti versi menjadi v3 agar browser melakukan update otomatis
-const CACHE_NAME = 'ares-portal-v3';
+// Naikkan versi menjadi v4 agar pengguna otomatis mengunduh alat baru (GeoPlot)
+const CACHE_NAME = 'ares-portal-v4';
 
 // Daftar file inti yang wajib didownload saat pertama kali instal (Pre-cache)
 const urlsToCache = [
@@ -16,17 +16,17 @@ const urlsToCache = [
   './EcoMetrics-Multivariat/index.html',
   './CiteShift/index.html',
   './ShifterAI/index.html',
+  './GeoPlot/index.html', // <--- GEOPLOT DITAMBAHKAN DI SINI
   './Mendeley-Citation-Portal-FPIK-Unsoed-2018/index.html'
 ];
 
 // EVENT 1: INSTALASI (Menyimpan file ke dalam Cache)
 self.addEventListener('install', event => {
   self.skipWaiting();
-  
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('AREs Service Worker v3: Cache inti berhasil disimpan.');
+        console.log('AREs Service Worker v4: Cache inti berhasil disimpan.');
         return cache.addAll(urlsToCache);
       })
   );
