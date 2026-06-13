@@ -91,7 +91,7 @@
         .header-btn:hover { color: #fff; border-color: rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.1); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transform: translateY(-2px); }
         
         .hero-title { font-family: 'MuseoModerno', sans-serif; font-size: 2.8rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; margin-top: 40px; }
-        .title-text { background: linear-gradient(135deg, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative; z-index: 5; text-shadow: 0 4px 20px rgba(255,255,255,0.1); }
+        .title-text { background: linear-gradient(135deg, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative; z-index: 5; text-shadow: 0 4px 20px rgba(255,255,255,0.1); text-align: center; }
 
         .logo-link { display: flex; align-items: center; justify-content: center; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; z-index: 5; }
         .main-logo-img { display: block; width: 220px; height: auto; object-fit: contain; filter: drop-shadow(0 10px 20px rgba(0, 82, 201, 0.3)); }
@@ -104,9 +104,7 @@
         
         /* SEARCH BAR */
         .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; width: 100%; gap: 15px; flex-wrap: wrap;}
-        .search-box {
-            position: relative; flex: 1; max-width: 400px;
-        }
+        .search-box { position: relative; flex: 1; max-width: 400px; }
         .search-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
         .search-input {
             width: 100%; padding: 12px 20px 12px 42px; background: rgba(255,255,255,0.03);
@@ -126,9 +124,7 @@
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 6px rgba(0,0,0,0.1);
         }
-        .app-card::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: transparent; transition: 0.3s ease;
-        }
+        .app-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: transparent; transition: 0.3s ease; }
 
         .app-card:hover {
             transform: translateY(-6px) scale(1.01);
@@ -137,10 +133,7 @@
             background: rgba(20, 30, 50, 0.6);
         }
 
-        .app-icon {
-            width: 54px; height: 54px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 18px; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05);
-        }
-
+        .app-icon { width: 54px; height: 54px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin-bottom: 18px; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05); }
         .emoji-filter { display: inline-block; transition: filter 0.3s ease, transform 0.3s ease; }
         .app-card:hover .emoji-filter { transform: scale(1.15) rotate(5deg); }
 
@@ -203,6 +196,23 @@
         .feedback-text a { color: var(--amber); text-decoration: none; font-weight: 700; transition: color 0.2s; }
         .feedback-text a:hover { color: #fbbf24; text-decoration: underline; }
 
+        /* ── PWA INSTALL BUTTON ── */
+        .pwa-install-btn {
+            position: fixed; bottom: 30px; right: 30px;
+            background: linear-gradient(135deg, var(--blue), var(--purple)); color: white;
+            border: none; border-radius: 50px; padding: 12px 24px;
+            font-family: var(--font-sans); font-weight: 700; font-size: 14px;
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.4);
+            cursor: pointer; z-index: 1000;
+            display: none; /* Hidden by default */
+            align-items: center; gap: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .pwa-install-btn:hover {
+            transform: translateY(-4px); box-shadow: 0 15px 30px rgba(56, 189, 248, 0.6);
+        }
+
+        /* RESPONSIVE CONTROL UNTUK HP */
         @media (max-width: 768px) {
             header { padding: 65px 15px 20px; } 
             .hero-title { font-size: 2.2rem; gap: 14px; margin-top: 55px; }
@@ -216,6 +226,20 @@
             .app-grid { grid-template-columns: 1fr; gap: 16px; }
             .footer-socials { gap: 12px; }
             .search-box { max-width: 100%; }
+            
+            /* Penyesuaian tombol install PWA di Mobile */
+            .pwa-install-btn {
+                bottom: 20px; right: 50%; transform: translateX(50%); width: max-content;
+            }
+            .pwa-install-btn:hover { transform: translate(50%, -4px); }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title { font-size: 1.8rem; }
+            .hero-subtitle { font-size: 0.85rem; padding: 0 10px; }
+            .title-text { line-height: 1.2; }
+            .app-card { padding: 20px; }
+            .app-title { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -350,8 +374,12 @@
         </div>
     </footer>
 
+    <button id="installPwaBtn" class="pwa-install-btn">
+        <i class="fas fa-download"></i> Install AREs App
+    </button>
+
     <script>
-        // Fitur Pencarian Dinamis
+        // ── Fitur Pencarian Dinamis ──
         function filterTools() {
             const input = document.getElementById('searchInput').value.toLowerCase();
             const cards = document.querySelectorAll('.app-card');
@@ -373,7 +401,7 @@
             document.getElementById('toolCount').textContent = visibleCount;
         }
 
-        // Registrasi PWA
+        // ── Registrasi Service Worker (PWA) ──
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -381,6 +409,42 @@
                     .catch(err => console.error('Pendaftaran Service Worker gagal:', err));
             });
         }
+
+        // ── Mekanisme PWA Auto-Install Prompt ──
+        let deferredPrompt;
+        const installBtn = document.getElementById('installPwaBtn');
+
+        // Menangkap event sebelum browser menampilkan promt instalasi bawaan
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Mencegah mini-infobar muncul secara default di mobile
+            e.preventDefault();
+            // Simpan event agar bisa dipanggil nanti oleh tombol kita
+            deferredPrompt = e;
+            // Tampilkan tombol "Install App" ke pengguna
+            installBtn.style.display = 'flex';
+        });
+
+        // Ketika tombol "Install" buatan kita di-klik
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Sembunyikan tombol
+                installBtn.style.display = 'none';
+                // Munculkan pop-up instalasi bawaan browser
+                deferredPrompt.prompt();
+                // Tunggu respon pengguna (Accept / Dismiss)
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                // Bersihkan variabel karena prompt hanya bisa dipanggil sekali
+                deferredPrompt = null;
+            }
+        });
+
+        // Menangkap event jika aplikasi berhasil diinstal (baik lewat tombol kita atau menu browser)
+        window.addEventListener('appinstalled', () => {
+            installBtn.style.display = 'none';
+            deferredPrompt = null;
+            console.log('PWA AREs sukses diinstal!');
+        });
     </script>
 </body>
 </html>
