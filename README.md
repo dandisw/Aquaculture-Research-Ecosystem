@@ -115,10 +115,13 @@ Spatial mapping tool for field sampling stations. Features real-time GPS trackin
 
 A smart citation manager converting APA, Vancouver, Harvard, and IEEE formats to BibTeX/RIS. Features **Crossref DOI auto-complete** and a curated auto-italic engine for aquaculture Latin species names.
 
-### 7. ShifterAI (v1.0) & 8. Mendeley Portal
+### 7. ShifterAI (v1.0)
 
-* **ShifterAI:** A BYOK (Bring-Your-Own-Key) Google Gemini academic drafting assistant. Extracts local PDFs, Excel, and FASTA files client-side before synthesizing Introductions, Results, or Conclusions.
-* **Mendeley Portal:** One-click installer for the official Final Project CSL citation style of FPIK UNSOED.
+A BYOK (Bring-Your-Own-Key) Google Gemini academic drafting assistant. Extracts local PDFs, Excel, and FASTA files client-side before synthesizing Introductions, Results, or Conclusions.
+
+### 8. Mendeley FPIK Portal
+
+One-click installer for the official Final Project CSL citation style of FPIK UNSOED.
 
 ---
 
@@ -164,6 +167,7 @@ AREs is built exclusively with HTML5, CSS3, and vanilla ES6+ JavaScript. It bypa
 ### Option 1: Run in Browser (Recommended)
 
 Simply open the platform in any modern web browser (Chrome, Firefox, Edge, Safari):
+
 👉 **[Launch AREs Web App](https://dandisw.github.io/Aquaculture-Research-Ecosystem/)**
 
 ### Option 2: Install as Desktop/Mobile App (PWA)
@@ -208,7 +212,7 @@ If you use AREs in your research, thesis, or publications, please cite the softw
 @software{wibowo2026ares,
   author       = {Wibowo, Dandi Setio},
   title        = {AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0)},
-  year         = 2026,
+  year         = {2026},
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.20729217},
   url          = {[https://doi.org/10.5281/zenodo.20729217](https://doi.org/10.5281/zenodo.20729217)}
