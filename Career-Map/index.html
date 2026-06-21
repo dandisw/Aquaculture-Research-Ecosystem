@@ -197,7 +197,7 @@ svg.radial { width:100%; max-width:840px; display:block; filter: drop-shadow(0 1
   border:1px solid var(--border);
   border-radius:18px;
   padding:24px;
-  scroll-margin-top:80px; /* Offset scroll agar tidak menempel di atas layar */
+  scroll-margin-top:80px;
   transition:all .25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -415,8 +415,8 @@ svg.radial { width:100%; max-width:840px; display:block; filter: drop-shadow(0 1
 <div class="ambient-glow-1"></div>
 <div class="ambient-glow-2"></div>
 
-<!-- NAVIGASI -->
-<a href="index.html" class="back-btn" title="Kembali ke Beranda AREs">
+<!-- NAVIGASI KEMBALI KE ROOT -->
+<a href="../index.html" class="back-btn" title="Kembali ke Beranda AREs">
   <i class="fas fa-arrow-left"></i> Kembali ke AREs
 </a>
 
@@ -450,10 +450,10 @@ svg.radial { width:100%; max-width:840px; display:block; filter: drop-shadow(0 1
     <line x1="360" y1="300" x2="270" y2="396" stroke="#06b6d4" stroke-width="1.8" opacity=".55" marker-end="url(#arr)" fill="none"/>
     <line x1="320" y1="280" x2="140" y2="280" stroke="#86efac" stroke-width="1.8" opacity=".55" marker-end="url(#arr)" fill="none"/>
 
-    <!-- CENTER BOX DENGAN LOGO GITHUB (TANPA LATAR PUTIH) -->
+    <!-- CENTER BOX DENGAN LOGO DARI ROOT DIREKTORI -->
     <g class="n-group" onclick="window.open('https://whatsapp.com/channel/0029Vb8cWJZ3QxS1ZIZSft0C', '_blank')" title="Gabung Komunitas FishCareer">
       <rect x="330" y="245" width="180" height="70" rx="16" fill="rgba(10, 20, 38, 0.9)" stroke="#38bdf8" stroke-width="2" style="filter: drop-shadow(0 0 15px rgba(56,189,248,0.5));"/>
-      <image href="logo%20FishCareer.png" x="340" y="250" width="160" height="60" preserveAspectRatio="xMidYMid meet"/>
+      <image href="../logo%20FishCareer.png" x="340" y="250" width="160" height="60" preserveAspectRatio="xMidYMid meet"/>
     </g>
 
     <!-- FISH top-left -->
@@ -859,9 +859,9 @@ svg.radial { width:100%; max-width:840px; display:block; filter: drop-shadow(0 1
   </div>
 </div>
 
-<!-- BANNER KOMUNITAS FISHCAREER -->
+<!-- BANNER KOMUNITAS FISHCAREER DARI ROOT -->
 <div class="community-banner">
-  <img src="logo%20FishCareer.png" alt="FishCareer by AREs Logo">
+  <img src="../logo%20FishCareer.png" alt="FishCareer by AREs Logo">
   <h2>Bergabung dengan Jaringan Profesional Kami</h2>
   <p>Akses informasi terkurasi seputar lowongan kerja spesialis, peluang magang riset, hingga persiapan beasiswa pascasarjana di bidang perikanan dan <i>life sciences</i>.</p>
   
@@ -874,17 +874,14 @@ svg.radial { width:100%; max-width:840px; display:block; filter: drop-shadow(0 1
 <div class="footer">Fisheries Career Map &nbsp;·&nbsp; FPIK UNSOED &nbsp;·&nbsp; 2026</div>
 
 <script>
-// Fungsi scroll mulus yang otomatis mengarah tepat ke awal kartu dengan jeda rapi
 function scrollToCard(id) {
   const el = document.getElementById(id);
   if (!el) return;
   document.querySelectorAll('.sc').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   
-  // Memastikan scroll bekerja di semua peramban (browser) secara halus
   el.scrollIntoView({ behavior:'smooth', block:'start' });
   
-  // Efek menyala aktif dihilangkan setelah 2.2 detik
   setTimeout(() => el.classList.remove('active'), 2200);
 }
 </script>
