@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fisheries Career Map — FishCareer by AREs</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Mono:wght@400;500&family=MuseoModerno:wght@400;600;700;800;900&family=Syne:wght@400;600;700;800&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+:root {
+  /* ── TEMA KHUSUS AREs ── */
+  --bg: #030914; 
+  --surface: rgba(10, 20, 38, 0.4); 
+  --surface2: #101f35;
+  --border: rgba(100,180,255,0.12);
+  --border-hover: rgba(56, 189, 248, 0.4);
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  
+  /* ── PALET SEKTOR MAP ── */
+  --c-fish:   #38bdf8;
+  --c-bio:    #10b981;
+  --c-pharma: #ec4899;
+  --c-env:    #f59e0b;
+  --c-tech:   #a855f7;
+  --c-food:   #f97316;
+  --c-acad:   #06b6d4;
+  --c-policy: #86efac;
+  --c-center: #38bdf8;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html, body { 
+    width: 100%; 
+    max-width: 100vw; 
+    overflow-x: hidden; 
+    scroll-behavior: smooth; 
+}
+
+body {
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  position: relative;
+}
+
+/* ── EFEK AMBIEN SINEMATIK AREs ── */
+.ambient-glow-1 { position: absolute; top: -5%; left: -10%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(2, 132, 199, 0.15), transparent 60%); border-radius: 50%; z-index: -1; filter: blur(60px); pointer-events: none; animation: pulse-glow 8s infinite alternate; }
+.ambient-glow-2 { position: absolute; bottom: 10%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(168, 85, 247, 0.1), transparent 60%); border-radius: 50%; z-index: -1; filter: blur(60px); pointer-events: none; animation: pulse-glow 10s infinite alternate-reverse; }
+@keyframes pulse-glow { 0% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
+
+/* ── TOMBOL NAVIGASI KEMBALI ── */
+.back-btn {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  color: var(--muted);
+  text-decoration: none;
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 10px 20px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+  z-index: 50;
+}
+.back-btn:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: var(--c-center);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* ── HEADER ── */
+.header {
+  text-align:center;
+  padding:80px 20px 28px;
+  border-bottom:1px solid var(--border);
+  background: linear-gradient(180deg, rgba(3,9,20,0.8) 0%, rgba(3,9,20,0.2) 100%);
+  backdrop-filter: blur(16px);
+  position: relative;
+  z-index: 10;
+}
+.eyebrow {
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  letter-spacing:.22em;
+  color:var(--c-center);
+  text-transform:uppercase;
+  margin-bottom:12px;
+}
+.header h1 {
+  font-family:'MuseoModerno',sans-serif;
+  font-size:clamp(32px,5vw,52px);
+  font-weight:800;
+  color:#fff;
+  line-height:1.12;
+  margin-bottom:12px;
+  letter-spacing: -1px;
+}
+.header h1 em { 
+  background: linear-gradient(135deg, var(--c-fish), var(--c-tech));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-style:normal; 
+}
+.header p {
+  font-size:14px;
+  color:var(--muted);
+  max-width:580px;
+  margin:0 auto;
+  line-height:1.65;
+  font-weight: 300;
+}
+
+/* ── MAP WRAPPER ── */
+.map-section {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:40px 16px 0;
+  max-width:920px;
+  margin:0 auto;
+  position: relative;
+  z-index: 10;
+}
+.map-hint {
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  letter-spacing:.12em;
+  color:var(--muted);
+  text-transform:uppercase;
+  margin-bottom:30px;
+  background: rgba(255,255,255,0.03);
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+/* ── SVG MAP ── */
+svg.radial { width:100%; max-width:840px; display:block; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3)); }
+
+.n-group { cursor:pointer; }
+.n-group rect { transition:opacity .15s, stroke-width .2s; }
+.n-group:hover rect { opacity:.9; stroke-width: 2.5px; }
+
+/* ── LEGEND ── */
+.legend {
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px 20px;
+  justify-content:center;
+  padding:24px 16px 0;
+  max-width:860px;
+  margin:0 auto;
+  position: relative;
+  z-index: 10;
+}
+.leg { display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted); font-weight: 500;}
+.leg-dot { width:10px;height:10px;border-radius:50%;flex-shrink:0; }
+
+/* ── SECTOR DETAIL CARDS ── */
+.sectors-wrap {
+  max-width:1240px;
+  margin:0 auto;
+  padding:40px 20px 20px;
+  position: relative;
+  z-index: 10;
+}
+.section-label {
+  font-family:'DM Mono',monospace;
+  font-size:11px;
+  letter-spacing:.18em;
+  color:var(--c-center);
+  text-transform:uppercase;
+  text-align:center;
+  margin-bottom:32px;
+}
+.sectors-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+}
+
+/* CARD (AREs Bento Style) */
+.sc {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:24px;
+  scroll-margin-top:80px; /* Offset scroll agar tidak menempel di atas layar */
+  transition:all .25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 6px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+.sc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: transparent; transition: 0.3s ease; }
+.sc:hover { transform:translateY(-6px); box-shadow:0 15px 36px rgba(0,0,0,.45); border-color: rgba(255,255,255,0.15); background: rgba(20, 30, 50, 0.6); }
+
+.sc-head {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:12px;
+}
+.sc-icon {
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.sc-name { font-family:'MuseoModerno',sans-serif; font-size:1.15rem;font-weight:700;line-height:1.25; }
+.sc-tag {
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+  margin-top:4px;
+}
+.sc-desc {
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.6;
+  margin-bottom:16px;
+  padding-bottom:16px;
+  border-bottom:1px solid var(--border);
+}
+.sc-jobs {
+  list-style:none;
+  display:flex;flex-direction:column;gap:8px;
+  margin-bottom:18px;
+}
+.sc-jobs li {
+  font-size:12.5px;
+  color:#e4f0ff;
+  padding:8px 12px;
+  background:rgba(255,255,255,.03);
+  border-radius:10px;
+  border-left:3px solid;
+  line-height:1.4;
+}
+.sc-jobs li b { font-weight:600;display:block;margin-bottom:2px; }
+.sc-jobs li span { font-size:11.5px;color:var(--muted); }
+
+/* PG sub-section */
+.sc-pg-title {
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+  margin-bottom:10px;
+}
+.sc-pg-list { display:flex;flex-direction:column;gap:10px; }
+.sc-pg-item {
+  background:rgba(255,255,255,.02);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;
+  padding:12px 14px;
+}
+.sc-pg-item-head { display:flex;align-items:center;gap:8px;margin-bottom:6px; }
+.sc-pg-badge {
+  font-family:'DM Mono',monospace;
+  font-size:9.5px;font-weight:600;
+  padding:3px 10px;border-radius:12px;
+  flex-shrink:0;
+}
+.badge-s2 { background:rgba(56,189,248,.15);color:#38bdf8;border:1px solid rgba(56,189,248,.3); }
+.badge-s3 { background:rgba(6, 182, 212,.15);color:var(--c-acad);border:1px solid rgba(6, 182, 212,.3); }
+.sc-pg-name { font-size:12.5px;font-weight:700;color:var(--text); }
+.sc-pg-focus { font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px; }
+.sc-pg-out {
+  font-size:11.5px;
+  font-style:italic;
+  color:#a0c4e8;
+  background:rgba(56,189,248,.06);
+  border-radius:8px;
+  padding:6px 10px;
+  border-left:2px solid #38bdf8;
+}
+
+/* Colour themes per sector (AREs Sync) */
+.s-fish:hover::before { background: var(--c-fish); } .s-fish .sc-icon{background:linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0.05)); border-color: rgba(56, 189, 248, 0.2);} .s-fish .sc-name{color:var(--c-fish)} .s-fish .sc-jobs li{border-color:var(--c-fish)}
+.s-bio:hover::before { background: var(--c-bio); } .s-bio .sc-icon{background:linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05)); border-color: rgba(16, 185, 129, 0.2);} .s-bio .sc-name{color:var(--c-bio)} .s-bio .sc-jobs li{border-color:var(--c-bio)}
+.s-ph:hover::before { background: var(--c-pharma); } .s-ph .sc-icon{background:linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(236, 72, 153, 0.05)); border-color: rgba(236, 72, 153, 0.2);} .s-ph .sc-name{color:var(--c-pharma)} .s-ph .sc-jobs li{border-color:var(--c-pharma)}
+.s-env:hover::before { background: var(--c-env); } .s-env .sc-icon{background:linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05)); border-color: rgba(245, 158, 11, 0.2);} .s-env .sc-name{color:var(--c-env)} .s-env .sc-jobs li{border-color:var(--c-env)}
+.s-tech:hover::before { background: var(--c-tech); } .s-tech .sc-icon{background:linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.05)); border-color: rgba(168, 85, 247, 0.2);} .s-tech .sc-name{color:var(--c-tech)} .s-tech .sc-jobs li{border-color:var(--c-tech)}
+.s-food:hover::before { background: var(--c-food); } .s-food .sc-icon{background:linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(249, 115, 22, 0.05)); border-color: rgba(249, 115, 22, 0.2);} .s-food .sc-name{color:var(--c-food)} .s-food .sc-jobs li{border-color:var(--c-food)}
+.s-acad:hover::before { background: var(--c-acad); } .s-acad .sc-icon{background:linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.05)); border-color: rgba(6, 182, 212, 0.2);} .s-acad .sc-name{color:var(--c-acad)} .s-acad .sc-jobs li{border-color:var(--c-acad)}
+.s-pol:hover::before { background: var(--c-policy); } .s-pol .sc-icon{background:linear-gradient(135deg, rgba(134, 239, 172, 0.2), rgba(134, 239, 172, 0.05)); border-color: rgba(134, 239, 172, 0.2);} .s-pol .sc-name{color:var(--c-policy)} .s-pol .sc-jobs li{border-color:var(--c-policy)}
+
+/* ── BRIDGE TAGS ── */
+.bridge-section {
+  max-width:860px;
+  margin:0 auto;
+  padding:12px 20px 36px;
+  text-align:center;
+  position: relative;
+  z-index: 10;
+}
+.bridge-label {
+  font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--muted);
+  margin-bottom:16px;
+}
+.bridge-tags { display:flex;flex-wrap:wrap;gap:10px;justify-content:center; }
+.bt {
+  font-family:'DM Mono',monospace;
+  font-size:11.5px;
+  padding:6px 16px;
+  border-radius:20px;
+  border:1px solid;
+  letter-spacing:.05em;
+  background: rgba(255,255,255,0.02);
+}
+
+/* ── BANNER KOMUNITAS FISHCAREER ── */
+.community-banner {
+  max-width: 800px;
+  margin: 60px auto 40px;
+  background: linear-gradient(145deg, rgba(10, 20, 38, 0.6), rgba(56, 189, 248, 0.05));
+  border: 1px solid var(--border-hover);
+  border-radius: 20px;
+  padding: 36px 30px;
+  text-align: center;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 10;
+}
+.community-banner img {
+  height: 80px;
+  margin-bottom: 20px;
+  background: rgba(10, 20, 38, 0.8);
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+.community-banner h2 {
+  font-family: 'MuseoModerno', sans-serif;
+  color: #fff;
+  margin-bottom: 12px;
+  font-size: 26px;
+  font-weight: 700;
+}
+.community-banner p {
+  color: var(--muted);
+  font-size: 14.5px;
+  margin-bottom: 28px;
+  line-height: 1.6;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.wa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #25D366;
+  color: #fff;
+  text-decoration: none;
+  padding: 14px 32px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-family: 'Syne', sans-serif;
+  transition: all 0.3s;
+  box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
+}
+.wa-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(37, 211, 102, 0.5);
+  background: #20bd5a;
+}
+
+/* ── DIVIDER ── */
+.div-line { height:1px;background:var(--border);max-width:1240px;margin:0 auto 36px; position: relative; z-index: 10;}
+
+/* ── FOOTER ── */
+.footer {
+  text-align:center;
+  font-family:'DM Mono',monospace;
+  font-size:10px;
+  color:#3a5a7a;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  padding:20px 0 40px;
+  position: relative;
+  z-index: 10;
+}
+
+/* highlight active card from map click */
+.sc.active {
+  box-shadow:0 0 0 2px var(--c-fish), 0 10px 40px rgba(56,189,248,.3);
+  border-color: var(--c-fish);
+}
+
+@media (max-width: 768px) {
+  .back-btn { top: 15px; left: 15px; padding: 8px 14px; font-size: 11px; }
+  .header { padding: 70px 15px 25px; }
+  .community-banner { margin: 40px 15px 20px; padding: 25px 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="ambient-glow-1"></div>
+<div class="ambient-glow-2"></div>
+
+<!-- NAVIGASI -->
+<a href="index.html" class="back-btn" title="Kembali ke Beranda AREs">
+  <i class="fas fa-arrow-left"></i> Kembali ke AREs
+</a>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="eyebrow">Career Landscape · Fisheries &amp; Life Sciences</div>
+  <h1>Fisheries <em>Career</em> Map</h1>
+  <p>Peta peluang karir lulusan Perikanan — melampaui sektor budidaya tradisional ke frontier Life Sciences, Bioteknologi, dan Inovasi Digital. Klik setiap cabang pada skema untuk menjelajahi detail spesialisasi riset.</p>
+</div>
+
+<!-- RADIAL MAP (DIPERLEBAR AGAR TIDAK SALING MENIMPA) -->
+<div class="map-section">
+  <div class="map-hint">↓ Klik cabang untuk meluncur ke detail di bawah</div>
+
+  <svg class="radial" viewBox="0 0 840 560" role="img">
+    <title>Fisheries Career Map — skema radial 8 sektor</title>
+    <desc>Diagram radial: FishCareer Logo di pusat, memancar ke 8 sektor karir.</desc>
+    <defs>
+      <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <!-- CONNECTOR LINES -->
+    <line x1="360" y1="260" x2="270" y2="164" stroke="#38bdf8" stroke-width="1.8" opacity=".55" marker-end="url(#arr)" fill="none"/>
+    <line x1="420" y1="240" x2="420" y2="104" stroke="#10b981" stroke-width="1.8" opacity=".55" marker-end="url(#arr)" fill="none"/>
+    <line x1="480" y1="260" x2="570" y2="164" stroke="#ec4899" stroke-width="1.8" opacity=".55" marker-end="url(#arr)" fill="none"/>
+    <line x1="520" y1="280" x2="700" y2="280" stroke="#f59e0b" stroke-width="1.8" opacity=".55" marker-end="url(#arr)" fill="none"/>
+    <line x1="480" y1="300" x2="570" y2="396" stroke="#a855f7" stroke-width="1.8" opacity=".55" marker-end="url(#arr)" fill="none"/>
+    <line x1="420" y1="320" x2="420" y2="456" stroke="#f97316" stroke-width="1.8" opacity=".55" marker-end="url(#arr)" fill="none"/>
+    <line x1="360" y1="300" x2="270" y2="396" stroke="#06b6d4" stroke-width="1.8" opacity=".55" marker-end="url(#arr)" fill="none"/>
+    <line x1="320" y1="280" x2="140" y2="280" stroke="#86efac" stroke-width="1.8" opacity=".55" marker-end="url(#arr)" fill="none"/>
+
+    <!-- CENTER BOX DENGAN LOGO GITHUB (TANPA LATAR PUTIH) -->
+    <g class="n-group" onclick="window.open('https://whatsapp.com/channel/0029Vb8cWJZ3QxS1ZIZSft0C', '_blank')" title="Gabung Komunitas FishCareer">
+      <rect x="330" y="245" width="180" height="70" rx="16" fill="rgba(10, 20, 38, 0.9)" stroke="#38bdf8" stroke-width="2" style="filter: drop-shadow(0 0 15px rgba(56,189,248,0.5));"/>
+      <image href="logo%20FishCareer.png" x="340" y="250" width="160" height="60" preserveAspectRatio="xMidYMid meet"/>
+    </g>
+
+    <!-- FISH top-left -->
+    <g class="n-group" onclick="scrollToCard('sc-fish')">
+      <rect x="80" y="110" width="190" height="54" rx="11" fill="rgba(10, 20, 38, 0.8)" stroke="#38bdf8" stroke-width="1.2"/>
+      <text x="175" y="133" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#bae6fd">Perikanan &amp;</text>
+      <text x="175" y="151" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#bae6fd">Akuakultur</text>
+    </g>
+
+    <!-- BIO top -->
+    <g class="n-group" onclick="scrollToCard('sc-bio')">
+      <rect x="310" y="50" width="220" height="54" rx="11" fill="rgba(10, 20, 38, 0.8)" stroke="#10b981" stroke-width="1.2"/>
+      <text x="420" y="73" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#a7f3d0">Bioteknologi &amp;</text>
+      <text x="420" y="91" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#a7f3d0">Life Sciences</text>
+    </g>
+
+    <!-- PHARMA top-right -->
+    <g class="n-group" onclick="scrollToCard('sc-ph')">
+      <rect x="570" y="110" width="190" height="54" rx="11" fill="rgba(10, 20, 38, 0.8)" stroke="#ec4899" stroke-width="1.2"/>
+      <text x="665" y="133" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#fbcfe8">Farmasi &amp;</text>
+      <text x="665" y="151" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#fbcfe8">Kesehatan</text>
+    </g>
+
+    <!-- ENV right -->
+    <g class="n-group" onclick="scrollToCard('sc-env')">
+      <rect x="700" y="253" width="120" height="54" rx="11" fill="rgba(10, 20, 38, 0.8)" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="760" y="276" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12" font-weight="600" fill="#fde68a">Lingkungan</text>
+      <text x="760" y="293" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="11" fill="#fde68a">&amp; Konservasi</text>
+    </g>
+
+    <!-- TECH bot-right -->
+    <g class="n-group" onclick="scrollToCard('sc-tech')">
+      <rect x="570" y="396" width="190" height="54" rx="11" fill="rgba(10, 20, 38, 0.8)" stroke="#a855f7" stroke-width="1.2"/>
+      <text x="665" y="419" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#ddd6fe">Teknologi &amp;</text>
+      <text x="665" y="437" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#ddd6fe">Inovasi Digital</text>
+    </g>
+
+    <!-- FOOD bottom -->
+    <g class="n-group" onclick="scrollToCard('sc-food')">
+      <rect x="310" y="456" width="220" height="54" rx="11" fill="rgba(10, 20, 38, 0.8)" stroke="#f97316" stroke-width="1.2"/>
+      <text x="420" y="479" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#fed7aa">Teknologi Pangan</text>
+      <text x="420" y="497" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#fed7aa">&amp; Gizi</text>
+    </g>
+
+    <!-- ACAD bot-left -->
+    <g class="n-group" onclick="scrollToCard('sc-acad')">
+      <rect x="80" y="396" width="190" height="54" rx="11" fill="rgba(10, 20, 38, 0.8)" stroke="#06b6d4" stroke-width="1.2"/>
+      <text x="175" y="419" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#a5f3fc">Akademik &amp;</text>
+      <text x="175" y="437" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12.5" font-weight="600" fill="#a5f3fc">Penelitian</text>
+    </g>
+
+    <!-- POLICY left -->
+    <g class="n-group" onclick="scrollToCard('sc-pol')">
+      <rect x="20" y="253" width="120" height="54" rx="11" fill="rgba(10, 20, 38, 0.8)" stroke="#86efac" stroke-width="1.2"/>
+      <text x="80" y="276" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="12" font-weight="600" fill="#bbf7d0">Kebijakan</text>
+      <text x="80" y="293" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="11" fill="#bbf7d0">&amp; Konsultasi</text>
+    </g>
+
+  </svg>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:var(--c-fish)"></div>Perikanan &amp; Akuakultur</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-bio)"></div>Bioteknologi</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-pharma)"></div>Farmasi &amp; Medis</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-env)"></div>Lingkungan</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-tech)"></div>Teknologi Digital</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-food)"></div>Pangan &amp; Gizi</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-acad)"></div>Akademik</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-policy)"></div>Kebijakan</div>
+</div>
+
+<div class="div-line" style="margin-top:32px"></div>
+
+<!-- SECTOR DETAIL CARDS -->
+<div class="sectors-wrap">
+  <div class="section-label">Detail setiap sektor — karir & jalur S2/S3</div>
+  <div class="sectors-grid">
+
+    <!-- 1. FISH -->
+    <div class="sc s-fish" id="sc-fish">
+      <div class="sc-head">
+        <div class="sc-icon">🐟</div>
+        <div>
+          <div class="sc-name">Perikanan &amp; Akuakultur</div>
+          <div class="sc-tag">Core Sector</div>
+        </div>
+      </div>
+      <p class="sc-desc">Sektor inti yang menjadi fondasi karir lulusan FPIK. Mencakup produksi budidaya intensif/semi-intensif, manajemen kesehatan ikan, pembenihan, hingga kontrol kualitas ekspor hasil perikanan.</p>
+      <ul class="sc-jobs">
+        <li><b>Aquaculture Farm Manager</b><span>Manajemen produksi budidaya intensif/semi-intensif & RAS</span></li>
+        <li><b>Fish Health Specialist</b><span>Diagnosa & penanganan penyakit ikan dan udang</span></li>
+        <li><b>Hatchery Manager</b><span>Produksi benih berkualitas tinggi berbagai komoditas</span></li>
+        <li><b>Fisheries Extension Officer</b><span>Pendampingan teknis petambak & nelayan</span></li>
+        <li><b>Quality Control Ekspor</b><span>Standar mutu, sertifikasi HACCP & ekspor produk perikanan</span></li>
+        <li><b>Breeding Program Supervisor</b><span>Program seleksi genetik untuk peningkatan produksi</span></li>
+      </ul>
+      <div class="sc-pg-title">Fokus studi S2 / S3</div>
+      <div class="sc-pg-list">
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Manajemen Akuakultur Terapan</span></div>
+          <div class="sc-pg-focus">Sistem RAS (Recirculating Aquaculture System), biosekuriti, ekonomi & manajemen usaha perikanan.</div>
+          <div class="sc-pg-out">➜ Farm Director, Manajer Produksi KKP, Konsultan Perikanan</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Kesehatan Ikan Terapan</span></div>
+          <div class="sc-pg-focus">Diagnosa penyakit, vaksinasi, farmakologi akuatik, pengelolaan kesehatan ikan budidaya.</div>
+          <div class="sc-pg-out">➜ Fish Health Inspector, Vet Aquaculture, R&amp;D Produk Kesehatan Ikan</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">Nutrisi &amp; Pakan Akuatik</span></div>
+          <div class="sc-pg-focus">Formulasi pakan fungsional, metabolomik, efisiensi nutrisi, bahan pakan alternatif (insect meal, algae).</div>
+          <div class="sc-pg-out">➜ Feed Formulator Senior, Nutritionist, R&amp;D Pabrik Pakan</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BIO -->
+    <div class="sc s-bio" id="sc-bio">
+      <div class="sc-head">
+        <div class="sc-icon">🧬</div>
+        <div>
+          <div class="sc-name">Bioteknologi &amp; Life Sciences</div>
+          <div class="sc-tag">High Growth Sector</div>
+        </div>
+      </div>
+      <p class="sc-desc">Sektor pertumbuhan tinggi yang memanfaatkan kompetensi biologi molekuler untuk riset genomik, rekayasa genetika, bioproses, dan industri diagnostik. Lulusan perikanan sangat relevan karena keahlian organisme akuatik.</p>
+      <ul class="sc-jobs">
+        <li><b>Molecular Biologist</b><span>PCR, genotyping, ekspresi gen organisme akuatik</span></li>
+        <li><b>Geneticist / Breeding Specialist</b><span>Selective breeding, marker-assisted selection (MAS)</span></li>
+        <li><b>Bioinformatician</b><span>Analisis genomik, transcriptomik, microbiome akuatik</span></li>
+        <li><b>Bioprocess Engineer</b><span>Scale-up produksi biologis — probiotik, enzim, vaksin</span></li>
+        <li><b>R&amp;D Scientist — Biotech Company</b><span>Industri diagnostik, reagent, atau kultur jaringan</span></li>
+        <li><b>Microbiome Researcher</b><span>Gut microbiome ikan, prebiotik &amp; probiotik akuakultur</span></li>
+      </ul>
+      <div class="sc-pg-title">Fokus studi S2 / S3</div>
+      <div class="sc-pg-list">
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Bioteknologi Kelautan &amp; Genomik</span></div>
+          <div class="sc-pg-focus">Genomik & transcriptomik organisme akuatik, selective breeding, marker-assisted selection, CRISPR dasar.</div>
+          <div class="sc-pg-out">➜ Genetic Researcher, Biotech R&amp;D, Lembaga Riset Nasional (BRIN)</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">Biologi Molekuler &amp; Genomik Akuatik</span></div>
+          <div class="sc-pg-focus">Whole-genome sequencing spesies akuatik, CRISPR rekayasa genetika, epigenomik & populasi genetik.</div>
+          <div class="sc-pg-out">➜ Principal Researcher, Dosen Senior, Postdoc Internasional</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">Bioinformatika &amp; Computational Biology</span></div>
+          <div class="sc-pg-focus">Multi-omics integration (metagenomik, proteomik), machine learning prediksi fenotip dari genotip.</div>
+          <div class="sc-pg-out">➜ Bioinformatician, Data Scientist Genomik, Postdoc Internasional</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. PHARMA -->
+    <div class="sc s-ph" id="sc-ph">
+      <div class="sc-head">
+        <div class="sc-icon">💊</div>
+        <div>
+          <div class="sc-name">Farmasi &amp; Kesehatan</div>
+          <div class="sc-tag">Blue Bioeconomy</div>
+        </div>
+      </div>
+      <p class="sc-desc">Jalur blue bioeconomy yang mengekstrak nilai dari organisme laut untuk nutraceutical, kosmetik, dan farmasi. Kekayaan biodiversitas laut Indonesia menjadikan ini sektor strategis dengan permintaan riset tinggi.</p>
+      <ul class="sc-jobs">
+        <li><b>Marine Natural Product Researcher</b><span>Isolasi senyawa bioaktif dari organisme laut</span></li>
+        <li><b>Nutraceutical Scientist</b><span>Omega-3, astaxanthin, kolagen dari bahan laut</span></li>
+        <li><b>Veterinary Pharmaceutical R&amp;D</b><span>Pengembangan vaksin &amp; obat untuk akuakultur</span></li>
+        <li><b>Cosmeceutical Developer</b><span>Bahan aktif laut untuk kosmetik (kolagen, alginat)</span></li>
+        <li><b>Bioassay Specialist</b><span>Pengujian aktivitas biologis senyawa laut</span></li>
+        <li><b>Regulatory Affairs Analyst</b><span>Registrasi produk farmasi/suplemen berbasis laut</span></li>
+      </ul>
+      <div class="sc-pg-title">Fokus studi S2 / S3</div>
+      <div class="sc-pg-list">
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Kimia Bahan Alam Laut</span></div>
+          <div class="sc-pg-focus">Isolasi & karakterisasi senyawa bioaktif, skrining aktivitas biologis, standarisasi ekstrak laut.</div>
+          <div class="sc-pg-out">➜ QC Nutraceutical, Researcher Bahan Alam, R&amp;D Suplemen</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">Natural Product Chemistry (Kelautan)</span></div>
+          <div class="sc-pg-focus">Sintesis & modifikasi struktural biocompound, uji aktivitas antitumor, antimikroba, antioksidan.</div>
+          <div class="sc-pg-out">➜ Peneliti Farmasi, Dosen Kimia/Biokimia, Industri Nutraceutical</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">Farmakologi Laut &amp; Drug Discovery</span></div>
+          <div class="sc-pg-focus">Drug discovery dari organisme akuatik, mekanisme resistensi antimikroba (AMR), imunomodulator laut.</div>
+          <div class="sc-pg-out">➜ Principal Scientist Farmasi, Lembaga Riset Farmasi Internasional</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. ENV -->
+    <div class="sc s-env" id="sc-env">
+      <div class="sc-head">
+        <div class="sc-icon">🌿</div>
+        <div>
+          <div class="sc-name">Lingkungan &amp; Konservasi</div>
+          <div class="sc-tag">Sustainability Sector</div>
+        </div>
+      </div>
+      <p class="sc-desc">Sektor keberlanjutan yang menangani dampak lingkungan aktivitas perikanan dan mendorong restorasi ekosistem pesisir. Permintaan konsultan AMDAL dan spesialis blue carbon terus meningkat seiring regulasi lingkungan yang ketat.</p>
+      <ul class="sc-jobs">
+        <li><b>Environmental Impact Assessor (AMDAL)</b><span>Kajian dampak tambak &amp; industri perikanan</span></li>
+        <li><b>Coastal Ecosystem Specialist</b><span>Restorasi mangrove, padang lamun, terumbu karang</span></li>
+        <li><b>Blue Carbon Analyst</b><span>Penilaian stok karbon ekosistem pesisir</span></li>
+        <li><b>Fisheries Observer (FAO/NGO)</b><span>Monitoring keberlanjutan tangkapan laut</span></li>
+        <li><b>Mangrove Restoration Expert</b><span>Perencanaan &amp; evaluasi program restorasi pesisir</span></li>
+        <li><b>Marine Spatial Planner</b><span>Tata ruang wilayah laut berbasis data ekologi</span></li>
+      </ul>
+      <div class="sc-pg-title">Fokus studi S2 / S3</div>
+      <div class="sc-pg-list">
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Ekologi &amp; Konservasi Kelautan</span></div>
+          <div class="sc-pg-focus">Ekologi terumbu karang, mangrove, padang lamun; blue carbon & ecosystem services valuation; pengelolaan kawasan konservasi perairan.</div>
+          <div class="sc-pg-out">➜ Konsultan AMDAL, NGO Internasional, KLHK/KKP</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Pengelolaan Sumber Daya Pesisir</span></div>
+          <div class="sc-pg-focus">Integrated coastal management, blue carbon assessment, perencanaan tata ruang laut berbasis ekologi.</div>
+          <div class="sc-pg-out">➜ Planologi Kelautan, Konsultan Lingkungan, Bappeda/KKP</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">Tata Kelola Lingkungan Kelautan</span></div>
+          <div class="sc-pg-focus">Socio-ecological modelling, kebijakan pesisir, evaluasi regulasi lingkungan perikanan.</div>
+          <div class="sc-pg-out">➜ Policy Researcher KLHK, Konsultan IUCN/WWF, Akademisi</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. TECH -->
+    <div class="sc s-tech" id="sc-tech">
+      <div class="sc-head">
+        <div class="sc-icon">🤖</div>
+        <div>
+          <div class="sc-name">Teknologi &amp; Inovasi Digital</div>
+          <div class="sc-tag">Emerging Sector</div>
+        </div>
+      </div>
+      <p class="sc-desc">Sektor berkembang pesat yang mengintegrasikan IoT, kecerdasan buatan, dan GIS ke dalam dunia perikanan. Startup aqua-tech dan perusahaan teknologi kelautan membutuhkan SDM yang memahami domain sekaligus teknologi.</p>
+      <ul class="sc-jobs">
+        <li><b>Aqua-Tech Product Developer</b><span>IoT sensor kualitas air, smart feeding system, monitoring otomatis</span></li>
+        <li><b>Data Analyst Perikanan</b><span>Analisis data produksi, supply chain, &amp; tren pasar ikan</span></li>
+        <li><b>AI/ML for Aquaculture</b><span>Computer vision deteksi penyakit, prediksi panen AI</span></li>
+        <li><b>GIS Specialist Kelautan</b><span>Pemetaan habitat &amp; distribusi sumber daya ikan</span></li>
+        <li><b>Remote Sensing Analyst</b><span>Analisis citra satelit untuk monitoring tambak &amp; terumbu</span></li>
+        <li><b>Smart Farming Engineer</b><span>Desain sistem precision aquaculture berbasis sensor</span></li>
+      </ul>
+      <div class="sc-pg-title">Fokus studi S2 / S3</div>
+      <div class="sc-pg-list">
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Teknologi Akuakultur Cerdas</span></div>
+          <div class="sc-pg-focus">IoT &amp; sensor kualitas air, smart feeding, precision aquaculture, integrasi data real-time untuk manajemen tambak.</div>
+          <div class="sc-pg-out">➜ Product Manager Aqua-Tech, IoT Engineer, Smart Farm Consultant</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">GIS &amp; Remote Sensing Kelautan</span></div>
+          <div class="sc-pg-focus">Analisis spasial pesisir, pemantauan ekosistem dari citra satelit, pemodelan distribusi sumber daya ikan.</div>
+          <div class="sc-pg-out">➜ GIS Analyst KKP, Spatial Data Scientist, Konsultan Kelautan</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">Bioinformatika &amp; Computational Biology</span></div>
+          <div class="sc-pg-focus">Deep learning untuk genomik, multi-omics integration, machine learning prediksi produksi budidaya.</div>
+          <div class="sc-pg-out">➜ Computational Biologist, Bioinformatician, AI Researcher</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. FOOD -->
+    <div class="sc s-food" id="sc-food">
+      <div class="sc-head">
+        <div class="sc-icon">🍤</div>
+        <div>
+          <div class="sc-name">Teknologi Pangan &amp; Gizi</div>
+          <div class="sc-tag">Value-Added Sector</div>
+        </div>
+      </div>
+      <p class="sc-desc">Sektor nilai tambah yang mengolah hasil perikanan menjadi produk pangan bernilai tinggi. Tren alternative protein (cultured seafood, alga) membuka peluang karir baru yang sangat kompetitif secara global.</p>
+      <ul class="sc-jobs">
+        <li><b>Food Scientist — Produk Perikanan</b><span>Pengembangan produk olahan ikan &amp; udang siap saji</span></li>
+        <li><b>Nutritionist / Dietitian</b><span>Riset gizi berbasis protein hewani laut</span></li>
+        <li><b>Food Safety Auditor</b><span>HACCP, ISO 22000, sertifikasi ekspor produk perikanan</span></li>
+        <li><b>Alternative Protein Developer</b><span>Serangga akuatik, alga, cultured seafood masa depan</span></li>
+        <li><b>Sensory Evaluation Specialist</b><span>Uji organoleptik &amp; consumer acceptance produk laut</span></li>
+        <li><b>Product Development Manager</b><span>Inovasi lini produk perikanan di perusahaan FMCG</span></li>
+      </ul>
+      <div class="sc-pg-title">Fokus studi S2 / S3</div>
+      <div class="sc-pg-list">
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Teknologi Hasil Perikanan</span></div>
+          <div class="sc-pg-focus">Pengolahan, fortifikasi, shelf-life produk perikanan; standar mutu ekspor; pengemasan aktif &amp; biodegradable.</div>
+          <div class="sc-pg-out">➜ QC Manager Industri Perikanan, R&amp;D Produk, Food Technologist</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Ilmu Gizi &amp; Pangan</span></div>
+          <div class="sc-pg-focus">Protein hewani laut, functional food, bioavailabilitas nutrisi, fortifikasi pangan berbasis komoditas laut.</div>
+          <div class="sc-pg-out">➜ Nutritionist Klinik, Peneliti Gizi, Konsultan Industri Pangan</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">Inovasi Pangan Berbasis Laut</span></div>
+          <div class="sc-pg-focus">Cultured seafood, insect meal, single-cell protein; food system sustainability; teknologi fermentasi akuatik.</div>
+          <div class="sc-pg-out">➜ Chief Scientist Startup Pangan, Peneliti Senior, Akademisi</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. ACADEMIA -->
+    <div class="sc s-acad" id="sc-acad">
+      <div class="sc-head">
+        <div class="sc-icon">🔬</div>
+        <div>
+          <div class="sc-name">Akademik &amp; Penelitian</div>
+          <div class="sc-tag">Knowledge Sector</div>
+        </div>
+      </div>
+      <p class="sc-desc">Jalur pengetahuan yang menghasilkan inovasi fundamental melalui riset dan pendidikan. Dosen dan peneliti di bidang perikanan memiliki peran strategis dalam mentransfer teknologi ke industri dan komunitas nelayan.</p>
+      <ul class="sc-jobs">
+        <li><b>Dosen / Lecturer FPIK</b><span>Pendidikan tinggi perikanan, biologi, atau bioteknologi akuatik</span></li>
+        <li><b>Peneliti BRIN / LIPI</b><span>Riset fundamental &amp; terapan kelautan-perikanan</span></li>
+        <li><b>Postdoctoral Researcher</b><span>Riset lanjutan di lembaga internasional (SEAFDEC, JIRCAS)</span></li>
+        <li><b>Science Communicator</b><span>Jurnalisme sains, media edukasi digital perikanan</span></li>
+        <li><b>Laboratory Manager</b><span>Pengelolaan laboratorium riset perguruan tinggi</span></li>
+        <li><b>Academic Grant Writer</b><span>Penulisan proposal hibah BRIN, DRTPM, Kemendikti</span></li>
+      </ul>
+      <div class="sc-pg-title">Fokus studi S2 / S3</div>
+      <div class="sc-pg-list">
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Ilmu Perikanan &amp; Kelautan</span></div>
+          <div class="sc-pg-focus">Riset terapan ekologi perikanan, fisiologi ikan, reproduksi &amp; pemijahan, dinamika populasi spesies target.</div>
+          <div class="sc-pg-out">➜ Dosen Muda, Asisten Peneliti BRIN, Laboran Senior</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">Riset Fundamental Perikanan</span></div>
+          <div class="sc-pg-focus">Ekologi populasi, biologi reproduksi ikan, fisiologi stres, dinamika komunitas akuatik.</div>
+          <div class="sc-pg-out">➜ Profesor, Peneliti Utama BRIN, Mitra Riset Internasional</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">One Health Akuatik</span></div>
+          <div class="sc-pg-focus">Integrasi kesehatan manusia–hewan–ekosistem; antimicrobial resistance (AMR) di sistem akuatik; zoonosis perikanan.</div>
+          <div class="sc-pg-out">➜ One Health Researcher, WHO/FAO Consultant, Akademisi Lintas Disiplin</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. POLICY -->
+    <div class="sc s-pol" id="sc-pol">
+      <div class="sc-head">
+        <div class="sc-icon">📋</div>
+        <div>
+          <div class="sc-name">Kebijakan &amp; Konsultasi</div>
+          <div class="sc-tag">Policy Sector</div>
+        </div>
+      </div>
+      <p class="sc-desc">Sektor yang menerjemahkan sains ke dalam kebijakan publik dan program pemberdayaan. Lulusan perikanan yang mampu berkomunikasi lintas disiplin sangat dibutuhkan oleh lembaga pemerintah, NGO, dan organisasi internasional.</p>
+      <ul class="sc-jobs">
+        <li><b>Fisheries Policy Analyst</b><span>KKP, Bappenas, kementerian terkait perikanan &amp; kelautan</span></li>
+        <li><b>FAO / SEAFDEC Consultant</b><span>Konsultan perikanan di lembaga internasional</span></li>
+        <li><b>Project Manager NGO</b><span>Program kesejahteraan nelayan &amp; ketahanan pangan</span></li>
+        <li><b>Aquaculture Investment Analyst</b><span>Due diligence proyek budidaya untuk VC &amp; investor</span></li>
+        <li><b>Regulatory Compliance Officer</b><span>Kepatuhan regulasi ekspor produk perikanan internasional</span></li>
+        <li><b>Trade Advisor Hasil Perikanan</b><span>Negosiasi perdagangan komoditas ikan antar negara</span></li>
+      </ul>
+      <div class="sc-pg-title">Fokus studi S2 / S3</div>
+      <div class="sc-pg-list">
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Kebijakan Perikanan &amp; Kelautan</span></div>
+          <div class="sc-pg-focus">Fisheries governance, co-management, hukum laut internasional (UNCLOS), pengelolaan berbasis ekosistem.</div>
+          <div class="sc-pg-out">➜ Analis Kebijakan KKP, FAO Programme Officer, NGO Manager</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s2">S2</span><span class="sc-pg-name">Ekonomi Sumber Daya Kelautan</span></div>
+          <div class="sc-pg-focus">Valuasi ekonomi ekosistem laut, analisis biaya-manfaat perikanan, pembiayaan blue economy.</div>
+          <div class="sc-pg-out">➜ Economist KKP/Bappenas, Blue Finance Analyst, World Bank Consultant</div>
+        </div>
+        <div class="sc-pg-item">
+          <div class="sc-pg-item-head"><span class="sc-pg-badge badge-s3">S3</span><span class="sc-pg-name">Keberlanjutan &amp; Tata Kelola Perikanan</span></div>
+          <div class="sc-pg-focus">Evaluasi kebijakan & analisis dampak regulasi, socio-ecological system modelling, fisheries governance.</div>
+          <div class="sc-pg-out">➜ Policy Advisor FAO/World Bank, Akademisi Kebijakan Publik</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sectors-grid -->
+</div><!-- /sectors-wrap -->
+
+<!-- BRIDGE -->
+<div class="div-line"></div>
+<div class="bridge-section">
+  <div class="bridge-label">Kompetensi lintas sektor yang menghubungkan</div>
+  <div class="bridge-tags">
+    <span class="bt" style="color:var(--c-bio);border-color:rgba(16,185,129,.3)">Biologi Molekuler</span>
+    <span class="bt" style="color:var(--c-fish);border-color:rgba(56,189,248,.3)">Ekologi Akuatik</span>
+    <span class="bt" style="color:var(--c-tech);border-color:rgba(168,85,247,.3)">Analisis Data &amp; Statistik</span>
+    <span class="bt" style="color:var(--c-env);border-color:rgba(245,158,11,.3)">Kesehatan Lingkungan</span>
+    <span class="bt" style="color:var(--c-pharma);border-color:rgba(236,72,153,.3)">Fisiologi Hewan</span>
+    <span class="bt" style="color:var(--c-food);border-color:rgba(249,115,22,.3)">Nutrisi &amp; Pakan</span>
+    <span class="bt" style="color:var(--c-acad);border-color:rgba(6,182,212,.3)">GIS &amp; Remote Sensing</span>
+    <span class="bt" style="color:var(--c-policy);border-color:rgba(134,239,172,.3)">Scientific Writing</span>
+    <span class="bt" style="color:var(--c-bio);border-color:rgba(16,185,129,.3)">Genetika Populasi</span>
+    <span class="bt" style="color:var(--c-tech);border-color:rgba(168,85,247,.3)">Bioinformatika</span>
+  </div>
+</div>
+
+<!-- BANNER KOMUNITAS FISHCAREER -->
+<div class="community-banner">
+  <img src="logo%20FishCareer.png" alt="FishCareer by AREs Logo">
+  <h2>Bergabung dengan Jaringan Profesional Kami</h2>
+  <p>Akses informasi terkurasi seputar lowongan kerja spesialis, peluang magang riset, hingga persiapan beasiswa pascasarjana di bidang perikanan dan <i>life sciences</i>.</p>
+  
+  <a href="https://whatsapp.com/channel/0029Vb8cWJZ3QxS1ZIZSft0C" class="wa-btn" target="_blank" title="Gabung Saluran WhatsApp FishCareer">
+    <i class="fab fa-whatsapp" style="font-size: 1.3rem;"></i> Gabung Saluran WhatsApp
+  </a>
+</div>
+
+<div class="div-line"></div>
+<div class="footer">Fisheries Career Map &nbsp;·&nbsp; FPIK UNSOED &nbsp;·&nbsp; 2026</div>
+
+<script>
+// Fungsi scroll mulus yang otomatis mengarah tepat ke awal kartu dengan jeda rapi
+function scrollToCard(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  document.querySelectorAll('.sc').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  
+  // Memastikan scroll bekerja di semua peramban (browser) secara halus
+  el.scrollIntoView({ behavior:'smooth', block:'start' });
+  
+  // Efek menyala aktif dihilangkan setelah 2.2 detik
+  setTimeout(() => el.classList.remove('active'), 2200);
+}
+</script>
+</body>
+</html>
