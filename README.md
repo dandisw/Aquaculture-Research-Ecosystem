@@ -1,3 +1,4 @@
+
 # Aquaculture Research Ecosystem (AREs)
 
 > An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping — running entirely in your browser with zero server dependencies.
@@ -23,6 +24,7 @@
   - [6. CiteShift](#6-citeshift)
   - [7. ShifterAI](#7-shifterai)
   - [8. Mendeley FPIK Portal](#8-mendeley-fpik-portal)
+  - [9. FishCareer Portal](#9-fishcareer-portal)
 - [System Architecture](#system-architecture)
 - [Data Privacy & Security](#data-privacy--security)
 - [Getting Started](#getting-started)
@@ -123,6 +125,14 @@ A BYOK (Bring-Your-Own-Key) Google Gemini academic drafting assistant. Extracts 
 
 One-click installer for the official Final Project CSL citation style of FPIK UNSOED.
 
+### 9. FishCareer Portal
+
+An interactive career navigation map designed specifically for fisheries and aquaculture graduates.
+
+* **Career Landscape:** Explores opportunities beyond traditional farming into Life Sciences, Biotechnology, and Digital Innovation.
+* **Postgraduate Pathways:** Detailed roadmaps for Master's (S2) and Doctoral (S3) specializations, including potential career outcomes.
+* **Community Access:** Direct integration with the official WhatsApp channel for curated job openings, research internships, and scholarship information.
+
 ---
 
 ## System Architecture
@@ -168,7 +178,7 @@ AREs is built exclusively with HTML5, CSS3, and vanilla ES6+ JavaScript. It bypa
 
 Simply open the platform in any modern web browser (Chrome, Firefox, Edge, Safari):
 
-👉 **[Launch AREs Web App](https://dandisw.github.io/Aquaculture-Research-Ecosystem/)**
+👉 **[Launch AREs Web App](https://www.google.com/url?sa=E&source=gmail&q=https://dandisw.github.io/Aquaculture-Research-Ecosystem/)**
 
 ### Option 2: Install as Desktop/Mobile App (PWA)
 
@@ -228,9 +238,9 @@ If you use AREs in your research, thesis, or publications, please cite the softw
 
 Universitas Jenderal Soedirman, Purwokerto, Indonesia
 
-* GitHub: [@dandisw](https://github.com/dandisw)
-* ORCID: [0009-0002-5337-499X](https://orcid.org/0009-0002-5337-499X)
-* Instagram: [@aquaculture.research](https://instagram.com/aquaculture.research)
+* GitHub: [@dandisw](https://www.google.com/search?q=https%3A%2F%2Fgithub.com%2Fdandisw)
+* ORCID: [0009-0002-5337-499X](https://www.google.com/search?q=https%3A%2F%2Forcid.org%2F0009-0002-5337-499X)
+* Instagram: [@aquaculture.research](https://www.google.com/search?q=https%3A%2F%2Finstagram.com%2Faquaculture.research)
 
 ---
 
