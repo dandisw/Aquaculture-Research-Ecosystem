@@ -1,5 +1,5 @@
-// Naikkan versi menjadi v4 agar pengguna otomatis mengunduh alat baru (GeoPlot)
-const CACHE_NAME = 'ares-portal-v4';
+// Naikkan versi menjadi v5 agar pengguna otomatis mengunduh modul baru (FishCareer)
+const CACHE_NAME = 'ares-portal-v5';
 
 // Daftar file inti yang wajib didownload saat pertama kali instal (Pre-cache)
 const urlsToCache = [
@@ -16,8 +16,13 @@ const urlsToCache = [
   './EcoMetrics-Multivariat/index.html',
   './CiteShift/index.html',
   './ShifterAI/index.html',
-  './GeoPlot/index.html', // <--- GEOPLOT DITAMBAHKAN DI SINI
-  './Mendeley-Citation-Portal-FPIK-Unsoed-2018/index.html'
+  './GeoPlot/index.html',
+  './Mendeley-Citation-Portal-FPIK-Unsoed-2018/index.html',
+  
+  // --- FISHCAREER PORTAL DITAMBAHKAN DI SINI ---
+  './Career-Map/',
+  './Career-Map/index.html',
+  './logo%20FishCareer.png'
 ];
 
 // EVENT 1: INSTALASI (Menyimpan file ke dalam Cache)
@@ -26,7 +31,7 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('AREs Service Worker v4: Cache inti berhasil disimpan.');
+        console.log('AREs Service Worker v5: Cache inti berhasil disimpan.');
         return cache.addAll(urlsToCache);
       })
   );
