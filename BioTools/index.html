@@ -43,30 +43,18 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-/* FIX MOBILE: 100dvh untuk mengamankan area dari tombol navigasi HP */
 body { font-family: var(--font-sans); background: var(--bg); color: var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; font-size: 14px; transition: background 0.3s, color 0.3s; }
 
-/* Class Khusus Warna Emoji DSW Ecosystem */
-.dsw-icon-styled {
-    filter: grayscale(100%);
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 5px;
-    transition: filter 0.3s ease;
-}
-[data-theme="dark"] .dsw-icon-styled {
-    filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(110deg) saturate(3);
-}
-[data-theme="light"] .dsw-icon-styled {
-    filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(110deg) saturate(2.5);
-}
-.menu-item:hover .dsw-icon-styled,
-.btn:hover .dsw-icon-styled,
-.about-tab.active .dsw-icon-styled {
-    filter: grayscale(100%) brightness(1) sepia(1) hue-rotate(110deg) saturate(5);
-}
+.dsw-icon-styled { filter: grayscale(100%); display: inline-block; vertical-align: middle; margin-right: 5px; transition: filter 0.3s ease; }
+[data-theme="dark"] .dsw-icon-styled { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(110deg) saturate(3); }
+[data-theme="light"] .dsw-icon-styled { filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(110deg) saturate(2.5); }
+.menu-item:hover .dsw-icon-styled, .btn:hover .dsw-icon-styled, .about-tab.active .dsw-icon-styled { filter: grayscale(100%) brightness(1) sepia(1) hue-rotate(110deg) saturate(5); }
 
 header { background: var(--surface); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10; box-shadow: var(--shadow); transition: background 0.3s; }
+.header-left { display: flex; align-items: center; gap: 16px; }
+.ares-logo-header { height: 32px; width: auto; display: block; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.ares-logo-header:hover { transform: scale(1.05) rotate(-2deg); }
+
 .brand { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
 .brand-top { display: flex; align-items: center; gap: 8px; }
 .brand-icon { font-size: 22px; }
@@ -74,6 +62,7 @@ header { background: var(--surface); padding: 0 24px; height: 64px; display: fle
 .brand-text span { color: var(--primary); }
 .brand-sub { font-family: var(--font-sans); font-size: 11px; font-weight: 400; color: var(--text3); margin-left: 36px; margin-top: -3px; }
 
+.header-actions { display: flex; gap: 8px; align-items: center; }
 .btn { padding: 8px 16px; border-radius: 6px; font-family: var(--font-sans); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
 .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
 .btn-primary:hover { background: var(--primary-dark); }
@@ -146,7 +135,6 @@ tbody tr:hover td { background: var(--surface-hover); }
 
 .seq-align-out { font-family: var(--font-mono); font-size: 13px; line-height: 1.5; color: var(--text); background: var(--surface-hover); padding: 16px; border-radius: 8px; border: 1px solid var(--border); white-space: pre; overflow-x: auto; letter-spacing: 1px; }
 
-/* SVG Dendrogram Styles & Fullscreen */
 .dendrogram-container { width: 100%; height: 400px; overflow: auto; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
 svg text { fill: var(--text); font-family: var(--font-mono); font-size: 12px; font-weight: bold; }
 svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
@@ -154,7 +142,6 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 .fullscreen-mode { position: fixed !important; top: 20px; left: 20px; right: 20px; bottom: 20px; z-index: 9999; background: var(--bg) !important; box-shadow: 0 0 0 100vmax rgba(0,0,0,0.8); height: auto !important; border: 1px solid var(--border); border-radius: 12px; }
 .phylo-style-toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; background: var(--surface-hover); padding: 10px 15px; border-radius: 8px; border: 1px solid var(--border); align-items: center; }
 
-/* Toasts & Modal Dialogs */
 .toast-container { position: fixed; bottom: 20px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
 .toast { background: var(--surface); border: 1px solid var(--border); padding: 12px 18px; border-radius: 8px; font-size: 13px; font-weight: 500; font-family: var(--font-sans); box-shadow: var(--shadow-md); display: flex; align-items: center; gap: 10px; pointer-events: all; animation: slideIn 0.3s ease; }
 @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
@@ -168,7 +155,6 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 .dialog-body { padding: 24px; overflow-y:auto; display: flex; flex-direction: column; gap: 14px; font-family: var(--font-sans); line-height: 1.6; }
 .dialog-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; background: var(--surface-hover); }
 
-/* Multi-tab styling for About/Help Dialog (Like StatWise) */
 #dlgHelp .dialog { max-width: 700px; }
 .about-tabs { display: flex; gap: 10px; border-bottom: 1px solid var(--border); margin-bottom: 5px; overflow-x: auto; }
 .about-tab { padding: 8px 12px; cursor: pointer; font-weight: 600; color: var(--text3); border-bottom: 2px solid transparent; font-size: 13px; white-space: nowrap; transition: color 0.2s;}
@@ -178,33 +164,11 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 .about-section h4 { color: var(--primary); margin-top: 15px; margin-bottom: 5px; }
 .changelog-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed var(--border); }
 
-/* FIX MOBILE: Padding Bottom ekstra agar aman dari area navigasi HP */
-/* SSR Filter active state */
 .ssr-filter-btn.active-filter { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
 
-/* ===== FASTA UPLOADER COMPONENT ===== */
-.fasta-uploader {
-  margin-bottom: 10px;
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-}
-.fasta-uploader-header {
-  display: flex; align-items: center; gap: 8px;
-  padding: 7px 12px;
-  background: var(--surface-hover);
-  border-bottom: 1px solid var(--border);
-  font-size: 11px; font-weight: 700; color: var(--text3);
-  text-transform: uppercase; letter-spacing: 0.5px;
-}
-.fasta-drop-zone {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 14px;
-  background: var(--surface);
-  cursor: pointer;
-  transition: background 0.2s;
-  position: relative;
-}
+.fasta-uploader { margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+.fasta-uploader-header { display: flex; align-items: center; gap: 8px; padding: 7px 12px; background: var(--surface-hover); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+.fasta-drop-zone { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--surface); cursor: pointer; transition: background 0.2s; position: relative; }
 .fasta-drop-zone:hover { background: var(--primary-light); }
 .fasta-drop-zone.dragover { background: var(--primary-light); border-color: var(--primary); }
 .fasta-drop-icon { font-size: 22px; flex-shrink: 0; }
@@ -212,26 +176,11 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 .fasta-drop-text strong { font-size: 13px; color: var(--text); display: block; }
 .fasta-drop-text span { font-size: 11px; color: var(--text3); }
 .fasta-file-input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
-.fasta-file-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px; border-radius: 20px;
-  background: var(--success-light); color: var(--success);
-  font-size: 11px; font-weight: 700; border: 1px solid var(--success);
-  white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis;
-}
+.fasta-file-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; background: var(--success-light); color: var(--success); font-size: 11px; font-weight: 700; border: 1px solid var(--success); white-space: nowrap; max-width: 220px; overflow: hidden; text-overflow: ellipsis; }
 .fasta-file-badge.warn { background: var(--warning-light); color: var(--warning); border-color: var(--warning); }
-.fasta-progress-wrap {
-  height: 3px; background: var(--border); display: none;
-}
-.fasta-progress-bar {
-  height: 100%; width: 0%; background: var(--primary);
-  transition: width 0.1s linear;
-}
-.fasta-stats-row {
-  display: flex; gap: 10px; padding: 6px 14px;
-  background: var(--bg); border-top: 1px solid var(--border);
-  font-size: 11px; color: var(--text3); flex-wrap: wrap;
-}
+.fasta-progress-wrap { height: 3px; background: var(--border); display: none; }
+.fasta-progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 0.1s linear; }
+.fasta-stats-row { display: flex; gap: 10px; padding: 6px 14px; background: var(--bg); border-top: 1px solid var(--border); font-size: 11px; color: var(--text3); flex-wrap: wrap; }
 .fasta-stats-row b { color: var(--primary); }
 
 @media (max-width: 768px) {
@@ -241,7 +190,6 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
   .menu-group:last-child { border-right: none; }
   .menu-title { display: none; }
   .menu-item { padding: 8px 14px; margin-right: 5px; font-size: 12px; }
-  /* Padding bawah tebal (120px) agar baris terakhir tidak tertutup tombol HP */
   .content-area { padding: 16px 16px 120px 16px !important; }
   header { padding: 10px 16px; height: auto; min-height: 60px; flex-wrap: wrap; gap: 10px; }
   .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -253,11 +201,19 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 <body>
 
 <header>
-  <div class="brand">
-    <div class="brand-top"><span class="brand-icon dsw-icon-styled">⚗</span><span class="brand-text">Bio<span>Tools</span></span></div>
-    <span class="brand-sub">by DSW</span>
+  <div class="header-left">
+      <a href="../index.html" title="Kembali ke Ekosistem AREs">
+          <img src="../AREs%20Logo%20Acronim.png" alt="AREs Logo" class="ares-logo-header">
+      </a>
+      <div class="brand">
+        <div class="brand-top"><span class="brand-icon dsw-icon-styled">⚗</span><span class="brand-text">Bio<span>Tools</span></span></div>
+        <span class="brand-sub">by DSW</span>
+      </div>
   </div>
   <div class="header-actions">
+    <a href="../index.html" class="btn btn-outline" style="text-decoration: none;">
+        <span class="dsw-icon-styled">🏠</span> <span class="btn-text">Home AREs</span>
+    </a>
     <button class="btn btn-outline" id="theme-btn" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> Tema</button>
   </div>
 </header>
@@ -270,6 +226,7 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       <div class="menu-item" onclick="switchView('v-manipulasi', this)"><span class="dsw-icon-styled">✂️</span> Manipulasi DNA</div>
       <div class="menu-item" onclick="switchView('v-pairwise', this)"><span class="dsw-icon-styled">🧪</span> Pairwise Alignment</div>
       <div class="menu-item" onclick="switchView('v-msa', this)"><span class="dsw-icon-styled">📊</span> Multiple Alignment (MSA)</div>
+      <div class="menu-item" onclick="switchView('v-chromato', this)"><span class="dsw-icon-styled">📈</span> Kromatogram (AB1)</div>
     </div>
     <div class="menu-group">
       <div class="menu-title">Proteomik</div>
@@ -355,7 +312,7 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
         <div class="card">
           <div class="fasta-uploader" id="fu-manip">
             <div class="fasta-uploader-header">📂 Unggah File FASTA / TXT (opsional)</div>
-            <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-manip')" ondragleave="fuDragLeave('fu-manip')" ondrop="fuDrop(event,'rawSeq','fu-manip')">
+            <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-manip')" ondragleave="fuDragLeave('fu-manip')" ondrop="fuDrop(event,'rawSeq','fu-manip',true)">
               <span class="fasta-drop-icon">📄</span>
               <div class="fasta-drop-text"><strong>Klik atau seret file ke sini</strong><span>.fasta · .fa · .fna · .txt — Single sekuens direkomendasikan</span></div>
               <span class="fasta-file-badge" id="fu-manip-badge" style="display:none;"></span>
@@ -469,6 +426,80 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
         <div class="seq-align-out" id="msaOutputBox" style="font-size:12px; border:1px solid var(--border);"></div>
         <div style="font-size:11px; color:var(--text3); margin-top:10px;">
             Keterangan Warna: <span style="color:#ef4444; font-weight:bold;">A (Merah)</span> | <span style="color:#10b981; font-weight:bold;">T/U (Hijau)</span> | <span style="color:#3b82f6; font-weight:bold;">C (Biru)</span> | <span style="color:#f59e0b; font-weight:bold;">G (Kuning)</span>. Tanda bintang (*) menunjukkan kolom konservasi 100%.
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE 5: CHROMATOGRAM -->
+    <div id="v-chromato" class="tab-pane">
+      <div class="page-header">
+        <div><div class="page-title">Pembaca Kromatogram (AB1)</div><div class="page-desc">Ekstraksi sekuens basa murni langsung dari file biner sekuensing Sanger dengan fitur Multi-Upload & Alignment.</div></div>
+        <div class="toolbar">
+            <button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);" onclick="resetAB1()"><span class="dsw-icon-styled">🗑️</span> Reset</button>
+        </div>
+      </div>
+      <div class="info-box info">Modul ini dapat membaca <strong>hingga 2 file .ab1 sekaligus</strong> (misalnya pasangan sekuens <em>Forward</em> dan <em>Reverse</em>). Sistem akan mengekstrak sekuens basa (PBAS) secara lokal tanpa koneksi internet, lalu Anda dapat menjajarkannya secara instan.</div>
+      
+      <div class="grid-2">
+          <div class="card">
+            <div class="fasta-uploader" id="fu-ab1">
+              <div class="fasta-uploader-header">📂 Unggah File Sekuensing AB1 (Bisa Multi-Select)</div>
+              <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-ab1')" ondragleave="fuDragLeave('fu-ab1')" ondrop="handleAB1Drop(event)">
+                <span class="fasta-drop-icon">📈</span>
+                <div class="fasta-drop-text"><strong>Klik atau seret 1-2 file .ab1 ke sini</strong><span>Format biner ABIF dari mesin sekuensing</span></div>
+                <span class="fasta-file-badge" id="fu-ab1-badge" style="display:none;"></span>
+                <input class="fasta-file-input" id="ab1FileInput" type="file" accept=".ab1" multiple onchange="handleAB1Input(this)">
+              </div>
+            </div>
+          </div>
+          <div class="card">
+              <div class="card-title" style="margin-bottom:10px; font-size:13px;">Atau Copy-Paste Sekuens Manual</div>
+              <div style="display:flex; gap:10px;">
+                  <textarea id="manualSeq1" class="form-control" style="height:60px; font-family:var(--font-mono); font-size:11px;" placeholder="Paste Sekuens 1 (Fwd)"></textarea>
+                  <textarea id="manualSeq2" class="form-control" style="height:60px; font-family:var(--font-mono); font-size:11px;" placeholder="Paste Sekuens 2 (Rev)"></textarea>
+              </div>
+              <button class="btn btn-outline btn-sm" style="margin-top:10px; width:100%; justify-content:center;" onclick="loadManualSequences()"><span class="dsw-icon-styled">📥</span> Gunakan Input Manual</button>
+          </div>
+      </div>
+
+      <div id="ab1ResultArea" style="display:none;">
+        <div class="grid-2" style="margin-bottom: 18px;">
+            <div class="card" id="ab1Card1" style="margin-bottom:0; display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 10px; align-items:center;">
+                    <div style="font-weight:700; color:var(--text); font-size:13px;">Sekuens 1: <br><span id="ab1Name1" style="color:var(--primary);"></span></div>
+                    <button class="btn btn-outline btn-sm" onclick="toggleAB1RC(0)"><span class="dsw-icon-styled">⇌</span> Rev. Complement</button>
+                </div>
+                <div id="chromatoChartWrap1" style="height:120px; width:100%; display:none; margin-bottom:10px;">
+                     <canvas id="traceCanvas1"></canvas>
+                </div>
+                <div style="font-size:11px; color:var(--text3); margin-bottom:5px;">Panjang: <b id="ab1Len1" style="color:var(--text);"></b> bp (Bisa diedit manual)</div>
+                <textarea id="ab1Seq1" class="form-control" style="min-height:120px; font-family:var(--font-mono); font-size:12px;" oninput="updateLoadedSeq(0)"></textarea>
+            </div>
+            
+            <div class="card" id="ab1Card2" style="margin-bottom:0; display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 10px; align-items:center;">
+                    <div style="font-weight:700; color:var(--text); font-size:13px;">Sekuens 2: <br><span id="ab1Name2" style="color:var(--purple);"></span></div>
+                    <button class="btn btn-outline btn-sm" onclick="toggleAB1RC(1)"><span class="dsw-icon-styled">⇌</span> Rev. Complement</button>
+                </div>
+                <div id="chromatoChartWrap2" style="height:120px; width:100%; display:none; margin-bottom:10px;">
+                     <canvas id="traceCanvas2"></canvas>
+                </div>
+                <div style="font-size:11px; color:var(--text3); margin-bottom:5px;">Panjang: <b id="ab1Len2" style="color:var(--text);"></b> bp (Bisa diedit manual)</div>
+                <textarea id="ab1Seq2" class="form-control" style="min-height:120px; font-family:var(--font-mono); font-size:12px;" oninput="updateLoadedSeq(1)"></textarea>
+            </div>
+        </div>
+
+        <div id="ab1AlignAction" style="display:none; text-align:center; margin-bottom:18px;">
+            <button class="btn btn-primary" onclick="alignAB1Sequences()"><span class="dsw-icon-styled">🧬</span> Jajarkan (Align) Sekuens 1 & 2</button>
+            <p style="font-size:11px; color:var(--text3); margin-top:8px;">Pastikan salah satu sekuens (umumnya Reverse) sudah diubah ke bentuk Reverse Complement (RC) sebelum dijajarkan.</p>
+        </div>
+
+        <div class="card" id="ab1AlignResult" style="display:none;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                <div class="card-title" style="margin:0;">Hasil Alignment & Konsensus</div>
+                <button class="btn btn-success btn-sm" onclick="copyText('ab1AlignOutput')"><span class="dsw-icon-styled">📋</span> Salin Teks ke Notepad/Word</button>
+            </div>
+            <textarea id="ab1AlignOutput" class="seq-align-out form-control" readonly style="min-height:300px; line-height:1.5;"></textarea>
         </div>
       </div>
     </div>
@@ -638,7 +669,7 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:10px;">
                   <div class="card-title" style="margin:0;">🌳 Visualisasi Pohon Kekerabatan (SVG)</div>
                   <div style="display:flex; gap:5px;">
-                      <button class="btn btn-outline btn-sm" onclick="exportPhyloPNG()" title="Unduh format PNG"><span class="dsw-icon-styled">🖼️</span> PNG</button>
+                      <button class="btn btn-outline btn-sm" onclick="exportPhyloPNG()" title="Unduh format PNG resolusi tinggi tanpa terpotong"><span class="dsw-icon-styled">🖼️</span> Ekspor PNG High-Res</button>
                       <button class="btn btn-outline btn-sm" onclick="zoomSvgPhylo(-0.2)" title="Perkecil">➖</button>
                       <button class="btn btn-outline btn-sm" onclick="zoomSvgPhylo(0)" title="Ukuran Asli">100%</button>
                       <button class="btn btn-outline btn-sm" onclick="zoomSvgPhylo(0.2)" title="Perbesar">➕</button>
@@ -780,9 +811,6 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- TAB: SSR / MICROSATELLITE FINDER (KRAIT-style)               -->
-    <!-- ============================================================ -->
     <div id="v-ssr" class="tab-pane">
       <div class="page-header">
         <div>
@@ -836,7 +864,6 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
         <span style="font-size:12px; color:var(--text3);">Default parameter mengikuti standar KRAIT / MISA (Thiel et al., 2003).</span>
       </div>
 
-      <!-- SUMMARY STATS -->
       <div id="ssrSummaryArea" style="display:none;">
         <div style="display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:18px;">
           <div class="stat-box"><div class="stat-label">Total SSR</div><div class="stat-value" id="st-total" style="color:var(--primary);">0</div></div>
@@ -854,7 +881,6 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
           <button class="sub-btn" onclick="openSub(this,'ssr-tab-chart','ssr-tab-group')">📈 Distribusi Visual</button>
         </div>
 
-        <!-- Daftar SSR -->
         <div id="ssr-tab-list" class="sub-pane ssr-tab-group active">
           <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; align-items:center;">
             <span style="font-size:12px; color:var(--text3); font-weight:600;">Filter:</span>
@@ -886,7 +912,6 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
           </div>
         </div>
 
-        <!-- Statistik Motif -->
         <div id="ssr-tab-stats" class="sub-pane ssr-tab-group">
           <div class="grid-2" style="margin-bottom:18px;">
             <div class="card" style="margin-bottom:0;">
@@ -909,7 +934,6 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
           </div>
         </div>
 
-        <!-- Primer Flanking -->
         <div id="ssr-tab-primer" class="sub-pane ssr-tab-group">
           <div class="info-box info" style="margin-bottom:14px;">
             Wilayah flanking diekstrak otomatis dari kiri dan kanan setiap SSR. Tempelkan sekuens ini ke modul <strong>Analisis &amp; Desain Primer</strong> untuk kalkulasi Tm dan validasi lebih lanjut.
@@ -932,7 +956,6 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
           </div>
         </div>
 
-        <!-- Distribusi Visual -->
         <div id="ssr-tab-chart" class="sub-pane ssr-tab-group">
           <div class="grid-2" style="margin-bottom:18px;">
             <div class="card" style="margin-bottom:0;">
@@ -951,8 +974,8 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
           </div>
         </div>
 
-      </div><!-- /ssrSummaryArea -->
-    </div><!-- /v-ssr -->
+      </div>
+    </div>
 
   </main>
 </div>
@@ -1031,20 +1054,20 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 
       <div class="about-section" id="sec-log">
         <div class="changelog-item">
+          <b>Versi 9.2 (Current) - Manual Sequence Editing & Kromatogram Trace</b><br>
+          Menambahkan kemampuan modifikasi basa sekuens secara manual (*copy-paste*) sebelum mengeksekusi alignment (*Smith-Waterman*) di modul AB1 Kromatogram. Selain mengekstrak deret basa (*PBAS*), sistem kini membaca langsung array biner pada tag `DATA` (9-12) dari mesin Sanger dan menampilkan grafiknya menggunakan Chart.js.
+        </div>
+        <div class="changelog-item">
+          <b>Versi 9.1 - AB1 Alignment & Filogenetik Fix</b><br>
+          Memperbaiki <em>byte offset</em> pada parser ABIF agar tidak terjadi error saat membaca kromatogram. Memperbaiki ekspor SVG/PNG Filogenetik agar nama spesies tidak terpotong.
+        </div>
+        <div class="changelog-item">
+          <b>Versi 9.0 - Ekstraksi Kromatogram (AB1) Lokal</b><br>
+          Penambahan modul Pembaca Kromatogram yang mengimplementasikan <em>binary parser</em> untuk format ABIF (*Applied Biosystems Inc.*). Memungkinkan ektraksi deret sekuens basa murni langsung dari file biner Sanger Sequencing tanpa aplikasi desktop.
+        </div>
+        <div class="changelog-item">
           <b>Versi 8.0 - Universal FASTA File Upload</b><br>
-          Penambahan komponen <em>FASTA File Uploader</em> di semua modul (BLAST, Manipulasi, Pairwise, MSA, Protein, ORF, Restriction Mapper, Filogenetik, Desain Primer, SSR). Mendukung drag-and-drop, progress bar chunked reading hingga 50 MB, statistik ringkas (jumlah sekuens, total bp), badge peringatan file besar, dan validasi format otomatis.
-        </div>
-        <div class="changelog-item">
-          <b>Versi 7.0 - SSR / Mikrosatelit Finder</b><br>
-          Penambahan modul <em>SSR / Microsatellite Finder</em> terinspirasi KRAIT &amp; MISA. Fitur: deteksi Mono–Hexa SSR, motif kanonikal, statistik densitas &amp; coverage genomik, visualisasi distribusi (pie, histogram, peta posisi), tabel primer flanking, dan ekspor CSV.
-        </div>
-        <div class="changelog-item">
-          <b>Versi 6.5 - High-Res Export &amp; UI Fix</b><br>
-          Mengekspansi batas karakter label pohon FASTA menjadi 25 karakter. Mengubah rasio *ViewBox* menjadi absolut 900px dengan bantalan area teks 250px di sebelah kanan untuk mengatasi masalah gambar nama spesies yang terpotong saat diekspor ke format PNG.
-        </div>
-        <div class="changelog-item">
-          <b>Versi 6.0 - Ultimate Proteomics & UI Standardization</b><br>
-          Penambahan modul Proteomik (*Fisikokimia Protein*) untuk menghitung MW, pI, dan komposisi asam amino. Standardisasi UI *Emerald Green* menggunakan teknik *CSS Filter Stack*.
+          Penambahan komponen <em>FASTA File Uploader</em> di semua modul dengan batasan keamanan 50 MB untuk memori browser.
         </div>
       </div>
 
@@ -1054,9 +1077,6 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 </div>
 
 <script>
-// ===================================================================
-// SYSTEM INITIALIZATION & UI
-// ===================================================================
 function showHelp() { openDialog('dlgHelp'); }
 function toast(msg) {
   const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<span style="color:var(--success); font-size:16px;">✓</span> ${msg}`;
@@ -1171,9 +1191,6 @@ function colorizeSeq(seq) {
     }).join('');
 }
 
-// ===================================================================
-// MODULE 1: NCBI BLAST & MANIPULASI
-// ===================================================================
 let globalNCBIData = [];
 async function runNCBIAnalyzer() {
     const rawQuery = document.getElementById('queryInput').value.trim();
@@ -1309,10 +1326,6 @@ function processSeq(action) {
 }
 function clearSeq(){ document.getElementById('rawSeq').value=""; document.getElementById('outSeq').value=""; liveSeqStats(); }
 
-// ===================================================================
-// MODULE 2-7: OMITTED MINOR CODE REDUNDANCY FOR CLARITY - SEE PREVIOUS
-// (Rest of the alignment, protein, ORF, and digest tools are identical)
-// ===================================================================
 function runPairwise() {
     const s1 = cleanDNA(document.getElementById('alignSeqA').value); const s2 = cleanDNA(document.getElementById('alignSeqB').value);
     if(!s1 || !s2) return alert("Masukkan kedua sekuens terlebih dahulu!");
@@ -1373,7 +1386,6 @@ function runMSA() {
         line = line.trim();
         if(line.startsWith('>')) {
             if(currSeq) seqs.push(currSeq);
-            // FIX: Menambah limit nama dari 12 menjadi 25 karakter untuk tampilan yang tidak terpotong
             names.push(line.substring(1).split(/[\|\s]/)[0].trim().padEnd(25, ' ').substring(0,25)); currSeq = "";
         } else currSeq += line.toUpperCase().replace(/[^ATCG-]/g, '');
     }
@@ -1492,10 +1504,6 @@ function runDigest() {
     document.getElementById('digestResult').style.display = 'grid';
 }
 
-
-// ===================================================================
-// MODULE 8: POHON FILOGENETIK & PERBAIKAN EXPORT PNG
-// ===================================================================
 let currentPhyloTree = null; let currentPhyloN = 0;
 
 function msaDistance(s1, s2) {
@@ -1550,7 +1558,6 @@ function buildPhylo() {
         line = line.trim();
         if(line.startsWith('>')) {
             if(currSeq) seqs.push(currSeq);
-            // FIX: Mengizinkan pemotongan nama spesies lebih panjang (25 Karakter)
             names.push(line.substring(1).split(/[\|\s]/)[0].trim().substring(0, 25)); 
             currSeq = "";
         } else { currSeq += line.toUpperCase().replace(/[^ATCG-]/g, ''); }
@@ -1651,7 +1658,6 @@ function redrawTreeOnly() {
     let fontFam = document.getElementById('phyloFont').value || 'var(--font-mono)';
     let fontSty = document.getElementById('phyloFontStyle').value || 'normal';
 
-    // FIX TERPENTING: Memperlebar ViewBox SVG menjadi 900, dan mendedikasikan 250px khusus untuk Teks
     const svgW = 900; 
     const pad = 50;
     const textSpace = 250; 
@@ -1663,7 +1669,6 @@ function redrawTreeOnly() {
     function drawNode(node) {
         if(node.isLeaf) {
             let y = leafY; leafY += (svgH - 40 - 2*pad) / (n || 1);
-            // Penempatan teks kini aman di dalam batas lebar (svgW - textSpace + 10)
             svg += `<text x="${svgW - textSpace + 10}" y="${y+4}" fill="${txtColor}" font-family="${fontFam}" font-size="13px" font-style="${fontSty}" font-weight="bold">${node.label}</text>`;
             return {x: svgW - textSpace, y: y};
         }
@@ -1702,9 +1707,6 @@ function zoomSvgPhylo(delta) {
 }
 function toggleFullscreenSvg() { document.getElementById('phyloSvgContainer').classList.toggle('fullscreen-mode'); }
 
-// ===================================================================
-// FIX EXPORT PNG: MENGUNCI DIMENSI KANVAS SECARA ABSOLUT
-// ===================================================================
 function exportPhyloPNG() {
     const svgElement = document.querySelector('#phyloSvgContainer svg');
     if(!svgElement) return toast("Grafik pohon tidak ditemukan.");
@@ -1712,20 +1714,22 @@ function exportPhyloPNG() {
     const serializer = new XMLSerializer();
     if (!svgElement.getAttribute('xmlns')) svgElement.setAttribute('xmlns', "http://www.w3.org/2000/svg");
     
-    // Mencegah error potong dengan memaksa atribut dimensi (width/height) menjadi nilai angka murni
+    const extraWidth = 350; 
     const baseWidth = svgElement.viewBox.baseVal.width;
     const baseHeight = svgElement.viewBox.baseVal.height;
     const origWidth = svgElement.getAttribute('width');
     const origHeight = svgElement.getAttribute('height');
+    const origViewBox = svgElement.getAttribute('viewBox');
     
-    svgElement.setAttribute('width', baseWidth);
+    svgElement.setAttribute('width', baseWidth + extraWidth);
     svgElement.setAttribute('height', baseHeight);
+    svgElement.setAttribute('viewBox', `0 0 ${baseWidth + extraWidth} ${baseHeight}`);
     
     let svgString = serializer.serializeToString(svgElement);
     
-    // Kembalikan ke format persentase untuk layar web
     svgElement.setAttribute('width', origWidth);
     svgElement.setAttribute('height', origHeight);
+    svgElement.setAttribute('viewBox', origViewBox);
     
     const rootStyle = getComputedStyle(document.documentElement);
     const varRegex = /var\((--[a-zA-Z0-9-]+)\)/g;
@@ -1741,7 +1745,7 @@ function exportPhyloPNG() {
     const url = URL.createObjectURL(svgBlob);
     
     img.onload = function() {
-        canvas.width = baseWidth * 2; 
+        canvas.width = (baseWidth + extraWidth) * 2; 
         canvas.height = baseHeight * 2;
         
         const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -1753,17 +1757,14 @@ function exportPhyloPNG() {
         URL.revokeObjectURL(url);
         
         const a = document.createElement('a');
-        a.download = 'Phylogenetic_Tree_DSW.png';
+        a.download = 'Phylogenetic_Tree_AREs.png';
         a.href = canvas.toDataURL('image/png');
         a.click();
-        toast("Berhasil mengunduh grafis PNG resolusi penuh.");
+        toast("Berhasil mengunduh grafis PNG resolusi penuh tanpa terpotong.");
     };
     img.src = url;
 }
 
-// ===================================================================
-// MODULE 9: PRIMER DESIGN 
-// ===================================================================
 function calcTm(seq) {
     if (!seq) return 0; const s = cleanDNA(seq); const gc = (s.match(/[GC]/g) || []).length, at = s.length - gc;
     return s.length < 14 ? (at * 2) + (gc * 4) : 64.9 + 41 * (gc - 16.4) / s.length;
@@ -1842,189 +1843,96 @@ function generatePrimers() {
     document.getElementById('autoPrimerResultContainer').style.display = 'block';
 }
 
-// ===================================================================
-// FASTA FILE UPLOADER ENGINE — Universal for all modules
-// ===================================================================
+const FU_SIZE_WARN  = 5  * 1024 * 1024;  
+const FU_SIZE_LIMIT = 50 * 1024 * 1024;  
 
-const FU_SIZE_WARN  = 5  * 1024 * 1024;  // 5 MB → show warning
-const FU_SIZE_LIMIT = 50 * 1024 * 1024;  // 50 MB → hard limit
+function fuDragOver(e, fuId) { e.preventDefault(); document.querySelector(`#${fuId} .fasta-drop-zone`).classList.add('dragover'); }
+function fuDragLeave(fuId) { document.querySelector(`#${fuId} .fasta-drop-zone`).classList.remove('dragover'); }
+function fuDrop(e, targetId, fuId, firstSeqOnly) { e.preventDefault(); fuDragLeave(fuId); const file = e.dataTransfer.files[0]; if (file) fuProcess(file, targetId, fuId, firstSeqOnly); }
+function fuRead(input, targetId, fuId, firstSeqOnly) { const file = input.files[0]; if (file) fuProcess(file, targetId, fuId, firstSeqOnly); }
 
-// Drag-and-drop helpers
-function fuDragOver(e, fuId) {
-    e.preventDefault();
-    document.querySelector(`#${fuId} .fasta-drop-zone`).classList.add('dragover');
-}
-function fuDragLeave(fuId) {
-    document.querySelector(`#${fuId} .fasta-drop-zone`).classList.remove('dragover');
-}
-function fuDrop(e, targetId, fuId, firstSeqOnly) {
-    e.preventDefault();
-    fuDragLeave(fuId);
-    const file = e.dataTransfer.files[0];
-    if (file) fuProcess(file, targetId, fuId, firstSeqOnly);
-}
-
-// Triggered by <input type="file">
-function fuRead(input, targetId, fuId, firstSeqOnly) {
-    const file = input.files[0];
-    if (file) fuProcess(file, targetId, fuId, firstSeqOnly);
-}
-
-// Core processing function — chunked FileReader with progress bar
 function fuProcess(file, targetId, fuId, firstSeqOnly) {
     const badgeEl  = document.getElementById(`${fuId}-badge`);
     const progWrap = document.getElementById(`${fuId}-prog`);
     const progBar  = document.getElementById(`${fuId}-bar`);
     const statsEl  = document.getElementById(`${fuId}-stats`);
 
-    // Validate size
     if (file.size > FU_SIZE_LIMIT) {
         fuSetBadge(badgeEl, `⚠ File terlalu besar (${(file.size/1048576).toFixed(1)} MB > 50 MB)`, true);
         toast(`File terlalu besar. Maks 50 MB. Gunakan subsekuens.`);
         return;
     }
 
-    // Show progress bar
-    progWrap.style.display = 'block';
-    progBar.style.width = '0%';
-    statsEl.style.display = 'none';
-    badgeEl.style.display = 'none';
+    progWrap.style.display = 'block'; progBar.style.width = '0%'; statsEl.style.display = 'none'; badgeEl.style.display = 'none';
 
-    const CHUNK = 2 * 1024 * 1024; // 2 MB chunks
-    let offset = 0;
-    let rawText = '';
+    const CHUNK = 2 * 1024 * 1024; let offset = 0; let rawText = '';
 
     function readChunk() {
-        const slice = file.slice(offset, offset + CHUNK);
-        const reader = new FileReader();
+        const slice = file.slice(offset, offset + CHUNK); const reader = new FileReader();
         reader.onload = function(e) {
-            rawText += e.target.result;
-            offset += CHUNK;
-            const pct = Math.min(100, Math.round(offset / file.size * 100));
-            progBar.style.width = pct + '%';
-
-            if (offset < file.size) {
-                readChunk(); // next chunk
-            } else {
-                // Done reading — process content
-                progBar.style.width = '100%';
-                setTimeout(() => { progWrap.style.display = 'none'; progBar.style.width = '0%'; }, 600);
-
+            rawText += e.target.result; offset += CHUNK;
+            const pct = Math.min(100, Math.round(offset / file.size * 100)); progBar.style.width = pct + '%';
+            if (offset < file.size) { readChunk(); } else {
+                progBar.style.width = '100%'; setTimeout(() => { progWrap.style.display = 'none'; progBar.style.width = '0%'; }, 600);
                 const content = fuParseContent(rawText, firstSeqOnly);
                 document.getElementById(targetId).value = content.text;
-
-                // Trigger live listeners if present
-                const ta = document.getElementById(targetId);
-                ta.dispatchEvent(new Event('input', { bubbles: true }));
-
-                // Stats row
+                const ta = document.getElementById(targetId); ta.dispatchEvent(new Event('input', { bubbles: true }));
                 fuSetBadge(badgeEl, `✓ ${file.name} (${(file.size/1024).toFixed(1)} KB)`, file.size > FU_SIZE_WARN);
-                statsEl.style.display = 'flex';
-                statsEl.innerHTML = fuBuildStats(content, file);
-
-                if (file.size > FU_SIZE_WARN) {
-                    toast(`⚠ File besar (${(file.size/1048576).toFixed(1)} MB) — proses mungkin membutuhkan waktu lebih lama.`);
-                } else {
-                    toast(`✓ ${file.name} berhasil dimuat — ${content.seqCount} sekuens, ${content.totalBp.toLocaleString()} bp`);
-                }
+                statsEl.style.display = 'flex'; statsEl.innerHTML = fuBuildStats(content, file);
+                if (file.size > FU_SIZE_WARN) { toast(`⚠ File besar (${(file.size/1048576).toFixed(1)} MB) — proses mungkin membutuhkan waktu lebih lama.`); } else { toast(`✓ ${file.name} berhasil dimuat — ${content.seqCount} sekuens, ${content.totalBp.toLocaleString()} bp`); }
             }
         };
         reader.readAsText(slice);
     }
-
     readChunk();
 }
 
-// Parse FASTA raw text → clean output for textarea
 function fuParseContent(raw, firstSeqOnly) {
-    raw = raw.trim();
-    let seqCount = 0, totalBp = 0, text = '';
-
+    raw = raw.trim(); let seqCount = 0, totalBp = 0, text = '';
     if (raw.startsWith('>')) {
-        // Multi-FASTA
-        const entries = raw.split(/(?=^>)/m).filter(e => e.trim());
-        seqCount = entries.length;
-
+        const entries = raw.split(/(?=^>)/m).filter(e => e.trim()); seqCount = entries.length;
         const toProcess = firstSeqOnly ? [entries[0]] : entries;
         const processed = toProcess.map(entry => {
-            const lines = entry.trim().split('\n');
-            const header = lines[0].trim();
+            const lines = entry.trim().split('\n'); const header = lines[0].trim();
             const seq = lines.slice(1).join('').replace(/\s/g, '').toUpperCase();
-            totalBp += seq.length;
-            return header + '\n' + seq;
+            totalBp += seq.length; return header + '\n' + seq;
         });
         text = processed.join('\n');
-
-        if (firstSeqOnly && entries.length > 1) {
-            text += `\n\n; ⚠ Modul ini hanya menggunakan sekuens pertama dari ${entries.length} entri.`;
-        }
+        if (firstSeqOnly && entries.length > 1) { text += `\n\n; ⚠ Modul ini hanya menggunakan sekuens pertama dari ${entries.length} entri.`; }
     } else {
-        // Raw DNA / plain text
         const seq = raw.replace(/\s/g, '').toUpperCase().replace(/[^ATCGN]/g, '');
-        text = seq;
-        totalBp = seq.length;
-        seqCount = 1;
+        text = seq; totalBp = seq.length; seqCount = 1;
     }
-
     return { text, seqCount, totalBp };
 }
 
-// Build stats row HTML
 function fuBuildStats({ seqCount, totalBp }, file) {
     const sizeStr = file.size >= 1048576 ? `${(file.size/1048576).toFixed(2)} MB` : `${(file.size/1024).toFixed(1)} KB`;
-    const warnTag = file.size > FU_SIZE_WARN
-        ? `<span style="color:var(--warning); font-weight:700;">⚠ File besar — analisis mungkin lambat</span>`
-        : `<span style="color:var(--success); font-weight:700;">✓ Siap dianalisis</span>`;
-    return `
-        <span>📄 <b>${file.name}</b></span>
-        <span>Ukuran: <b>${sizeStr}</b></span>
-        <span>Sekuens: <b>${seqCount}</b></span>
-        <span>Total bp: <b>${totalBp.toLocaleString()}</b></span>
-        ${warnTag}
-    `;
+    const warnTag = file.size > FU_SIZE_WARN ? `<span style="color:var(--warning); font-weight:700;">⚠ File besar — analisis mungkin lambat</span>` : `<span style="color:var(--success); font-weight:700;">✓ Siap dianalisis</span>`;
+    return `<span>📄 <b>${file.name}</b></span> <span>Ukuran: <b>${sizeStr}</b></span> <span>Sekuens: <b>${seqCount}</b></span> <span>Total bp: <b>${totalBp.toLocaleString()}</b></span> ${warnTag}`;
 }
 
-// Set badge text + color
-function fuSetBadge(el, text, isWarn) {
-    el.style.display = 'inline-flex';
-    el.textContent = text;
-    el.className = 'fasta-file-badge' + (isWarn ? ' warn' : '');
-}
+function fuSetBadge(el, text, isWarn) { el.style.display = 'inline-flex'; el.textContent = text; el.className = 'fasta-file-badge' + (isWarn ? ' warn' : ''); }
 
 switchView('v-blast', document.querySelector('.menu-item.active'));
 
-// ===================================================================
-// MODULE SSR: MICROSATELLITE / SSR FINDER (KRAIT / MISA Style)
-// ===================================================================
+let ssrResults = []; let ssrSequences = []; let ssrChartPieInst = null, ssrChartLenInst = null, ssrChartRepInst = null, ssrChartMapInst = null;
 
-// Global SSR storage
-let ssrResults = [];    // all found SSRs
-let ssrSequences = [];  // parsed {id, seq} array
-let ssrChartPieInst = null, ssrChartLenInst = null, ssrChartRepInst = null, ssrChartMapInst = null;
-
-// --- Canonical motif: find lexicographically smallest rotation of motif and its RC
 function canonicalMotif(motif) {
     const rc = m => m.split('').reverse().map(b=>({'A':'T','T':'A','C':'G','G':'C'}[b]||b)).join('');
     const allForms = [];
-    for (let i = 0; i < motif.length; i++) {
-        allForms.push(motif.slice(i) + motif.slice(0, i));
-    }
+    for (let i = 0; i < motif.length; i++) { allForms.push(motif.slice(i) + motif.slice(0, i)); }
     const rcMotif = rc(motif);
-    for (let i = 0; i < rcMotif.length; i++) {
-        allForms.push(rcMotif.slice(i) + rcMotif.slice(0, i));
-    }
+    for (let i = 0; i < rcMotif.length; i++) { allForms.push(rcMotif.slice(i) + rcMotif.slice(0, i)); }
     return allForms.sort()[0];
 }
 
-// --- Parse FASTA or raw DNA
 function parseFASTA(raw) {
-    raw = raw.trim();
-    const seqs = [];
+    raw = raw.trim(); const seqs = [];
     if (raw.startsWith('>')) {
         const entries = raw.split(/\n(?=>)/);
         for (const entry of entries) {
-            const lines = entry.trim().split('\n');
-            const id = lines[0].replace('>', '').trim().split(/\s+/)[0];
+            const lines = entry.trim().split('\n'); const id = lines[0].replace('>', '').trim().split(/\s+/)[0];
             const seq = lines.slice(1).join('').replace(/\s/g, '').toUpperCase().replace(/[^ATCGN]/g, '');
             if (seq.length > 0) seqs.push({ id, seq });
         }
@@ -2035,343 +1943,403 @@ function parseFASTA(raw) {
     return seqs;
 }
 
-// --- Core SSR search for one sequence
 function findSSRInSeq(seqObj, minRepeats) {
-    const { id, seq } = seqObj;
-    const results = [];
+    const { id, seq } = seqObj; const results = [];
     const typeNames = ['', 'Mono', 'Di', 'Tri', 'Tetra', 'Penta', 'Hexa'];
     const typeColors = ['', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#3B82F6', '#EC4899'];
 
     for (let motifLen = 1; motifLen <= 6; motifLen++) {
-        const minRep = minRepeats[motifLen];
-        const minSSRLen = motifLen * minRep;
-
-        // Build regex: (motif){minRep,} — we scan manually for accuracy
+        const minRep = minRepeats[motifLen]; const minSSRLen = motifLen * minRep;
         for (let start = 0; start <= seq.length - minSSRLen; start++) {
             const motif = seq.substr(start, motifLen);
-            // Skip motifs with N
             if (motif.includes('N')) continue;
-            // Skip homopolymer-like for di+ (avoid AAAAAA matching as 'AA' 3x)
-            if (motifLen > 1) {
-                let allSame = true;
-                for (let c of motif) { if (c !== motif[0]) { allSame = false; break; } }
-                if (allSame) continue;
-            }
-
-            // Count how many times motif repeats from this position
-            let repCount = 0;
-            let pos = start;
-            while (pos + motifLen <= seq.length && seq.substr(pos, motifLen) === motif) {
-                repCount++;
-                pos += motifLen;
-            }
-
+            if (motifLen > 1) { let allSame = true; for (let c of motif) { if (c !== motif[0]) { allSame = false; break; } } if (allSame) continue; }
+            let repCount = 0; let pos = start;
+            while (pos + motifLen <= seq.length && seq.substr(pos, motifLen) === motif) { repCount++; pos += motifLen; }
             if (repCount >= minRep) {
-                const end = start + repCount * motifLen;
-                const ssrSeq = seq.substring(start, end);
-                const canon = canonicalMotif(motif);
-                results.push({
-                    seqId: id,
-                    type: motifLen,
-                    typeName: typeNames[motifLen],
-                    typeColor: typeColors[motifLen],
-                    motif: motif,
-                    canonMotif: canon,
-                    start: start + 1,  // 1-based
-                    end: end,
-                    length: end - start,
-                    repeats: repCount,
-                    ssrSeq: ssrSeq,
-                    fullSeq: seq  // store for flanking extraction
-                });
-                // Advance past this SSR to avoid overlap
+                const end = start + repCount * motifLen; const ssrSeq = seq.substring(start, end); const canon = canonicalMotif(motif);
+                results.push({ seqId: id, type: motifLen, typeName: typeNames[motifLen], typeColor: typeColors[motifLen], motif: motif, canonMotif: canon, start: start + 1, end: end, length: end - start, repeats: repCount, ssrSeq: ssrSeq, fullSeq: seq });
                 start = end - 1;
             }
         }
     }
-    // Sort by start position
-    results.sort((a, b) => a.start - b.start);
-    return results;
+    results.sort((a, b) => a.start - b.start); return results;
 }
 
-// --- Main run function
 function runSSR() {
     const raw = document.getElementById('ssrInput').value.trim();
     if (!raw) { alert('Masukkan sekuens terlebih dahulu.'); return; }
-
-    const minRepeats = {
-        1: parseInt(document.getElementById('ssrMono').value) || 12,
-        2: parseInt(document.getElementById('ssrDi').value) || 6,
-        3: parseInt(document.getElementById('ssrTri').value) || 5,
-        4: parseInt(document.getElementById('ssrTetra').value) || 4,
-        5: parseInt(document.getElementById('ssrPenta').value) || 4,
-        6: parseInt(document.getElementById('ssrHexa').value) || 3,
-    };
-
+    const minRepeats = { 1: parseInt(document.getElementById('ssrMono').value) || 12, 2: parseInt(document.getElementById('ssrDi').value) || 6, 3: parseInt(document.getElementById('ssrTri').value) || 5, 4: parseInt(document.getElementById('ssrTetra').value) || 4, 5: parseInt(document.getElementById('ssrPenta').value) || 4, 6: parseInt(document.getElementById('ssrHexa').value) || 3 };
     ssrSequences = parseFASTA(raw);
     if (ssrSequences.length === 0) { alert('Format sekuens tidak dikenali. Gunakan FASTA atau DNA mentah.'); return; }
-
     ssrResults = [];
-    for (const seqObj of ssrSequences) {
-        ssrResults.push(...findSSRInSeq(seqObj, minRepeats));
-    }
-
+    for (const seqObj of ssrSequences) { ssrResults.push(...findSSRInSeq(seqObj, minRepeats)); }
     document.getElementById('ssrSummaryArea').style.display = 'block';
-    renderSSRStats();
-    renderSSRTable(ssrResults);
-    renderSSRMotifTable();
-    renderSSRPrimerTable();
-    renderSSRCharts();
-
-    // Reset sub-nav to first tab
+    renderSSRStats(); renderSSRTable(ssrResults); renderSSRMotifTable(); renderSSRPrimerTable(); renderSSRCharts();
     const pane = document.getElementById('v-ssr');
     pane.querySelectorAll('.sub-btn').forEach((b,i) => b.classList.toggle('active', i===0));
     pane.querySelectorAll('.ssr-tab-group').forEach((p,i) => p.classList.toggle('active', i===0));
-
     toast(`Ditemukan ${ssrResults.length} SSR dari ${ssrSequences.length} sekuens.`);
 }
 
-// --- Render summary counts
 function renderSSRStats() {
-    const counts = {1:0,2:0,3:0,4:0,5:0,6:0};
-    ssrResults.forEach(r => counts[r.type]++);
-    document.getElementById('st-total').textContent = ssrResults.length;
-    document.getElementById('st-mono').textContent = counts[1];
-    document.getElementById('st-di').textContent = counts[2];
-    document.getElementById('st-tri').textContent = counts[3];
-    document.getElementById('st-tetra').textContent = counts[4];
-    document.getElementById('st-ph').textContent = counts[5] + counts[6];
+    const counts = {1:0,2:0,3:0,4:0,5:0,6:0}; ssrResults.forEach(r => counts[r.type]++);
+    document.getElementById('st-total').textContent = ssrResults.length; document.getElementById('st-mono').textContent = counts[1]; document.getElementById('st-di').textContent = counts[2]; document.getElementById('st-tri').textContent = counts[3]; document.getElementById('st-tetra').textContent = counts[4]; document.getElementById('st-ph').textContent = counts[5] + counts[6];
 }
 
-// --- Render SSR table
 function renderSSRTable(data) {
-    const tbody = document.getElementById('ssrBody');
-    tbody.innerHTML = '';
+    const tbody = document.getElementById('ssrBody'); tbody.innerHTML = '';
     document.getElementById('ssrNoResult').style.display = data.length === 0 ? 'block' : 'none';
     document.getElementById('ssrTableWrap').style.display = data.length === 0 ? 'none' : 'block';
     const typeColors = ['','#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
     data.forEach((r, i) => {
-        const tr = document.createElement('tr');
-        tr.dataset.type = r.type;
-        tr.innerHTML = `
-            <td style="color:var(--text3); font-size:11px;">${i+1}</td>
-            <td style="font-family:var(--font-mono); font-size:12px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.seqId}">${r.seqId}</td>
-            <td><span class="badge" style="background:${typeColors[r.type]}22; color:${typeColors[r.type]}; border-color:${typeColors[r.type]};">${r.typeName}</span></td>
-            <td style="font-family:var(--font-mono); font-weight:700; color:${typeColors[r.type]}; letter-spacing:1px;">${r.motif}</td>
-            <td style="font-family:var(--font-mono);">${r.start}</td>
-            <td style="font-family:var(--font-mono);">${r.end}</td>
-            <td style="font-family:var(--font-mono); font-weight:600;">${r.length}</td>
-            <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary);">${r.repeats}</td>
-            <td style="font-family:var(--font-mono); font-size:11px; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.ssrSeq}">${r.ssrSeq.length>28 ? r.ssrSeq.slice(0,28)+'…' : r.ssrSeq}</td>
-        `;
+        const tr = document.createElement('tr'); tr.dataset.type = r.type;
+        tr.innerHTML = `<td style="color:var(--text3); font-size:11px;">${i+1}</td> <td style="font-family:var(--font-mono); font-size:12px; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.seqId}">${r.seqId}</td> <td><span class="badge" style="background:${typeColors[r.type]}22; color:${typeColors[r.type]}; border-color:${typeColors[r.type]};">${r.typeName}</span></td> <td style="font-family:var(--font-mono); font-weight:700; color:${typeColors[r.type]}; letter-spacing:1px;">${r.motif}</td> <td style="font-family:var(--font-mono);">${r.start}</td> <td style="font-family:var(--font-mono);">${r.end}</td> <td style="font-family:var(--font-mono); font-weight:600;">${r.length}</td> <td style="font-family:var(--font-mono); font-weight:600; color:var(--primary);">${r.repeats}</td> <td style="font-family:var(--font-mono); font-size:11px; max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.ssrSeq}">${r.ssrSeq.length>28 ? r.ssrSeq.slice(0,28)+'…' : r.ssrSeq}</td>`;
         tbody.appendChild(tr);
     });
 }
 
-// --- Filter SSR table
 function filterSSR(type, btn) {
     document.querySelectorAll('.ssr-filter-btn').forEach(b => b.classList.remove('active-filter'));
     if(btn) btn.classList.add('active-filter');
     const rows = document.querySelectorAll('#ssrBody tr');
-    rows.forEach(r => {
-        r.style.display = (type === 'all' || r.dataset.type == type) ? '' : 'none';
-    });
+    rows.forEach(r => { r.style.display = (type === 'all' || r.dataset.type == type) ? '' : 'none'; });
 }
 
-// --- Render motif frequency table
 function renderSSRMotifTable() {
     const freq = {};
-    ssrResults.forEach(r => {
-        const k = r.canonMotif + '|' + r.type;
-        if (!freq[k]) freq[k] = { motif: r.canonMotif, type: r.typeName, count: 0 };
-        freq[k].count++;
-    });
+    ssrResults.forEach(r => { const k = r.canonMotif + '|' + r.type; if (!freq[k]) freq[k] = { motif: r.canonMotif, type: r.typeName, count: 0 }; freq[k].count++; });
     const sorted = Object.values(freq).sort((a,b) => b.count - a.count).slice(0, 20);
-    const total = ssrResults.length;
-    const tbody = document.getElementById('ssrMotifBody');
-    tbody.innerHTML = '';
+    const total = ssrResults.length; const tbody = document.getElementById('ssrMotifBody'); tbody.innerHTML = '';
     const typeColors = {'Mono':'#10B981','Di':'#F59E0B','Tri':'#EF4444','Tetra':'#8B5CF6','Penta':'#3B82F6','Hexa':'#EC4899'};
     sorted.forEach((m, i) => {
-        const pct = total > 0 ? (m.count / total * 100).toFixed(1) : '0';
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td style="font-weight:700; color:var(--text3);">${i+1}</td>
-            <td style="font-family:var(--font-mono); font-weight:700; color:${typeColors[m.type]||'var(--text)'}; letter-spacing:2px;">${m.motif}</td>
-            <td><span class="badge" style="background:${typeColors[m.type]||'var(--surface-hover)'}22; color:${typeColors[m.type]||'var(--text3)'}; border-color:${typeColors[m.type]||'var(--border)'};">${m.type}</span></td>
-            <td style="font-family:var(--font-mono); font-weight:700; color:var(--primary);">${m.count}</td>
-            <td style="font-family:var(--font-mono);">${pct}%</td>
-        `;
+        const pct = total > 0 ? (m.count / total * 100).toFixed(1) : '0'; const tr = document.createElement('tr');
+        tr.innerHTML = `<td style="font-weight:700; color:var(--text3);">${i+1}</td> <td style="font-family:var(--font-mono); font-weight:700; color:${typeColors[m.type]||'var(--text)'}; letter-spacing:2px;">${m.motif}</td> <td><span class="badge" style="background:${typeColors[m.type]||'var(--surface-hover)'}22; color:${typeColors[m.type]||'var(--text3)'}; border-color:${typeColors[m.type]||'var(--border)'};">${m.type}</span></td> <td style="font-family:var(--font-mono); font-weight:700; color:var(--primary);">${m.count}</td> <td style="font-family:var(--font-mono);">${pct}%</td>`;
         tbody.appendChild(tr);
     });
-
-    // Genome summary
-    const totalLen = ssrSequences.reduce((s,x) => s + x.seq.length, 0);
-    const totalSSRLen = ssrResults.reduce((s,r) => s + r.length, 0);
-    const density = totalLen > 0 ? (ssrResults.length / (totalLen / 1000)).toFixed(4) : '—';
-    const coverage = totalLen > 0 ? (totalSSRLen / totalLen * 100).toFixed(3) : '—';
-    const avgLen = ssrResults.length > 0 ? (totalSSRLen / ssrResults.length).toFixed(1) : '—';
-    document.getElementById('ssrGenomeSummary').innerHTML = `
-        Total Panjang Sekuens: <b style="color:var(--primary);">${totalLen.toLocaleString()} bp</b><br>
-        Total SSR Ditemukan: <b style="color:var(--primary);">${ssrResults.length}</b><br>
-        Total Panjang SSR: <b style="color:var(--success);">${totalSSRLen.toLocaleString()} bp</b><br>
-        Rata-rata Panjang SSR: <b style="color:var(--success);">${avgLen} bp</b><br>
-        Densitas SSR: <b style="color:var(--warning);">${density} SSR/Kbp</b><br>
-        Coverage SSR: <b style="color:var(--warning);">${coverage}% dari total panjang sekuens</b>
-    `;
+    const totalLen = ssrSequences.reduce((s,x) => s + x.seq.length, 0); const totalSSRLen = ssrResults.reduce((s,r) => s + r.length, 0);
+    const density = totalLen > 0 ? (ssrResults.length / (totalLen / 1000)).toFixed(4) : '—'; const coverage = totalLen > 0 ? (totalSSRLen / totalLen * 100).toFixed(3) : '—'; const avgLen = ssrResults.length > 0 ? (totalSSRLen / ssrResults.length).toFixed(1) : '—';
+    document.getElementById('ssrGenomeSummary').innerHTML = `Total Panjang Sekuens: <b style="color:var(--primary);">${totalLen.toLocaleString()} bp</b><br> Total SSR Ditemukan: <b style="color:var(--primary);">${ssrResults.length}</b><br> Total Panjang SSR: <b style="color:var(--success);">${totalSSRLen.toLocaleString()} bp</b><br> Rata-rata Panjang SSR: <b style="color:var(--success);">${avgLen} bp</b><br> Densitas SSR: <b style="color:var(--warning);">${density} SSR/Kbp</b><br> Coverage SSR: <b style="color:var(--warning);">${coverage}% dari total panjang sekuens</b>`;
 }
 
-// --- Render primer flanking table
 function renderSSRPrimerTable() {
     const flankLen = parseInt(document.getElementById('ssrFlank').value) || 150;
-    const tbody = document.getElementById('ssrPrimerBody');
-    tbody.innerHTML = '';
+    const tbody = document.getElementById('ssrPrimerBody'); tbody.innerHTML = '';
     const typeColors = ['','#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
     ssrResults.forEach((r, i) => {
-        const seq = r.fullSeq;
-        const s0 = r.start - 1; // 0-based
-        const e0 = r.end;       // 0-based exclusive
-        const leftStart = Math.max(0, s0 - flankLen);
-        const rightEnd = Math.min(seq.length, e0 + flankLen);
-        const leftFlank = seq.substring(leftStart, s0);
-        const rightFlank = seq.substring(e0, rightEnd);
+        const seq = r.fullSeq; const s0 = r.start - 1; const e0 = r.end;
+        const leftStart = Math.max(0, s0 - flankLen); const rightEnd = Math.min(seq.length, e0 + flankLen);
+        const leftFlank = seq.substring(leftStart, s0); const rightFlank = seq.substring(e0, rightEnd);
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td style="color:var(--text3); font-size:11px;">${i+1}</td>
-            <td style="font-size:12px; font-family:var(--font-mono); max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.seqId}_SSR${i+1}">${r.seqId}_SSR${i+1}</td>
-            <td><span class="badge" style="background:${typeColors[r.type]}22; color:${typeColors[r.type]}; border-color:${typeColors[r.type]};">${r.motif}</span></td>
-            <td style="font-family:var(--font-mono); font-size:11px;">${r.start}–${r.end}</td>
-            <td style="font-family:var(--font-mono); font-size:11px; color:var(--primary); max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${leftFlank}">${leftFlank || '<span style="color:var(--text3);">—</span>'}</td>
-            <td style="font-family:var(--font-mono); font-size:11px; color:var(--purple); max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${rightFlank}">${rightFlank || '<span style="color:var(--text3);">—</span>'}</td>
-        `;
+        tr.innerHTML = `<td style="color:var(--text3); font-size:11px;">${i+1}</td> <td style="font-size:12px; font-family:var(--font-mono); max-width:100px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.seqId}_SSR${i+1}">${r.seqId}_SSR${i+1}</td> <td><span class="badge" style="background:${typeColors[r.type]}22; color:${typeColors[r.type]}; border-color:${typeColors[r.type]};">${r.motif}</span></td> <td style="font-family:var(--font-mono); font-size:11px;">${r.start}–${r.end}</td> <td style="font-family:var(--font-mono); font-size:11px; color:var(--primary); max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${leftFlank}">${leftFlank || '<span style="color:var(--text3);">—</span>'}</td> <td style="font-family:var(--font-mono); font-size:11px; color:var(--purple); max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${rightFlank}">${rightFlank || '<span style="color:var(--text3);">—</span>'}</td>`;
         tbody.appendChild(tr);
     });
 }
 
-// --- Render charts
 function renderSSRCharts() {
-    const typeLabels = ['Mono','Di','Tri','Tetra','Penta','Hexa'];
-    const typeColors = ['#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
-    const counts = [0,0,0,0,0,0];
-    ssrResults.forEach(r => counts[r.type-1]++);
-
-    // Destroy old charts
+    const typeLabels = ['Mono','Di','Tri','Tetra','Penta','Hexa']; const typeColors = ['#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
+    const counts = [0,0,0,0,0,0]; ssrResults.forEach(r => counts[r.type-1]++);
     [ssrChartPieInst, ssrChartLenInst, ssrChartRepInst, ssrChartMapInst].forEach(c => { if(c) c.destroy(); });
 
-    // Pie chart
     const ctxPie = document.getElementById('ssrChartPie').getContext('2d');
-    ssrChartPieInst = new Chart(ctxPie, {
-        type: 'doughnut',
-        data: {
-            labels: typeLabels,
-            datasets: [{ data: counts, backgroundColor: typeColors, borderWidth: 2, borderColor: getComputedStyle(document.documentElement).getPropertyValue('--surface') }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'right', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text'), font: { family: "'DM Sans', sans-serif", size: 12 }, boxWidth: 14 } },
-                tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${counts.reduce((a,b)=>a+b,0)>0?(ctx.raw/counts.reduce((a,b)=>a+b,0)*100).toFixed(1):0}%)` } }
-            }
-        }
-    });
+    ssrChartPieInst = new Chart(ctxPie, { type: 'doughnut', data: { labels: typeLabels, datasets: [{ data: counts, backgroundColor: typeColors, borderWidth: 2, borderColor: getComputedStyle(document.documentElement).getPropertyValue('--surface') }] }, options: { responsive: true, plugins: { legend: { position: 'right', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text'), font: { family: "'DM Sans', sans-serif", size: 12 }, boxWidth: 14 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${counts.reduce((a,b)=>a+b,0)>0?(ctx.raw/counts.reduce((a,b)=>a+b,0)*100).toFixed(1):0}%)` } } } } });
 
-    // Length distribution
-    const lenBuckets = {};
-    ssrResults.forEach(r => { lenBuckets[r.length] = (lenBuckets[r.length]||0)+1; });
+    const lenBuckets = {}; ssrResults.forEach(r => { lenBuckets[r.length] = (lenBuckets[r.length]||0)+1; });
     const lenSorted = Object.keys(lenBuckets).map(Number).sort((a,b)=>a-b);
     const ctxLen = document.getElementById('ssrChartLen').getContext('2d');
-    ssrChartLenInst = new Chart(ctxLen, {
-        type: 'bar',
-        data: { labels: lenSorted, datasets: [{ label: 'Jumlah SSR', data: lenSorted.map(k=>lenBuckets[k]), backgroundColor: '#10B98155', borderColor: '#10B981', borderWidth: 1 }] },
-        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Panjang (bp)', color: '#94A3B8' }, ticks: { color: '#94A3B8' } }, y: { title: { display: true, text: 'Jumlah', color: '#94A3B8' }, ticks: { color: '#94A3B8', stepSize: 1 }, beginAtZero: true } } }
-    });
+    ssrChartLenInst = new Chart(ctxLen, { type: 'bar', data: { labels: lenSorted, datasets: [{ label: 'Jumlah SSR', data: lenSorted.map(k=>lenBuckets[k]), backgroundColor: '#10B98155', borderColor: '#10B981', borderWidth: 1 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Panjang (bp)', color: '#94A3B8' }, ticks: { color: '#94A3B8' } }, y: { title: { display: true, text: 'Jumlah', color: '#94A3B8' }, ticks: { color: '#94A3B8', stepSize: 1 }, beginAtZero: true } } } });
 
-    // Repeat distribution
-    const repBuckets = {};
-    ssrResults.forEach(r => { repBuckets[r.repeats] = (repBuckets[r.repeats]||0)+1; });
+    const repBuckets = {}; ssrResults.forEach(r => { repBuckets[r.repeats] = (repBuckets[r.repeats]||0)+1; });
     const repSorted = Object.keys(repBuckets).map(Number).sort((a,b)=>a-b);
     const ctxRep = document.getElementById('ssrChartRep').getContext('2d');
-    ssrChartRepInst = new Chart(ctxRep, {
-        type: 'bar',
-        data: { labels: repSorted, datasets: [{ label: 'Jumlah SSR', data: repSorted.map(k=>repBuckets[k]), backgroundColor: '#F59E0B55', borderColor: '#F59E0B', borderWidth: 1 }] },
-        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Jumlah Repeat (n)', color: '#94A3B8' }, ticks: { color: '#94A3B8' } }, y: { title: { display: true, text: 'Jumlah', color: '#94A3B8' }, ticks: { color: '#94A3B8', stepSize: 1 }, beginAtZero: true } } }
-    });
+    ssrChartRepInst = new Chart(ctxRep, { type: 'bar', data: { labels: repSorted, datasets: [{ label: 'Jumlah SSR', data: repSorted.map(k=>repBuckets[k]), backgroundColor: '#F59E0B55', borderColor: '#F59E0B', borderWidth: 1 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Jumlah Repeat (n)', color: '#94A3B8' }, ticks: { color: '#94A3B8' } }, y: { title: { display: true, text: 'Jumlah', color: '#94A3B8' }, ticks: { color: '#94A3B8', stepSize: 1 }, beginAtZero: true } } } });
 
-    // Position map
-    const totalLen = ssrSequences[0] ? ssrSequences[0].seq.length : 1;
-    const mapColors = ['','#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
+    const totalLen = ssrSequences[0] ? ssrSequences[0].seq.length : 1; const mapColors = ['','#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
     const ctxMap = document.getElementById('ssrChartMap').getContext('2d');
-    ssrChartMapInst = new Chart(ctxMap, {
-        type: 'bar',
-        data: {
-            labels: ssrResults.map((r,i) => `${r.motif}@${r.start}`),
-            datasets: [{
-                label: 'Posisi SSR',
-                data: ssrResults.map(r => r.start),
-                backgroundColor: ssrResults.map(r => mapColors[r.type] + '99'),
-                borderColor: ssrResults.map(r => mapColors[r.type]),
-                borderWidth: 1,
-                barThickness: 6
-            }]
-        },
-        options: {
-            indexAxis: 'x',
-            responsive: true,
-            plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => { const r = ssrResults[ctx.dataIndex]; return ` ${r.typeName}: ${r.motif}×${r.repeats} @ pos ${r.start}–${r.end}`; } } } },
-            scales: {
-                x: { display: false },
-                y: { title: { display: true, text: 'Posisi (bp)', color: '#94A3B8' }, ticks: { color: '#94A3B8' }, beginAtZero: true, max: totalLen }
-            }
-        }
-    });
+    ssrChartMapInst = new Chart(ctxMap, { type: 'bar', data: { labels: ssrResults.map((r,i) => `${r.motif}@${r.start}`), datasets: [{ label: 'Posisi SSR', data: ssrResults.map(r => r.start), backgroundColor: ssrResults.map(r => mapColors[r.type] + '99'), borderColor: ssrResults.map(r => mapColors[r.type]), borderWidth: 1, barThickness: 6 }] }, options: { indexAxis: 'x', responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => { const r = ssrResults[ctx.dataIndex]; return ` ${r.typeName}: ${r.motif}×${r.repeats} @ pos ${r.start}–${r.end}`; } } } }, scales: { x: { display: false }, y: { title: { display: true, text: 'Posisi (bp)', color: '#94A3B8' }, ticks: { color: '#94A3B8' }, beginAtZero: true, max: totalLen } } } });
 }
 
-// --- Export CSV (SSR list)
 function exportSSRCSV() {
     if (ssrResults.length === 0) { alert('Tidak ada data untuk diekspor.'); return; }
     const header = ['#','Sequence_ID','Type','Motif','Canonical_Motif','Start_bp','End_bp','Length_bp','Repeats','SSR_Sequence'];
     const rows = ssrResults.map((r,i) => [i+1, r.seqId, r.typeName, r.motif, r.canonMotif, r.start, r.end, r.length, r.repeats, r.ssrSeq]);
     const csv = [header, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
-    a.download = 'SSR_Result.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    toast('SSR_Result.csv berhasil diunduh.');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})); a.download = 'SSR_Result.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); toast('SSR_Result.csv berhasil diunduh.');
 }
 
-// --- Export primer flanking CSV
 function exportPrimerCSV() {
     if (ssrResults.length === 0) { alert('Tidak ada data untuk diekspor.'); return; }
     const flankLen = parseInt(document.getElementById('ssrFlank').value) || 150;
     const header = ['#','SSR_ID','Motif','Type','Position','Left_Flank_5to3','Right_Flank_5to3'];
     const rows = ssrResults.map((r,i) => {
-        const seq = r.fullSeq;
-        const s0 = r.start - 1;
+        const seq = r.fullSeq; const s0 = r.start - 1;
         const leftFlank = seq.substring(Math.max(0, s0 - flankLen), s0);
         const rightFlank = seq.substring(r.end, Math.min(seq.length, r.end + flankLen));
         return [i+1, `${r.seqId}_SSR${i+1}`, r.motif, r.typeName, `${r.start}-${r.end}`, leftFlank, rightFlank];
     });
     const csv = [header, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
-    a.download = 'SSR_Flanking_Primers.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    toast('SSR_Flanking_Primers.csv berhasil diunduh.');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})); a.download = 'SSR_Flanking_Primers.csv'; document.body.appendChild(a); a.click(); document.body.removeChild(a); toast('SSR_Flanking_Primers.csv berhasil diunduh.');
 }
 
-// --- Reset
 function resetSSR() {
-    document.getElementById('ssrInput').value = '';
-    document.getElementById('ssrSummaryArea').style.display = 'none';
-    ssrResults = []; ssrSequences = [];
-    [ssrChartPieInst, ssrChartLenInst, ssrChartRepInst, ssrChartMapInst].forEach(c => { if(c) c.destroy(); });
-    toast('SSR Finder direset.');
+    document.getElementById('ssrInput').value = ''; document.getElementById('ssrSummaryArea').style.display = 'none'; ssrResults = []; ssrSequences = [];
+    [ssrChartPieInst, ssrChartLenInst, ssrChartRepInst, ssrChartMapInst].forEach(c => { if(c) c.destroy(); }); toast('SSR Finder direset.');
 }
 
-// --- Sample data
 function loadSampleSSR() {
-    // Synthetic sequence with embedded SSRs of various types
-    const synthetic = `>Oreochromis_niloticus_Chr1_region
-ATGCGATCGATCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGGCATCGATCGATCGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGCTCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCAGTCGATCGATCGATCGATCGATCGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAAATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGCGATCGATCGATCGATCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG`;
-    document.getElementById('ssrInput').value = synthetic;
-    toast('Data sampel SSR dimuat. Klik Jalankan Pencarian.');
+    const synthetic = `>Oreochromis_niloticus_Chr1_region\nATGCGATCGATCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGGCATCGATCGATCGTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCTAGCATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGAGCTCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCATCAGTCGATCGATCGATCGATCGATCGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTGTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAACAAATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGCGATCGATCGATCGATCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATGCATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCTTTCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCAATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCG`;
+    document.getElementById('ssrInput').value = synthetic; toast('Data sampel SSR dimuat. Klik Jalankan Pencarian.');
+}
+
+// ===================================================================
+// MODULE AB1 CHROMATOGRAM PARSER (UPGRADED WITH ALIGNMENT)
+// ===================================================================
+
+let ab1Data = [];
+let traceCharts = [null, null];
+
+function handleAB1Drop(e) {
+    e.preventDefault();
+    fuDragLeave('fu-ab1');
+    if (e.dataTransfer.files.length) processAB1Files(e.dataTransfer.files);
+}
+
+function handleAB1Input(input) {
+    if (input.files.length) processAB1Files(input.files);
+}
+
+async function processAB1Files(files) {
+    const badgeEl = document.getElementById('fu-ab1-badge');
+    badgeEl.style.display = 'inline-flex';
+    badgeEl.textContent = `⚙️ Memproses ${Math.min(files.length, 2)} file...`;
+    badgeEl.className = 'fasta-file-badge';
+    
+    ab1Data = [];
+    
+    for (let i = 0; i < Math.min(files.length, 2); i++) {
+        const file = files[i];
+        if (!file.name.endsWith('.ab1')) continue;
+        
+        try {
+            const buffer = await file.arrayBuffer();
+            const result = parseABIF(buffer);
+            ab1Data.push({ name: file.name, origSeq: result.seq, currSeq: result.seq, isRC: false, traces: result.traces });
+        } catch(err) {
+            alert(`Gagal membaca ${file.name}: ${err.message}`);
+        }
+    }
+    
+    if (ab1Data.length > 0) {
+        renderAB1UI();
+        toast("Kromatogram berhasil dibaca dan diekstrak.");
+    } else {
+        badgeEl.className = 'fasta-file-badge warn';
+        badgeEl.textContent = `⚠ Tidak ada file .ab1 valid`;
+    }
+}
+
+function parseABIF(arrayBuffer) {
+    const dataView = new DataView(arrayBuffer);
+    const magic = String.fromCharCode(dataView.getUint8(0), dataView.getUint8(1), dataView.getUint8(2), dataView.getUint8(3));
+    if (magic !== 'ABIF') throw new Error("Format ABIF tidak valid.");
+
+    const dirPos = dataView.getInt32(26);
+    const dirCount = dataView.getInt32(18);
+    let pbas = "";
+    let traces = { 9: [], 10: [], 11: [], 12: [] };
+
+    for (let i = 0; i < dirCount; i++) {
+        const offset = dirPos + (i * 28);
+        const tagName = String.fromCharCode(dataView.getUint8(offset), dataView.getUint8(offset+1), dataView.getUint8(offset+2), dataView.getUint8(offset+3));
+        const tagNum = dataView.getInt32(offset+4);
+
+        if (tagName === 'PBAS' && tagNum === 1) {
+            const elementCount = dataView.getInt32(offset+12);
+            const dataSize = dataView.getInt32(offset+16);
+            const dataOffset = dataView.getInt32(offset+20);
+            
+            const actualOffset = dataSize <= 4 ? offset + 20 : dataOffset;
+            for (let j = 0; j < elementCount; j++) {
+                pbas += String.fromCharCode(dataView.getUint8(actualOffset + j));
+            }
+        }
+        if (tagName === 'DATA' && [9, 10, 11, 12].includes(tagNum)) {
+            const elementCount = dataView.getInt32(offset+12);
+            const dataSize = dataView.getInt32(offset+16);
+            const dataOffset = dataView.getInt32(offset+20);
+            const actualOffset = dataSize <= 4 ? offset + 20 : dataOffset;
+            
+            for (let j = 0; j < Math.min(elementCount, 600); j++) {
+                traces[tagNum].push(dataView.getInt16(actualOffset + (j * 2)));
+            }
+        }
+    }
+    if (!pbas) throw new Error("Tag PBAS (sekuens basa) tidak ditemukan.");
+    return { seq: pbas, traces: traces };
+}
+
+function renderTraceChart(canvasId, traces, index) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    if (traceCharts[index]) traceCharts[index].destroy();
+    
+    const len = Math.max(traces[9]?.length||0, traces[10]?.length||0);
+    const labels = Array.from({length: len}, (_, i) => i);
+    
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const colorG = isDark ? '#F8FAFC' : '#0F172A'; 
+    const colorA = '#10B981'; 
+    const colorT = '#EF4444'; 
+    const colorC = '#3B82F6'; 
+
+    traceCharts[index] = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                { label: 'G', data: traces[9], borderColor: colorG, borderWidth: 1.5, pointRadius: 0, tension: 0.3 },
+                { label: 'A', data: traces[10], borderColor: colorA, borderWidth: 1.5, pointRadius: 0, tension: 0.3 },
+                { label: 'T', data: traces[11], borderColor: colorT, borderWidth: 1.5, pointRadius: 0, tension: 0.3 },
+                { label: 'C', data: traces[12], borderColor: colorC, borderWidth: 1.5, pointRadius: 0, tension: 0.3 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false, animation: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 12, usePointStyle: true, font: {size: 10} } } },
+            scales: { x: { display: false }, y: { display: false } }
+        }
+    });
+}
+
+function loadManualSequences() {
+    const seq1 = document.getElementById('manualSeq1').value.trim();
+    const seq2 = document.getElementById('manualSeq2').value.trim();
+    
+    ab1Data = [];
+    if(seq1) ab1Data.push({ name: "Manual_Seq_1", origSeq: cleanDNA(seq1), currSeq: cleanDNA(seq1), isRC: false, traces: null });
+    if(seq2) ab1Data.push({ name: "Manual_Seq_2", origSeq: cleanDNA(seq2), currSeq: cleanDNA(seq2), isRC: false, traces: null });
+    
+    if (ab1Data.length > 0) {
+        renderAB1UI();
+        toast("Sekuens manual berhasil dimuat.");
+        document.getElementById('manualSeq1').value = '';
+        document.getElementById('manualSeq2').value = '';
+    } else {
+        toast("Masukkan sekuens manual pada kotak teks terlebih dahulu.");
+    }
+}
+
+function updateLoadedSeq(index) {
+    const newVal = document.getElementById(`ab1Seq${index+1}`).value;
+    let cleaned = newVal;
+    if(newVal.includes('\n') && newVal.trim().startsWith('>')) {
+        const lines = newVal.split('\n');
+        cleaned = lines.slice(1).join('');
+    }
+    cleaned = cleanDNA(cleaned);
+    ab1Data[index].currSeq = cleaned;
+    document.getElementById(`ab1Len${index+1}`).textContent = cleaned.length;
+}
+
+function renderAB1UI() {
+    document.getElementById('ab1ResultArea').style.display = 'block';
+    document.getElementById('ab1AlignResult').style.display = 'none';
+    document.getElementById('ab1AlignOutput').value = '';
+
+    for (let i = 0; i < 2; i++) {
+        const card = document.getElementById(`ab1Card${i+1}`);
+        if (i < ab1Data.length) {
+            card.style.display = 'block';
+            document.getElementById(`ab1Name${i+1}`).textContent = ab1Data[i].name + (ab1Data[i].isRC ? " (RC)" : "");
+            document.getElementById(`ab1Len${i+1}`).textContent = ab1Data[i].currSeq.length;
+            document.getElementById(`ab1Seq${i+1}`).value = `>${ab1Data[i].name}${ab1Data[i].isRC ? "_RC" : ""}\n${ab1Data[i].currSeq}`;
+            
+            const canvasWrap = document.getElementById(`chromatoChartWrap${i+1}`);
+            if (ab1Data[i].traces && ab1Data[i].traces[9].length > 0) {
+                canvasWrap.style.display = 'block';
+                renderTraceChart(`traceCanvas${i+1}`, ab1Data[i].traces, i);
+            } else {
+                canvasWrap.style.display = 'none';
+            }
+        } else {
+            card.style.display = 'none';
+        }
+    }
+
+    document.getElementById('ab1AlignAction').style.display = ab1Data.length === 2 ? 'block' : 'none';
+    if(document.getElementById('fu-ab1-badge')) {
+        document.getElementById('fu-ab1-badge').className = 'fasta-file-badge';
+        document.getElementById('fu-ab1-badge').textContent = `✓ ${ab1Data.length} Sekuens Siap`;
+    }
+}
+
+function toggleAB1RC(index) {
+    if (index >= ab1Data.length) return;
+    const item = ab1Data[index];
+    item.isRC = !item.isRC;
+    
+    if (item.isRC) {
+        const m = {'A':'T','T':'A','C':'G','G':'C','N':'N'};
+        item.currSeq = item.origSeq.split('').reverse().map(b => m[b] || b).join('');
+    } else {
+        item.currSeq = item.origSeq;
+    }
+    renderAB1UI();
+    toast(`Sekuens ${index + 1} dibalik (Reverse Complement).`);
+}
+
+function alignAB1Sequences() {
+    if (ab1Data.length !== 2) return;
+    toast("Menjajarkan sekuens...");
+    
+    const s1 = ab1Data[0].currSeq;
+    const s2 = ab1Data[1].currSeq;
+    
+    const [a1, a2] = nwAlignSimple(s1, s2);
+    
+    let out = `Alignment of:\n1. ${ab1Data[0].name} ${ab1Data[0].isRC ? "(RC)" : ""}\n2. ${ab1Data[1].name} ${ab1Data[1].isRC ? "(RC)" : ""}\n\n`;
+    
+    let sym = "";
+    let cons = "";
+    let match = 0, total = a1.length;
+    
+    for(let i = 0; i < total; i++) {
+        if(a1[i] === a2[i]) {
+            sym += "|";
+            cons += a1[i];
+            match++;
+        } else {
+            sym += " ";
+            if (a1[i] === '-') cons += a2[i];
+            else if (a2[i] === '-') cons += a1[i];
+            else cons += 'N';
+        }
+    }
+    
+    out += `Identity: ${((match/total)*100).toFixed(1)}%\n\n`;
+    
+    for(let k = 0; k < total; k += 60) {
+        out += `S1:   ${a1.substring(k, k+60)}\n`;
+        out += `      ${sym.substring(k, k+60)}\n`;
+        out += `S2:   ${a2.substring(k, k+60)}\n`;
+        out += `Cons: ${cons.substring(k, k+60)}\n\n`;
+    }
+    
+    document.getElementById('ab1AlignOutput').value = out;
+    document.getElementById('ab1AlignResult').style.display = 'block';
+    document.getElementById('ab1AlignOutput').scrollIntoView({behavior: "smooth"});
+}
+
+function resetAB1() {
+    ab1Data = [];
+    document.getElementById('ab1FileInput').value = '';
+    document.getElementById('manualSeq1').value = '';
+    document.getElementById('manualSeq2').value = '';
+    if(document.getElementById('fu-ab1-badge')) document.getElementById('fu-ab1-badge').style.display = 'none';
+    document.getElementById('ab1ResultArea').style.display = 'none';
+    document.getElementById('ab1AlignResult').style.display = 'none';
+    [traceCharts[0], traceCharts[1]].forEach(c => { if(c) c.destroy(); });
+    toast("Modul Kromatogram direset.");
 }
 
 </script>
