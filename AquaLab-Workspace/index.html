@@ -64,6 +64,12 @@ body { font-family: var(--font-sans); background: var(--bg); color: var(--text);
 }
 
 header { background: var(--surface); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10; box-shadow: var(--shadow); transition: background 0.3s; }
+
+/* Logo AREs Header & Wrapper */
+.header-left { display: flex; align-items: center; gap: 16px; }
+.ares-logo-header { height: 32px; width: auto; display: block; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.ares-logo-header:hover { transform: scale(1.05) rotate(-2deg); }
+
 .brand { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
 .brand-top { display: flex; align-items: center; gap: 8px; }
 .brand-icon { font-size: 22px; }
@@ -208,11 +214,19 @@ tbody tr:hover td { background: var(--surface-hover); }
 <body>
 
 <header>
-  <div class="brand">
-    <div class="brand-top"><span class="brand-icon dsw-icon-styled">🔬</span><span class="brand-text">Aqua<span>Lab</span></span></div>
-    <span class="brand-sub">Workspace by DSW</span>
+  <div class="header-left">
+      <a href="../index.html" title="Kembali ke Ekosistem AREs">
+          <img src="../AREs%20Logo%20Acronim.png" alt="AREs Logo" class="ares-logo-header">
+      </a>
+      <div class="brand">
+        <div class="brand-top"><span class="brand-icon dsw-icon-styled">🔬</span><span class="brand-text">Aqua<span>Lab</span></span></div>
+        <span class="brand-sub">Workspace by DSW</span>
+      </div>
   </div>
   <div class="header-actions">
+    <a href="../index.html" class="btn btn-outline" style="text-decoration: none;">
+        <span class="dsw-icon-styled">🏠</span> <span class="btn-text">Home AREs</span>
+    </a>
     <button class="btn btn-outline" id="theme-btn" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> Tema</button>
   </div>
 </header>
