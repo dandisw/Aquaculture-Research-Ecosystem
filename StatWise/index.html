@@ -97,6 +97,7 @@ select.var-input option { background: var(--surface); color: var(--text); }
 .result-panel.open { transform: translateX(0); }
 .result-header { padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--surface-hover); transition: background 0.3s; flex-wrap: wrap; gap: 10px; }
 .result-title { font-size: 16px; font-weight: 600; font-family: var(--font-serif); color: var(--primary); }
+.print-logo { display: none; } /* Tersembunyi di layar reguler */
 .close-btn { cursor: pointer; font-size: 24px; color: var(--text3); background: none; border: none; transition: color 0.2s; line-height: 1; margin-left: 5px; }
 .close-btn:hover { color: var(--danger); }
 .result-body { padding: 20px; overflow-y: auto; flex: 1; }
@@ -119,7 +120,6 @@ select.var-input option { background: var(--surface); color: var(--text); }
 .tbl-container { position: relative; margin-bottom: 16px; overflow-x: auto; padding-top: 15px; }
 .copy-btn { position: absolute; top: -10px; right: 0; z-index: 5; }
 
-/* FIX 5: Definisi Class Signifikansi */
 .sig { color: var(--danger) !important; font-weight: 700; }
 
 .native-chart-card { margin-top: 20px; margin-bottom: 15px; padding: 15px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; position: relative; overflow-x: auto;}
@@ -158,7 +158,6 @@ select.var-input option { background: var(--surface); color: var(--text); }
 .report-title { font-size: 16px; font-weight: 600; color: var(--primary); margin: 0; }
 .remove-block-btn { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px; font-weight: bold; }
 
-/* ABOUT DIALOG SPECIFIC */
 #about-dialog .dialog { max-width: 700px; }
 .about-tabs { display: flex; gap: 10px; border-bottom: 1px solid var(--border); margin-bottom: 15px; overflow-x: auto; }
 .about-tab { padding: 8px 12px; cursor: pointer; font-weight: 600; color: var(--text3); border-bottom: 2px solid transparent; font-size: 13px; white-space: nowrap; }
@@ -169,7 +168,6 @@ select.var-input option { background: var(--surface); color: var(--text); }
 .about-section ul { padding-left: 20px; margin-bottom: 10px; }
 .changelog-item { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed var(--border); }
 
-/* MOBILE RESPONSIVE TWEAKS */
 @media (max-width: 768px) {
   header { padding: 0 15px; }
   .menu-toggle { display: block; }
@@ -189,7 +187,8 @@ select.var-input option { background: var(--surface); color: var(--text); }
   .main-container, .workspace { overflow: visible !important; display: block !important; }
   .result-panel { position: static !important; width: 100% !important; transform: none !important; box-shadow: none !important; border: none !important; display: block !important; background: #fff !important; color: #000 !important; }
   .result-header { padding: 0 0 20px 0; border-bottom: 2px solid #000; background: transparent !important; }
-  .result-title { font-size: 24px; color: #000 !important; }
+  .print-logo { display: block !important; height: 45px; margin-right: 15px; }
+  .result-title { display: flex !important; align-items: center !important; font-size: 24px !important; color: #000 !important; }
   .result-body { padding: 20px 0; overflow: visible !important; }
   .report-block { border: none !important; padding: 0 !important; margin-bottom: 40px !important; background: transparent !important; page-break-inside: avoid; }
   .report-header { border-bottom: 2px solid #000 !important; margin-bottom: 15px !important; padding-bottom: 5px !important; }
@@ -212,14 +211,12 @@ select.var-input option { background: var(--surface); color: var(--text); }
 <header>
   <div class="header-left">
     <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-    <!-- Logo AREs ditambahkan di sini, bersumber dari file AREs Logo Acronim -->
     <a href="../index.html" title="Kembali ke Ekosistem AREs">
         <img src="../AREs%20Logo%20Acronim.png" alt="AREs Logo" class="ares-logo-header">
     </a>
     <div class="brand">Stat<span>Wise</span> <span style="font-size:12px; color:var(--text3); font-family:var(--font-sans); font-weight:400;">by DSW</span></div>
   </div>
   <div class="header-actions">
-    <!-- Tombol Home yang Mengarah ke AREs Dashboard -->
     <a href="../index.html" class="btn btn-outline" style="text-decoration: none;">
         <span class="dsw-icon-styled">🏠</span> <span class="btn-text">Home AREs</span>
     </a>
@@ -311,7 +308,10 @@ select.var-input option { background: var(--surface); color: var(--text); }
 
     <div class="result-panel" id="result-panel">
       <div class="result-header">
-        <div class="result-title" id="res-title">Laporan Analisis</div>
+        <div class="result-title" id="res-title">
+            <img src="../AREs%20Logo%20Outline.png" alt="AREs Logo" class="print-logo">
+            <span>Laporan Analisis</span>
+        </div>
         <div style="display:flex; gap:8px; align-items:center;">
             <button class="btn btn-outline" id="btn-clear-report" style="padding: 6px 10px; font-size: 12px; color:var(--danger)" onclick="clearReport()"><span class="dsw-icon-styled">🗑️</span> Reset</button>
             <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="window.print()"><span class="dsw-icon-styled">🖨️</span> Ekspor PDF</button>
@@ -373,7 +373,11 @@ select.var-input option { background: var(--surface); color: var(--text); }
 
       <div class="about-section" id="sec-log">
         <div class="changelog-item">
-          <b>Versi 11.0 (Current) - Final Polish</b><br>
+          <b>Versi 11.1 (Current) - Integrasi PDF Ekosistem</b><br>
+          Menyelaraskan logo AREs (*Outline*) yang diinjeksi secara spesifik ke dalam mode cetak (`@media print`) sehingga ekspor laporan PDF StatWise terlihat lebih formal dengan *branding* AREs Ecosystem.
+        </div>
+        <div class="changelog-item">
+          <b>Versi 11.0 - Final Polish</b><br>
           Perbaikan fungsi Distribusi-T terbalik (<i>tInv</i>) pada statistik deskriptif dan penambahan sistem generator narasi kesimpulan/interpretasi otomatis berbasis p-value untuk semua metode uji komparatif.
         </div>
         <div class="changelog-item">
@@ -387,10 +391,6 @@ select.var-input option { background: var(--surface); color: var(--text); }
         <div class="changelog-item">
           <b>Versi 7.0 & 8.0 - Transformasi & Ekstraksi Ekstensif</b><br>
           Modul transformasi logaritma, akar, dan arkus sinus ditambahkan. Menggabungkan uji t-Student, Welch, Korelasi Pearson/Spearman, Regresi Linear, Boxplot interaktif, Dunn's test, dan tombol ekstrak tabel data CSV/TSV.
-        </div>
-        <div class="changelog-item">
-          <b>Versi 5.0 & 6.0 - Master Reporting</b><br>
-          Lahirnya sistem panel laporan kumulatif (*append* uji statistik tiada batas) dengan cetak luring PDF native serta interpretasi kesimpulan teks bahasa ilmiah secara otomatis.
         </div>
       </div>
     </div>
