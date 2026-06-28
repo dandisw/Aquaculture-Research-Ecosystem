@@ -45,7 +45,12 @@ body { font-family: var(--font-sans); background: var(--bg); color: var(--text);
 header { background: var(--surface); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10; box-shadow: var(--shadow); transition: background 0.3s; }
 .header-left { display: flex; align-items: center; gap: 12px; }
 .menu-toggle { display: none; font-size: 18px; cursor: pointer; background: transparent; border: none; color: var(--text); }
-.brand { font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--text); }
+
+/* Efek Animasi Logo AREs pada Header */
+.ares-logo-header { height: 32px; width: auto; display: block; margin-right: 8px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.ares-logo-header:hover { transform: scale(1.05) rotate(-2deg); }
+
+.brand { font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 4px; }
 .brand span { color: var(--primary); }
 .header-actions { display: flex; gap: 8px; align-items: center; }
 .btn { padding: 8px 16px; border-radius: 6px; font-family: var(--font-sans); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; white-space: nowrap; }
@@ -113,6 +118,9 @@ select.var-input option { background: var(--surface); color: var(--text); }
 .notation-b { color: var(--danger); font-family: var(--font-sans) !important; font-weight: 600; font-size: 13px; }
 .tbl-container { position: relative; margin-bottom: 16px; overflow-x: auto; padding-top: 15px; }
 .copy-btn { position: absolute; top: -10px; right: 0; z-index: 5; }
+
+/* FIX 5: Definisi Class Signifikansi */
+.sig { color: var(--danger) !important; font-weight: 700; }
 
 .native-chart-card { margin-top: 20px; margin-bottom: 15px; padding: 15px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; position: relative; overflow-x: auto;}
 .chart-title { font-size: 13px; font-weight: 600; text-align: center; margin-bottom: 20px; color: var(--text); }
@@ -204,9 +212,17 @@ select.var-input option { background: var(--surface); color: var(--text); }
 <header>
   <div class="header-left">
     <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    <!-- Logo AREs ditambahkan di sini, bersumber dari file AREs Logo Acronim -->
+    <a href="../index.html" title="Kembali ke Ekosistem AREs">
+        <img src="../AREs%20Logo%20Acronim.png" alt="AREs Logo" class="ares-logo-header">
+    </a>
     <div class="brand">Stat<span>Wise</span> <span style="font-size:12px; color:var(--text3); font-family:var(--font-sans); font-weight:400;">by DSW</span></div>
   </div>
   <div class="header-actions">
+    <!-- Tombol Home yang Mengarah ke AREs Dashboard -->
+    <a href="../index.html" class="btn btn-outline" style="text-decoration: none;">
+        <span class="dsw-icon-styled">🏠</span> <span class="btn-text">Home AREs</span>
+    </a>
     <button class="btn btn-outline" onclick="openAboutDialog()"><span class="dsw-icon-styled">ℹ️</span> <span class="btn-text">Panduan & Info</span></button>
     <button class="btn btn-outline" id="theme-btn" onclick="toggleTheme()"><span class="dsw-icon-styled">☀️</span> <span class="btn-text">Tema</span></button>
     <button class="btn btn-outline" style="color:var(--danger)" onclick="clearAll()"><span class="dsw-icon-styled">🗑️</span> <span class="btn-text">Bersihkan</span></button>
@@ -509,7 +525,8 @@ function extractGroups(depIdx, facIdx) {
     if(isNaN(yVal) || xRaw === '' || xRaw === undefined) continue;
     const xLabel = getMappedLabel(facIdx, xRaw); if(!groupsObj[xLabel]) groupsObj[xLabel] = []; groupsObj[xLabel].push(yVal);
   }
-  const names = Object.keys(groupsObj).sort(); return { groups: names.map(n => groupsObj[n]), names };
+  const names = Object.keys(groupsObj).sort(new Intl.Collator('en', {numeric: true, sensitivity: 'base'}).compare); 
+  return { groups: names.map(n => groupsObj[n]), names };
 }
 function extractPair(idx1, idx2) {
   let a1=[], a2=[];
@@ -620,23 +637,59 @@ function exactMW_pVal(U, n1, n2) {
 // Statistical Tests Core
 function shapiroWilk(data) {
     const x = [...data].sort((a,b) => a-b), n = x.length; if (n < 3) return { W: null, p: null };
-    const m = x.map((_, i) => qnorm((i + 1 - 0.375) / (n + 0.25))), mn = Math.sqrt(m.reduce((s, v) => s + v*v, 0)), a = m.map(v => v / mn);
-    let b = 0; for (let i = 0; i < Math.floor(n/2); i++) b += a[n-1-i] * (x[n-1-i] - x[i]);
-    const xm = mean(x), ss = x.reduce((s, v) => s + (v-xm)**2, 0); if (ss <= 1e-10) return { W: 1, p: 0 }; 
-    const W = Math.min(Math.max((b*b)/ss, 1e-6), 1-1e-6); let mu, sig, y;
+    const xm = mean(x), ss = x.reduce((s, v) => s + (v-xm)**2, 0); 
+    if (ss <= 1e-10) return { W: 1, p: 1 }; 
+
+    const m = x.map((_, i) => qnorm((i + 1 - 0.375) / (n + 0.25)));
+    let c = m.reduce((s, v) => s + v*v, 0);
+    let a = new Array(n).fill(0);
+    if(n === 3) {
+        const sq3 = 0.70710678; a[0] = -sq3; a[1] = 0; a[2] = sq3;
+    } else {
+        const c_n = m[n-1] / Math.sqrt(c), c_n1 = m[n-2] / Math.sqrt(c);
+        let a_n = 0, a_n1 = 0;
+        if (n <= 5) {
+            a_n = c_n + 0.221157 - 0.147981/n - 2.07119/(n*n) + 4.434685/(n*n*n) - 2.706056/(n*n*n*n);
+            a[n-1] = a_n; a[0] = -a_n;
+            const phi = (c - 2*m[n-1]*m[n-1]) / (1 - 2*a_n*a_n);
+            for(let i=1; i<n-1; i++) a[i] = m[i] / Math.sqrt(phi);
+        } else {
+            a_n = c_n + 0.221157 - 0.147981/n - 2.07119/(n*n) + 4.434685/(n*n*n) - 2.706056/(n*n*n*n);
+            a_n1 = c_n1 + 0.042981 - 0.293762/n - 1.752461/(n*n) + 5.682633/(n*n*n) - 3.582633/(n*n*n*n);
+            a[n-1] = a_n; a[0] = -a_n; a[n-2] = a_n1; a[1] = -a_n1;
+            const phi = (c - 2*m[n-1]*m[n-1] - 2*m[n-2]*m[n-2]) / (1 - 2*a_n*a_n - 2*a_n1*a_n1);
+            for(let i=2; i<n-2; i++) a[i] = m[i] / Math.sqrt(phi);
+        }
+    }
+
+    let b = 0; for (let i = 0; i < n; i++) b += a[i] * x[i];
+    const W = Math.min(Math.max((b*b)/ss, 1e-6), 1-1e-6); 
+    let mu, sig, y;
+    
     if (n === 3) return { W, p: Math.max(0.0001, Math.min(0.9999, (6/Math.PI) * (Math.asin(Math.sqrt(W)) - Math.asin(Math.sqrt(0.75))))) };
     if (n <= 11) { mu = 0.544 - 0.39978*n + 0.025054*n*n - 0.0006714*n*n*n; sig = Math.exp(1.3822 - 0.77857*n + 0.062767*n*n - 0.0020322*n*n*n); y = Math.log(1 - W); } 
     else { const u = Math.log(n); mu = -1.2725 + u*(-1.052 + u*(-0.1882 + u* 0.01682)); sig = Math.exp(-1.669 + u*(-0.3655 + u* 0.04834)); y = Math.log(1 - W); }
     return { W, p: Math.max(0.0001, Math.min(0.9999, 1 - normalCDF((y - mu) / sig))) };
 }
+
 function ksTest(data){
     const n=data.length, s=[...data].sort((a,b)=>a-b), m=mean(data), sd=std(data); let D=0;
-    for(let i=0;i<n;i++){ const Fi=normalCDF((s[i]-m)/sd); D=Math.max(D, Math.abs((i+1)/n-Fi), Math.abs(i/n-Fi)); }
     if(n < 4) return {D, p: 0.1}; 
+    if(sd <= 1e-10) return {D: 0, p: 1};
+    for(let i=0;i<n;i++){ const Fi=normalCDF((s[i]-m)/sd); D=Math.max(D, Math.abs((i+1)/n-Fi), Math.abs(i/n-Fi)); }
+    
     let pVal = 0; let c = D * (Math.sqrt(n) - 0.01 + 0.85 / Math.sqrt(n));
-    if (c > 1.308) pVal = Math.exp(-7.326 * c + 5.568); else if (c > 1) pVal = Math.exp(-2.95 * c + 1.25); else if (c > 0.83) pVal = Math.exp(-1.42 * c * c - 0.52); else pVal = 0.2; 
+    if (c >= 1.035) pVal = 0.01 * Math.pow(0.5, (c - 1.035)/0.05); 
+    else if (c >= 0.995) pVal = 0.01 + 0.015 * (1.035 - c) / 0.040;
+    else if (c >= 0.895) pVal = 0.025 + 0.025 * (0.995 - c) / 0.100;
+    else if (c >= 0.819) pVal = 0.05 + 0.05 * (0.895 - c) / 0.076;
+    else if (c >= 0.775) pVal = 0.10 + 0.05 * (0.819 - c) / 0.044;
+    else if (c >= 0.736) pVal = 0.15 + 0.05 * (0.775 - c) / 0.039;
+    else pVal = 0.20 + 0.30 * Math.max(0, 0.736 - c) / 0.2; 
+    
     return { D, p: Math.max(0.0001, Math.min(pVal, 0.9999)) };
 }
+
 function leveneTest(groups, centerType = 'median'){
     const k=groups.length, allN=groups.map(g=>g.length), N=allN.reduce((a,b)=>a+b,0);
     const centers = groups.map(g => centerType === 'mean' ? mean(g) : median(g));
@@ -952,7 +1005,7 @@ function runNormalitas() {
         const d = S.data.map(r => parseFloat(String(r[vIdx]).replace(',','.'))).filter(v => !isNaN(v)); if(d.length < 3) return fullHtml += `<div class="r-alert">Butuh min 3 data.</div>`;
         const sw = shapiroWilk(d), ks = ksTest(d), pass = sw.p > 0.05;
         fullHtml += `<div class="verdict ${pass?'v-pass':'v-fail'}">${pass ? '✅ Data Normal' : '❌ Data Tidak Normal'}</div>`;
-        let tbl = `<table class="res-table"><thead><tr><th>Metode Uji</th><th>Statistik</th><th>p-value</th></tr></thead><tbody><tr><td>Shapiro-Wilk</td><td>${fmt(sw.W)}</td><td class="${pass?'':'sig'}">${fmtp(sw.p)}</td></tr><tr><td>K-S (Lilliefors)</td><td>${fmt(ks.D)}</td><td>${fmtp(ks.p)}</td></tr></tbody></table>`;
+        let tbl = `<table class="res-table"><thead><tr><th>Metode Uji</th><th>Statistik</th><th>p-value</th></tr></thead><tbody><tr><td>Shapiro-Wilk</td><td>${fmt(sw.W)}</td><td class="${pass?'':'sig'}">${fmtp(sw.p)}</td></tr><tr><td>K-S (Lilliefors)</td><td>${fmt(ks.D)}</td><td class="${ks.p>0.05?'':'sig'}">${fmtp(ks.p)}</td></tr></tbody></table>`;
         fullHtml += generateTable(tbl) + `<div class="r-note"><b>Interpretasi:</b><br>Data ${pass?"berdistribusi normal":"tidak normal"} berdasarkan uji Shapiro-Wilk (p = ${fmtp(sw.p)}).</div><hr>`;
     }
   }); appendToReport('Uji Normalitas', fullHtml);
@@ -962,12 +1015,25 @@ function runHomogenitas() {
   const deps = getSelectedDeps('dlg-dep-container'), facIdx = parseInt(document.getElementById('dlg-fac').value), meth = document.getElementById('dlg-method').value; if(!deps.length) return alert('Pilih variabel!'); closeDialog(); let fullHtml = '';
   deps.forEach(depIdx => {
     fullHtml += `<div style="font-weight:bold; margin-bottom:8px;">Variabel: ${S.vars[depIdx].name}</div>`;
-    const { groups } = extractGroups(depIdx, facIdx); const vG = groups.filter(g => g.length >= 2); if(vG.length < 2) return fullHtml += `<div class="r-alert">Butuh min 2 kelompok.</div>`;
-    let r, methName; if (meth === 'bartlett') { r = bartlettTest(vG); methName = "Bartlett"; } else { r = leveneTest(vG, meth); methName = `Levene (${meth})`; r.chi2 = r.F; r.df = r.df1; }
+    const { groups, names } = extractGroups(depIdx, facIdx);
+    
+    let validIdx = []; groups.forEach((g, i) => { if(g.length >= 2) validIdx.push(i); });
+    const vG = validIdx.map(i => groups[i]);
+    const vN = validIdx.map(i => names[i]);
+    
+    if(vG.length < 2) return fullHtml += `<div class="r-alert">Butuh min 2 kelompok.</div>`;
+    
+    let r, methName, statVal, dfText; 
+    if (meth === 'bartlett') { 
+        r = bartlettTest(vG); methName = "Bartlett"; statVal = r.chi2; dfText = r.df; 
+    } else { 
+        r = leveneTest(vG, meth); methName = `Levene (${meth})`; statVal = r.F; dfText = `${r.df1}, ${r.df2}`; 
+    }
+    
     const pass = r.p > 0.05;
     fullHtml += `<div class="verdict ${pass?'v-pass':'v-fail'}">${pass ? `✅ Varians Homogen` : `❌ Varians Tidak Homogen`}</div>
-                <div class="stat-grid"><div class="stat-box"><div class="label">Statistik</div><div class="value">${fmt(r.chi2)}</div></div><div class="stat-box"><div class="label">p-value</div><div class="value ${pass?'':'sig'}">${fmtp(r.p)}</div></div></div>`;
-    let tbl = `<table class="res-table"><thead><tr><th>Metode</th><th>Statistik</th><th>df</th><th>p-value</th></tr></thead><tbody><tr><td>${methName}</td><td>${fmt(r.chi2)}</td><td>${r.df}</td><td>${fmtp(r.p)}</td></tr></tbody></table>`;
+                <div class="stat-grid"><div class="stat-box"><div class="label">Statistik</div><div class="value">${fmt(statVal)}</div></div><div class="stat-box"><div class="label">p-value</div><div class="value ${pass?'':'sig'}">${fmtp(r.p)}</div></div></div>`;
+    let tbl = `<table class="res-table"><thead><tr><th>Metode</th><th>Statistik</th><th>df1, df2 / df</th><th>p-value</th></tr></thead><tbody><tr><td>${methName}</td><td>${fmt(statVal)}</td><td>${dfText}</td><td>${fmtp(r.p)}</td></tr></tbody></table>`;
     fullHtml += generateTable(tbl) + `<div class="r-note"><b>Interpretasi:</b><br>Varians data ${pass ? "homogen" : "tidak homogen"} (p = ${fmtp(r.p)}).</div><hr>`;
   }); appendToReport('Uji Homogenitas Varians', fullHtml);
 }
