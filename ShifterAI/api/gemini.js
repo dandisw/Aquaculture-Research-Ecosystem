@@ -1,12 +1,13 @@
 export default async function handler(req, res) {
   // =====================================================================
-  // 1. PENGATURAN CORS (MENGIZINKAN GITHUB MENGAKSES VERCEL)
+  // 1. PENGATURAN CORS (MENGIZINKAN AKSES DARI FRONTEND)
   // =====================================================================
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*'); 
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
+  // Menangani preflight request dari browser
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -29,7 +30,8 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'API Key tidak ditemukan di Vercel Environment.' });
     }
 
-    // MENGGUNAKAN MODEL 1.5-FLASH YANG STABIL (Telah Diperbaiki)
+    // MENGGUNAKAN MODEL 1.5-FLASH YANG STABIL
+    // URL ini sangat sensitif, pastikan nama model ditulis dengan benar
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const apiResponse = await fetch(endpoint, {
