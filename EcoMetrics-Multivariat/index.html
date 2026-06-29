@@ -54,12 +54,19 @@ body { font-family: var(--font-sans); background: var(--bg); color: var(--text);
 }
 
 header { background: var(--surface); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10; box-shadow: var(--shadow); transition: background 0.3s; }
+
+/* Logo AREs Header & Wrapper */
+.ares-logo-header { height: 32px; width: auto; display: block; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.ares-logo-header:hover { transform: scale(1.05) rotate(-2deg); }
+
 .brand { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
 .brand-top { display: flex; align-items: center; gap: 8px; }
 .brand-icon { font-size: 22px; }
 .brand-text { font-family: var(--font-serif); font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
 .brand-text span { color: var(--primary); }
 .brand-sub { font-family: var(--font-sans); font-size: 11px; font-weight: 500; color: var(--text3); margin-left: 34px; margin-top: -3px; display: block; }
+
+.header-actions { display: flex; gap: 8px; align-items: center; }
 
 .btn { padding: 8px 14px; border-radius: 6px; font-weight: 600; cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-family: var(--font-sans); font-size: 12px; transition: 0.2s;}
 .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -124,6 +131,27 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
 .toast.hide { animation: slideOut 0.3s ease forwards; }
 @keyframes slideOut { to { opacity: 0; transform: translateX(20px); } }
 
+/* PDF Print Mode Styles */
+.print-header { display: none; }
+@media print {
+    body { background: #fff !important; color: #000 !important; overflow: visible !important; height: auto !important; }
+    header, .sidebar, .toolbar, .btn, textarea.matrix-input, label, .info-box, button { display: none !important; }
+    .main-container, .content-area { overflow: visible !important; display: block !important; padding: 0 !important; }
+    .tab-pane { display: none !important; }
+    .tab-pane.active { display: block !important; }
+    .card { border: none !important; box-shadow: none !important; margin-bottom: 30px !important; background: transparent !important; padding: 0 !important; page-break-inside: avoid; }
+    .chart-box { border: 1px solid #ccc !important; box-shadow: none !important; background: #fff !important; page-break-inside: avoid; margin-bottom: 20px !important; }
+    .r-note { background: #f9f9f9 !important; border-left: 4px solid #000 !important; color: #000 !important; page-break-inside: avoid; padding: 15px !important;}
+    table { width: 100% !important; border-collapse: collapse !important; }
+    th { background: #f0f0f0 !important; color: #000 !important; border-bottom: 2px solid #000 !important; }
+    td { border-bottom: 1px solid #ccc !important; color: #000 !important; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .print-header { display: flex !important; align-items: center; gap: 15px; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
+    .print-logo { height: 45px; display: block !important; }
+    .page-header { margin-bottom: 30px !important; }
+    @page { margin: 2cm; size: A4 portrait; }
+}
+
 @media (max-width: 768px) {
   .main-container { flex-direction: column; }
   .sidebar { width: 100%; height: auto; flex-direction: row; padding: 10px 15px; border-bottom: 1px solid var(--border); border-right: none; overflow-x: auto; white-space: nowrap; }
@@ -133,18 +161,28 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
   .content-area { padding: 16px 16px 120px 16px; }
   .grid-2 { grid-template-columns: 1fr; }
   .page-header { flex-direction: column; gap: 10px; }
+  .header-actions .btn-text { display: none; }
 }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="brand">
-    <div class="brand-top"><span class="brand-icon dsw-icon-styled">🌿</span><span class="brand-text">Eco<span>Metrics</span></span></div>
-    <span class="brand-sub">Multivariat by DSW</span>
+  <div class="header-left" style="display: flex; align-items: center; gap: 16px;">
+    <a href="../index.html" title="Kembali ke Ekosistem AREs">
+        <img src="../AREs%20Logo%20Acronim.png" alt="AREs Logo" class="ares-logo-header">
+    </a>
+    <div class="brand">
+      <div class="brand-top"><span class="brand-icon dsw-icon-styled">🌿</span><span class="brand-text">Eco<span>Metrics</span></span></div>
+      <span class="brand-sub">Multivariat by DSW</span>
+    </div>
   </div>
   <div class="header-actions">
-    <button class="btn btn-outline" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> Tema</button>
+    <a href="../index.html" class="btn btn-outline" style="text-decoration: none;">
+        <span class="dsw-icon-styled">🏠</span> <span class="btn-text">Home AREs</span>
+    </a>
+    <button class="btn btn-outline" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> <span class="btn-text">Tema</span></button>
+    <button class="btn btn-primary" onclick="window.print()"><span class="dsw-icon-styled">🖨️</span> <span class="btn-text">Ekspor PDF</span></button>
   </div>
 </header>
 
@@ -172,6 +210,12 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
 
   <main class="content-area">
     
+    <!-- Printable Header Area -->
+    <div class="print-header">
+        <img src="../AREs%20Logo%20Outline.png" alt="AREs Logo" class="print-logo">
+        <h2 style="font-family: 'Syne', sans-serif; margin: 0; color: #000; font-size: 22px;">Laporan Analisis - EcoMetrics Multivariat</h2>
+    </div>
+
     <div id="v-rapfish" class="tab-pane active">
       <div class="page-header">
         <div><div class="page-title">Rapfish (Anchored Projection)</div><p style="color:var(--text3); margin-top:5px;">Proyeksi multidimensi ortogonal ke garis referensi Bad-Good.</p></div>
@@ -323,7 +367,7 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
       <p style="font-size:13px; color:var(--text); margin-bottom: 10px;">
         Aplikasi ini memproses data tabular mentah yang disalin (*Copy-Paste*) langsung dari <strong>Microsoft Excel</strong> atau file TSV. <br><br>
         Untuk modul <strong>PCA, K-Means, dan HCA</strong>, kolom pertama wajib berupa Label Identitas (misal: "Stasiun 1"), diikuti kolom numerik di sebelahnya.<br>
-        Untuk <strong>ANOSIM dan LDA</strong>, kolom 1 = Label, Kolom 2 = Grup Perlakuan, dan Kolom 3 dst = Numerik.
+        Untuk <strong>ANOSIM dan LDA</strong>, kolom 1 = Label, Kolom 2 = Grup Perlakuan, Kolom 3 dst = Numerik.
       </p>
 
       <div class="section-label">Daftar Referensi Algoritma (Standar APA)</div>
