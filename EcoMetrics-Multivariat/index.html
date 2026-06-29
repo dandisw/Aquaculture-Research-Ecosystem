@@ -34,28 +34,15 @@
 body { font-family: var(--font-sans); background: var(--bg); color: var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; font-size: 13px; transition: background 0.3s, color 0.3s; }
 
 /* Class Khusus untuk Mengubah Warna Emoji Menjadi Ungu DSW Ecosystem */
-.dsw-icon-styled {
-    filter: grayscale(100%);
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 5px;
-    transition: filter 0.3s ease;
-}
-[data-theme="dark"] .dsw-icon-styled {
-    /* hue-rotate(260deg) untuk Ungu/Purple */
-    filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(250deg) saturate(5);
-}
-[data-theme="light"] .dsw-icon-styled {
-    filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(250deg) saturate(4);
-}
-.menu-item:hover .dsw-icon-styled,
-.btn:hover .dsw-icon-styled {
-    filter: grayscale(100%) brightness(1.5) sepia(1) hue-rotate(250deg) saturate(7);
-}
+.dsw-icon-styled { filter: grayscale(100%); display: inline-block; vertical-align: middle; margin-right: 5px; transition: filter 0.3s ease; }
+[data-theme="dark"] .dsw-icon-styled { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(250deg) saturate(5); }
+[data-theme="light"] .dsw-icon-styled { filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(250deg) saturate(4); }
+.menu-item:hover .dsw-icon-styled, .btn:hover .dsw-icon-styled { filter: grayscale(100%) brightness(1.5) sepia(1) hue-rotate(250deg) saturate(7); }
 
 header { background: var(--surface); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10; box-shadow: var(--shadow); transition: background 0.3s; }
 
 /* Logo AREs Header & Wrapper */
+.header-left { display: flex; align-items: center; gap: 16px; }
 .ares-logo-header { height: 32px; width: auto; display: block; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 .ares-logo-header:hover { transform: scale(1.05) rotate(-2deg); }
 
@@ -131,8 +118,9 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
 .toast.hide { animation: slideOut 0.3s ease forwards; }
 @keyframes slideOut { to { opacity: 0; transform: translateX(20px); } }
 
-/* PDF Print Mode Styles */
+/* CSS KHUSUS EKSPOR PDF / CETAK */
 .print-header { display: none; }
+.print-citation { display: none; }
 @media print {
     body { background: #fff !important; color: #000 !important; overflow: visible !important; height: auto !important; }
     header, .sidebar, .toolbar, .btn, textarea.matrix-input, label, .info-box, button { display: none !important; }
@@ -145,10 +133,12 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
     table { width: 100% !important; border-collapse: collapse !important; }
     th { background: #f0f0f0 !important; color: #000 !important; border-bottom: 2px solid #000 !important; }
     td { border-bottom: 1px solid #ccc !important; color: #000 !important; }
+    input[type="text"] { border: none !important; background: transparent !important; color: #000 !important; font-weight: bold; width: 100% !important; padding: 0 !important; margin-bottom: 10px !important;}
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     .print-header { display: flex !important; align-items: center; gap: 15px; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
     .print-logo { height: 45px; display: block !important; }
     .page-header { margin-bottom: 30px !important; }
+    .print-citation { display: block !important; margin-top: 40px; padding-top: 10px; border-top: 2px solid #000; font-size: 12px; color: #000; page-break-inside: avoid; }
     @page { margin: 2cm; size: A4 portrait; }
 }
 
@@ -182,7 +172,7 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
         <span class="dsw-icon-styled">🏠</span> <span class="btn-text">Home AREs</span>
     </a>
     <button class="btn btn-outline" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> <span class="btn-text">Tema</span></button>
-    <button class="btn btn-primary" onclick="window.print()"><span class="dsw-icon-styled">🖨️</span> <span class="btn-text">Ekspor PDF</span></button>
+    <button class="btn btn-primary" onclick="printReport()"><span class="dsw-icon-styled">🖨️</span> <span class="btn-text">Ekspor PDF</span></button>
   </div>
 </header>
 
@@ -210,7 +200,7 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
 
   <main class="content-area">
     
-    <!-- Printable Header Area -->
+    <!-- Printable Header Area (Muncul Khusus di PDF) -->
     <div class="print-header">
         <img src="../AREs%20Logo%20Outline.png" alt="AREs Logo" class="print-logo">
         <h2 style="font-family: 'Syne', sans-serif; margin: 0; color: #000; font-size: 22px;">Laporan Analisis - EcoMetrics Multivariat</h2>
@@ -353,6 +343,12 @@ svg path { fill: none; stroke: var(--primary); stroke-width: 2px; }
       </div>
     </div>
 
+    <!-- Kotak Sitasi (Khusus Muncul di PDF Ekspor) -->
+    <div class="print-citation">
+        <strong>Sitasi Perangkat Lunak (APA Style):</strong><br>
+        Wibowo, D. S. (2026). <i>AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0)</i>. Zenodo. https://doi.org/10.5281/zenodo.20729217
+    </div>
+
   </main>
 </div>
 
@@ -487,17 +483,63 @@ function copyForWord(containerId) {
     document.body.removeChild(hiddenDiv);
 }
 
+// Custom Print Logic (Automatically switches to Light Theme for solid Black printing)
+function printReport() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if(isDark) {
+        toggleTheme();
+    }
+    // Waktu jeda agar Chart.js menyelesaikan re-rendering canvas di Light Mode
+    setTimeout(() => {
+        window.print();
+        if(isDark) {
+            setTimeout(() => toggleTheme(), 100);
+        }
+    }, 600);
+}
+
 // --- CORE UTILS ---
 function switchView(id, el) {
   document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.menu-item').forEach(m=>m.classList.remove('active'));
   document.getElementById(id).classList.add('active'); el.classList.add('active');
 }
+
+// Memaksa update warna Chart.js global secara instan sesuai tema
+function updateChartThemeColors() {
+    let {txt, grid} = getChartColors();
+    Chart.helpers.each(Chart.instances, function(instance) {
+        if(instance.options.scales) {
+            if(instance.options.scales.x) {
+                if(instance.options.scales.x.ticks) instance.options.scales.x.ticks.color = txt;
+                if(instance.options.scales.x.grid) instance.options.scales.x.grid.color = grid;
+                if(instance.options.scales.x.title) instance.options.scales.x.title.color = txt;
+            }
+            if(instance.options.scales.y) {
+                if(instance.options.scales.y.ticks) instance.options.scales.y.ticks.color = txt;
+                if(instance.options.scales.y.grid) instance.options.scales.y.grid.color = grid;
+                if(instance.options.scales.y.title) instance.options.scales.y.title.color = txt;
+            }
+            if(instance.options.scales.r) { // for radar (Rapfish)
+                if(instance.options.scales.r.grid) instance.options.scales.r.grid.color = grid;
+                if(instance.options.scales.r.angleLines) instance.options.scales.r.angleLines.color = grid;
+                if(instance.options.scales.r.pointLabels) instance.options.scales.r.pointLabels.color = txt;
+                if(instance.options.scales.r.ticks) instance.options.scales.r.ticks.color = txt;
+            }
+        }
+        if(instance.options.plugins && instance.options.plugins.legend && instance.options.plugins.legend.labels) {
+            instance.options.plugins.legend.labels.color = txt;
+        }
+        instance.update();
+    });
+}
+
 function toggleTheme() {
     const html = document.documentElement;
     html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-    Chart.helpers.each(Chart.instances, function(instance){ instance.update(); });
+    updateChartThemeColors();
 }
+
 function parseMatrix(text, hasGroup=false) {
     let rows = text.trim().split('\n').map(r=>r.trim().split(/\t+|,|;/));
     if(rows.length < 2) return null;
