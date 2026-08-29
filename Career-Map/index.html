@@ -4,11 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fisheries Career Map — FishCareer by AREs</title>
+<script src="../js/theme-manager.js"></script>
+<script src="../js/storage-sync.js"></script>
+<script src="../js/i18n.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=MuseoModerno:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&family=DM+Mono:wght@400;500&family=MuseoModerno:wght@400;600;700;800;900&family=Syne:wght@400;600;700;800&display=swap');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
-
 :root {
+  --font-sans: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-serif: 'MuseoModerno', 'Syne', 'Fraunces', sans-serif;
+  
   /* ── TEMA KHUSUS AREs ── */
   --bg: #030914; 
   --surface: rgba(10, 20, 38, 0.4); 
@@ -30,6 +38,31 @@
   --c-center: #38bdf8;
 }
 
+[data-theme="light"] {
+  --bg: #f8fafc;
+  --surface: rgba(255, 255, 255, 0.85);
+  --surface2: #ffffff;
+  --border: rgba(203, 213, 225, 0.8);
+  --border-hover: rgba(56, 189, 248, 0.8);
+  --text: #0f172a;
+  --muted: #475569;
+}
+
+[data-theme="light"] .header {
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.4) 100%);
+}
+
+[data-theme="light"] .back-btn, [data-theme="light"] .theme-btn-top {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+[data-theme="light"] .sc {
+  background: #ffffff;
+  border-color: #e2e8f0;
+}
+
 *{box-sizing:border-box;margin:0;padding:0}
 
 html, body { 
@@ -40,10 +73,10 @@ html, body {
 }
 
 body {
-  font-family:'DM Sans',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
   position: relative;
 }
 
@@ -52,11 +85,29 @@ body {
 .ambient-glow-2 { position: absolute; bottom: 10%; right: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(168, 85, 247, 0.1), transparent 60%); border-radius: 50%; z-index: -1; filter: blur(60px); pointer-events: none; animation: pulse-glow 10s infinite alternate-reverse; }
 @keyframes pulse-glow { 0% { opacity: 0.5; transform: scale(0.9); } 100% { opacity: 1; transform: scale(1.1); } }
 
-/* ── TOMBOL NAVIGASI KEMBALI ── */
+/* ── TOP NAVIGATION BAR ── */
+.career-nav-bar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: 12px 24px;
+  background: rgba(3, 9, 20, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  box-sizing: border-box;
+}
+[data-theme="light"] .career-nav-bar {
+  background: rgba(255, 255, 255, 0.88);
+}
+
 .back-btn {
-  position: absolute;
-  top: 30px;
-  left: 30px;
   color: var(--muted);
   text-decoration: none;
   font-family: 'Syne', sans-serif;
@@ -65,25 +116,47 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 10px 20px;
+  border: 1px solid var(--border);
+  padding: 8px 16px;
   border-radius: 50px;
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.04);
   backdrop-filter: blur(10px);
   transition: all 0.3s;
-  z-index: 50;
 }
 .back-btn:hover {
   background: rgba(56, 189, 248, 0.15);
   border-color: var(--c-center);
-  color: #fff;
+  color: var(--text);
+  transform: translateY(-2px);
+}
+
+.theme-btn-top {
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 50px;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.theme-btn-top:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: var(--c-center);
+  color: var(--text);
   transform: translateY(-2px);
 }
 
 /* ── HEADER ── */
 .header {
   text-align:center;
-  padding:80px 20px 28px;
+  padding: 40px 20px 28px;
   border-bottom:1px solid var(--border);
   background: linear-gradient(180deg, rgba(3,9,20,0.8) 0%, rgba(3,9,20,0.2) 100%);
   backdrop-filter: blur(16px);
@@ -415,10 +488,18 @@ svg.radial { width:100%; max-width:840px; display:block; filter: drop-shadow(0 1
 <div class="ambient-glow-1"></div>
 <div class="ambient-glow-2"></div>
 
-<!-- NAVIGASI KEMBALI KE ROOT -->
-<a href="../index.html" class="back-btn" title="Kembali ke Beranda AREs">
-  <i class="fas fa-arrow-left"></i> Kembali ke AREs
-</a>
+<!-- TOP NAVBAR -->
+<nav class="career-nav-bar">
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <a href="../index.html" class="back-btn" title="Kembali ke Beranda AREs">
+      <span class="dsw-icon-styled">🏠</span> <span>Home AREs</span>
+    </a>
+    <div id="aresDataSyncIndicator" class="ares-sync-indicator" title="Status Sinkronisasi & Penyimpanan Lokal Data Riset AREs (Klik untuk melihat rincian)"></div>
+  </div>
+  <button onclick="toggleTheme()" class="theme-btn-top" title="Ganti Mode Tema">
+    <i class="fas fa-moon" id="careerThemeIcon"></i> <span id="careerThemeText">Tema</span>
+  </button>
+</nav>
 
 <!-- HEADER -->
 <div class="header">
@@ -430,8 +511,8 @@ svg.radial { width:100%; max-width:840px; display:block; filter: drop-shadow(0 1
 <!-- RADIAL MAP (DIPERLEBAR AGAR TIDAK SALING MENIMPA) -->
 <div class="map-section">
   <div class="map-hint">↓ Klik cabang untuk meluncur ke detail di bawah</div>
-
-  <svg class="radial" viewBox="0 0 840 560" role="img">
+  <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; display: flex; justify-content: center;">
+    <svg class="radial" viewBox="0 0 840 560" role="img" style="min-width: 600px; max-width: 840px;">
     <title>Fisheries Career Map — skema radial 8 sektor</title>
     <desc>Diagram radial: FishCareer Logo di pusat, memancar ke 8 sektor karir.</desc>
     <defs>
@@ -512,7 +593,8 @@ svg.radial { width:100%; max-width:840px; display:block; filter: drop-shadow(0 1
       <text x="80" y="293" text-anchor="middle" font-family="'DM Sans',sans-serif" font-size="11" fill="#bbf7d0">&amp; Konsultasi</text>
     </g>
 
-  </svg>
+    </svg>
+  </div>
 </div>
 
 <!-- LEGEND -->
@@ -874,6 +956,27 @@ svg.radial { width:100%; max-width:840px; display:block; filter: drop-shadow(0 1
 <div class="footer">Fisheries Career Map &nbsp;·&nbsp; FPIK UNSOED &nbsp;·&nbsp; 2026</div>
 
 <script>
+function toggleTheme() {
+  const h = document.documentElement;
+  const next = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  h.setAttribute('data-theme', next);
+  localStorage.setItem('ares_theme', next);
+  updateThemeUI(next);
+}
+
+function updateThemeUI(theme) {
+  const icon = document.getElementById('careerThemeIcon');
+  const text = document.getElementById('careerThemeText');
+  if (icon) icon.className = theme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+  if (text) text.textContent = theme === 'light' ? 'Mode Terang' : 'Mode Gelap';
+}
+
+(function() {
+  const saved = localStorage.getItem('ares_theme') || localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  updateThemeUI(saved);
+})();
+
 function scrollToCard(id) {
   const el = document.getElementById(id);
   if (!el) return;

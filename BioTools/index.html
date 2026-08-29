@@ -7,14 +7,19 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%2310B981%22>⚗</text></svg>">
 <meta property="og:title" content="BioTools Suite by DSW">
 <meta property="og:description" content="Perangkat komputasi bioinformatika, proteomik, desain primer, dan filogenetik client-side.">
+<script src="../js/theme-manager.js"></script>
+<script src="../js/storage-sync.js"></script>
+<script src="../js/i18n.js"></script>
 <meta property="og:image" content="https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
 
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=MuseoModerno:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #F8FAFC; --surface: #FFFFFF; --surface-hover: #F1F5F9;
-  --border: #E2E8F0; --border-focus: #94A3B8;
-  --text: #0F172A; --text2: #475569; --text3: #94A3B8;
+  --border: #CBD5E1; --border-table: #94A3B8; --border-table-cell: #CBD5E1; --border-focus: #10B981;
+  --text: #0F172A; --text2: #334155; --text3: #64748B;
   --primary: #10B981; --primary-light: #DCFCE7; --primary-dark: #059669; 
   --success: #16A34A; --success-light: #DCFCE7;
   --danger: #DC2626; --danger-light: #FEE2E2;
@@ -22,23 +27,25 @@
   --purple: #7C3AED; --purple-light: #EDE9FE;
   --blue: #3B82F6;
   
-  --font-sans: 'DM Sans', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'DM Mono', monospace;
-  --font-serif: 'Fraunces', serif;
+  --font-serif: 'MuseoModerno', 'Syne', 'Fraunces', sans-serif;
   
+  --radius-sm: 6px;
   --radius: 10px;
+  --radius-lg: 14px;
   --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
   --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -2px rgba(0,0,0,0.04);
 }
 [data-theme="dark"] {
-  --bg: #0F172A; --surface: #1E293B; --surface-hover: #334155;
-  --border: #334155; --border-focus: #475569;
+  --bg: #090D16; --surface: #111C35; --surface-hover: #1A2B50;
+  --border: #1E2F52; --border-table: #2D426E; --border-table-cell: #1E2F52; --border-focus: #34D399;
   --text: #F8FAFC; --text2: #CBD5E1; --text3: #94A3B8;
-  --primary: #10B981; --primary-light: #064E3B; --primary-dark: #34D399;
-  --success: #4ADE80; --success-light: #064E3B;
-  --danger: #F87171; --danger-light: #7F1D1D;
-  --warning: #FCD34D; --warning-light: #451A03;
-  --purple: #C084FC; --purple-light: #3B0764;
+  --primary: #10B981; --primary-light: rgba(16, 185, 129, 0.16); --primary-dark: #34D399;
+  --success: #4ADE80; --success-light: rgba(74, 222, 128, 0.16);
+  --danger: #F87171; --danger-light: rgba(248, 113, 113, 0.16);
+  --warning: #FCD34D; --warning-light: rgba(252, 211, 77, 0.16);
+  --purple: #C084FC; --purple-light: rgba(192, 132, 252, 0.16);
   --blue: #60A5FA;
 }
 
@@ -166,6 +173,31 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 
 .ssr-filter-btn.active-filter { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
 
+/* 3D Molecular Viewer Styles */
+.mol3d-container { position: relative; width: 100%; max-width: 100%; border-radius: var(--radius); overflow: hidden; background: #0f172a; border: 1px solid var(--border); box-shadow: var(--shadow-md); height: clamp(380px, 56vh, 560px); min-height: 360px; max-height: 82vh; transition: height 0.3s ease; }
+.mol3d-viewport { width: 100%; height: 100%; position: relative; cursor: grab; }
+.mol3d-viewport:active { cursor: grabbing; }
+.mol3d-overlay-top { position: absolute; top: 12px; left: 12px; right: auto; display: flex; gap: 6px; z-index: 20; background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(8px); padding: 6px 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18); flex-wrap: wrap; max-width: calc(100% - 24px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.mol3d-overlay-bottom { position: absolute; bottom: 12px; left: 12px; right: auto; z-index: 20; background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(8px); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.18); color: #f8fafc; font-size: 11px; font-family: var(--font-mono); pointer-events: none; max-width: calc(100% - 24px); text-overflow: ellipsis; overflow: hidden; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.mol3d-btn { background: rgba(255,255,255,0.12); color: #f8fafc; border: 1px solid rgba(255,255,255,0.22); padding: 5px 9px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s; white-space: nowrap; }
+.mol3d-btn:hover { background: rgba(255,255,255,0.25); color: #fff; transform: translateY(-1px); }
+.mol3d-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.mol3d-grid-split { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; margin-bottom: 18px; }
+.mol3d-grid-full { display: flex; flex-direction: column; gap: 18px; margin-bottom: 18px; }
+.active-layout { background: var(--primary-light) !important; color: var(--primary) !important; border-color: var(--primary) !important; font-weight: 700 !important; }
+@media (max-width: 1100px) {
+  .mol3d-grid-split { grid-template-columns: 1fr; }
+}
+.mol3d-style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.mol3d-opt-btn { padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface-hover); color: var(--text2); font-size: 12px; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.mol3d-opt-btn:hover { background: var(--surface); color: var(--text); border-color: var(--primary); }
+.mol3d-opt-btn.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+.mol3d-seq-track { display: flex; gap: 4px; overflow-x: auto; padding: 8px 4px; border: 1px solid var(--border); background: var(--surface-hover); border-radius: 6px; font-family: var(--font-mono); font-size: 11px; scrollbar-width: thin; }
+.mol3d-seq-chip { padding: 4px 6px; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); cursor: pointer; text-align: center; min-width: 26px; transition: all 0.15s; flex-shrink: 0; }
+.mol3d-seq-chip:hover { border-color: var(--primary); background: var(--primary-light); color: var(--primary); transform: translateY(-2px); }
+.mol3d-seq-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: bold; }
+.mol3d-fullscreen { position: fixed !important; inset: 12px !important; width: calc(100vw - 24px) !important; height: calc(100vh - 24px) !important; z-index: 9999 !important; border-radius: 12px !important; box-shadow: 0 0 0 100vmax rgba(0,0,0,0.85) !important; }
+
 .fasta-uploader { margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
 .fasta-uploader-header { display: flex; align-items: center; gap: 8px; padding: 7px 12px; background: var(--surface-hover); border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
 .fasta-drop-zone { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--surface); cursor: pointer; transition: background 0.2s; position: relative; }
@@ -197,11 +229,15 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/3Dmol/2.4.2/3Dmol-min.js"></script>
 </head>
 <body>
 
 <header>
   <div class="header-left">
+      <button class="btn btn-outline btn-sm ares-sidebar-toggle-btn" id="aresSidebarToggleBtn" onclick="toggleSidebar()" title="Sembunyikan / Tampilkan Bilah Menu">
+        <span class="dsw-icon-styled">☰</span> <span class="btn-text" data-i18n="toggle_sidebar">Bilah Menu</span>
+      </button>
       <a href="../index.html" title="Kembali ke Ekosistem AREs">
           <img src="../AREs%20Logo%20Acronim.png" alt="AREs Logo" class="ares-logo-header">
       </a>
@@ -211,43 +247,52 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
       </div>
   </div>
   <div class="header-actions">
+    <button class="btn btn-outline ares-suite-switcher-btn" onclick="openAresSuiteNavigator()" title="Buka AREs Suite Navigator (Pindah Cepat Antar Modul)">
+      <span class="dsw-icon-styled">⚡</span> <span class="btn-text">Modul AREs</span>
+    </button>
+    <div id="aresDataSyncIndicator" class="ares-sync-indicator" title="Status Sinkronisasi & Penyimpanan Lokal Data Riset AREs (Klik untuk melihat rincian)"></div>
+    <div id="pwa-network-badge" class="pwa-status-badge online" title="Status koneksi jaringan &amp; mode penyimpanan lokal PWA">
+      <span id="pwa-status-dot" class="pwa-dot"></span>
+      <span id="pwa-status-text">Online (Lokal Ready)</span>
+    </div>
     <a href="../index.html" class="btn btn-outline" style="text-decoration: none;">
-        <span class="dsw-icon-styled">🏠</span> <span class="btn-text">Home AREs</span>
+        <span class="dsw-icon-styled">🏠</span> <span class="btn-text" data-i18n="nav_home">Home AREs</span>
     </a>
-    <button class="btn btn-outline" id="theme-btn" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> Tema</button>
+    <button class="btn btn-outline" id="theme-btn" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> <span data-i18n="nav_theme">Tema</span></button>
   </div>
 </header>
 
 <div class="main-container">
-  <nav class="sidebar">
+  <nav class="sidebar" id="sidebar">
     <div class="menu-group">
-      <div class="menu-title">Analisis Sekuens</div>
-      <div class="menu-item active" onclick="switchView('v-blast', this)"><span class="dsw-icon-styled">🔍</span> NCBI Search & BLAST</div>
-      <div class="menu-item" onclick="switchView('v-manipulasi', this)"><span class="dsw-icon-styled">✂️</span> Manipulasi DNA</div>
-      <div class="menu-item" onclick="switchView('v-pairwise', this)"><span class="dsw-icon-styled">🧪</span> Pairwise Alignment</div>
-      <div class="menu-item" onclick="switchView('v-msa', this)"><span class="dsw-icon-styled">📊</span> Multiple Alignment (MSA)</div>
-      <div class="menu-item" onclick="switchView('v-chromato', this)"><span class="dsw-icon-styled">📈</span> Kromatogram (AB1)</div>
+      <div class="menu-title" data-i18n="bio_seq_analysis">Analisis Sekuens</div>
+      <div class="menu-item active" onclick="switchView('v-blast', this)"><span class="dsw-icon-styled">🔍</span> <span data-i18n="bio_blast">NCBI Search & BLAST</span></div>
+      <div class="menu-item" onclick="switchView('v-manipulasi', this)"><span class="dsw-icon-styled">✂️</span> <span data-i18n="bio_manipulation">Manipulasi DNA</span></div>
+      <div class="menu-item" onclick="switchView('v-pairwise', this)"><span class="dsw-icon-styled">🧪</span> <span data-i18n="bio_pairwise">Pairwise Alignment</span></div>
+      <div class="menu-item" onclick="switchView('v-msa', this)"><span class="dsw-icon-styled">📊</span> <span data-i18n="bio_msa">Multiple Alignment (MSA)</span></div>
+      <div class="menu-item" onclick="switchView('v-chromato', this)"><span class="dsw-icon-styled">📈</span> <span data-i18n="bio_chromato">Kromatogram (AB1)</span></div>
     </div>
     <div class="menu-group">
-      <div class="menu-title">Proteomik</div>
-      <div class="menu-item" onclick="switchView('v-protein', this)"><span class="dsw-icon-styled">🧬</span> Fisikokimia Protein</div>
+      <div class="menu-title" data-i18n="bio_proteomics">Proteomik</div>
+      <div class="menu-item" onclick="switchView('v-protein', this)"><span class="dsw-icon-styled">🧬</span> <span data-i18n="bio_physicochem">Fisikokimia Protein</span></div>
+      <div class="menu-item" onclick="switchView('v-mol3d', this)"><span class="dsw-icon-styled">🔮</span> <span data-i18n="bio_mol3d">Visualisasi 3D Protein (PDB)</span></div>
     </div>
     <div class="menu-group">
-      <div class="menu-title">Genomik & Kloning</div>
-      <div class="menu-item" onclick="switchView('v-orf', this)"><span class="dsw-icon-styled">🎯</span> ORF Finder</div>
-      <div class="menu-item" onclick="switchView('v-digest', this)"><span class="dsw-icon-styled">🔪</span> Restriction Mapper</div>
-      <div class="menu-item" onclick="switchView('v-phylo', this)"><span class="dsw-icon-styled">🌿</span> Pohon Filogenetik</div>
+      <div class="menu-title" data-i18n="bio_genomics">Genomik & Kloning</div>
+      <div class="menu-item" onclick="switchView('v-orf', this)"><span class="dsw-icon-styled">🎯</span> <span data-i18n="bio_orf">ORF Finder</span></div>
+      <div class="menu-item" onclick="switchView('v-digest', this)"><span class="dsw-icon-styled">🔪</span> <span data-i18n="bio_digest">Restriction Mapper</span></div>
+      <div class="menu-item" onclick="switchView('v-phylo', this)"><span class="dsw-icon-styled">🌿</span> <span data-i18n="bio_phylo">Pohon Filogenetik</span></div>
     </div>
     <div class="menu-group">
-      <div class="menu-title">Genomik Populasi</div>
-      <div class="menu-item" onclick="switchView('v-ssr', this)"><span class="dsw-icon-styled">🧩</span> SSR / Mikrosatelit Finder</div>
+      <div class="menu-title" data-i18n="bio_popgen">Genomik Populasi</div>
+      <div class="menu-item" onclick="switchView('v-ssr', this)"><span class="dsw-icon-styled">🧩</span> <span data-i18n="bio_ssr">SSR / Mikrosatelit Finder</span></div>
     </div>
     <div class="menu-group">
-      <div class="menu-title">Desain Primer</div>
-      <div class="menu-item" onclick="switchView('v-primer', this)"><span class="dsw-icon-styled">🔬</span> Analisis & Desain Primer</div>
+      <div class="menu-title" data-i18n="bio_primer">Desain Primer</div>
+      <div class="menu-item" onclick="switchView('v-primer', this)"><span class="dsw-icon-styled">🔬</span> <span data-i18n="bio_primer_design">Analisis & Desain Primer</span></div>
     </div>
     <div class="sidebar-footer">
-      <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="showHelp()"><span class="dsw-icon-styled">❓</span> Panduan & Referensi</button>
+      <button class="btn btn-outline" style="width:100%; justify-content:center;" onclick="showHelp()"><span class="dsw-icon-styled">❓</span> <span data-i18n="btn_help">Panduan & Referensi</span></button>
     </div>
   </nav>
 
@@ -544,6 +589,249 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
                   <div style="height: 250px; position:relative;"><canvas id="protChart"></canvas></div>
               </div>
           </div>
+      </div>
+    </div>
+
+    <!-- MODULE: 3D PROTEIN & MACROMOLECULE VISUALIZATION -->
+    <div id="v-mol3d" class="tab-pane">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Visualisasi 3D Protein &amp; Makromolekul (PDB)</div>
+          <div class="page-desc">Render interaktif struktur tersier/kuaterner 3D protein, asam amino, heliks alfa, lembaran beta, dan ligan dari berkas format .pdb / .cif atau database RCSB PDB.</div>
+        </div>
+        <div class="toolbar">
+          <select id="mol3dPresetSelect" class="form-control" style="width:auto; font-size:12px; padding:6px 10px;" onchange="loadMol3DPreset(this.value)">
+            <option value="" disabled selected>-- Pilih Struktur Sampel --</option>
+            <option value="1CRN">1CRN - Crambin (Plant Defense Protein)</option>
+            <option value="1GFL">1GFL - GFP (Green Fluorescent Protein)</option>
+            <option value="1MBN">1MBN - Myoglobin (Heme Pocket)</option>
+            <option value="4HHB">4HHB - Hemoglobin (Tetramer O2 Transport)</option>
+            <option value="6LU7">6LU7 - SARS-CoV-2 Main Protease</option>
+            <option value="1BNA">1BNA - B-DNA Dodecamer Helix</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="loadSampleBioTools('mol3d')"><span class="dsw-icon-styled">📝</span> Isi Data Sampel</button>
+          <button class="btn btn-success btn-sm" onclick="exportActivePdbFile()"><span class="dsw-icon-styled">📥</span> Unduh PDB</button>
+          <button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger);" onclick="resetMol3D()"><span class="dsw-icon-styled">🗑️</span> Reset</button>
+        </div>
+      </div>
+
+      <div class="info-box info">
+        <strong>Dukungan Format:</strong> Membaca berkas koordinat <strong>.pdb, .ent, .cif, .mmcif, .mol, .xyz</strong> secara <em>client-side</em> berkecepatan tinggi dengan akselerasi perangkat keras WebGL. Anda juga dapat menarik struktur langsung menggunakan <strong>4-karakter PDB ID</strong> dari repositori global RCSB PDB.
+      </div>
+
+      <!-- Input Source Switcher -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="sub-nav" style="margin-bottom:14px;">
+          <button class="sub-btn active" onclick="openSub(this,'mol3d-sub-upload','mol3d-sub-group')">📂 Unggah Berkas PDB / CIF</button>
+          <button class="sub-btn" onclick="openSub(this,'mol3d-sub-fetch','mol3d-sub-group')">🌐 Tarik dari RCSB PDB ID</button>
+          <button class="sub-btn" onclick="openSub(this,'mol3d-sub-raw','mol3d-sub-group')">📝 Tempel Teks PDB Mentah</button>
+        </div>
+
+        <div id="mol3d-sub-upload" class="sub-pane mol3d-sub-group active">
+          <div class="fasta-uploader" id="fu-mol3d">
+            <div class="fasta-uploader-header">📂 Unggah Berkas Struktur 3D Protein</div>
+            <div class="fasta-drop-zone" ondragover="fuDragOver(event,'fu-mol3d')" ondragleave="fuDragLeave('fu-mol3d')" ondrop="fuDropMol3D(event,'fu-mol3d')">
+              <span class="fasta-drop-icon">🔮</span>
+              <div class="fasta-drop-text">
+                <strong>Klik atau seret file struktur ke sini</strong>
+                <span>.pdb · .cif · .ent · .mmcif · .mol · .xyz · .txt — Maks 50 MB</span>
+              </div>
+              <span class="fasta-file-badge" id="fu-mol3d-badge" style="display:none;"></span>
+              <input class="fasta-file-input" type="file" id="mol3dFileInput" accept=".pdb,.ent,.cif,.mmcif,.mol,.xyz,.txt" onchange="fuReadMol3D(this,'fu-mol3d')">
+            </div>
+            <div class="fasta-progress-wrap" id="fu-mol3d-prog"><div class="fasta-progress-bar" id="fu-mol3d-bar"></div></div>
+            <div class="fasta-stats-row" id="fu-mol3d-stats" style="display:none;"></div>
+          </div>
+        </div>
+
+        <div id="mol3d-sub-fetch" class="sub-pane mol3d-sub-group">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <div style="flex:1; min-width:200px;">
+              <label style="font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; margin-bottom:5px; display:block;">PDB Accession ID (4 Karakter)</label>
+              <input type="text" id="rcsbPdbIdInput" class="form-control" placeholder="Contoh: 1CRN, 4HHB, 1GFL, 6LU7, 1BNA..." maxlength="10" style="text-transform:uppercase; font-weight:bold; letter-spacing:1px;">
+            </div>
+            <button class="btn btn-primary" style="margin-top:20px;" onclick="fetchRcsbPdb()"><span class="dsw-icon-styled">🔍</span> Tarik dari RCSB PDB</button>
+            <button class="btn btn-outline" style="margin-top:20px;" onclick="document.getElementById('rcsbPdbIdInput').value='1CRN'; fetchRcsbPdb();"><span class="dsw-icon-styled">🌱</span> Contoh: 1CRN</button>
+            <button class="btn btn-outline" style="margin-top:20px;" onclick="document.getElementById('rcsbPdbIdInput').value='1GFL'; fetchRcsbPdb();"><span class="dsw-icon-styled">🧪</span> Contoh: 1GFL</button>
+          </div>
+        </div>
+
+        <div id="mol3d-sub-raw" class="sub-pane mol3d-sub-group">
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Teks Record Struktur PDB (ATOM / HETATM / HELIX / SHEET)</label>
+            <textarea id="mol3dRawInput" class="form-control" style="min-height:120px; font-family:var(--font-mono); font-size:12px;" placeholder="HEADER    PLANT SEED PROTEIN...&#10;ATOM      1  N   THR A   1      17.047  14.099   3.625  1.00 13.79           N&#10;ATOM      2  CA  THR A   1      16.967  12.784   4.338  1.00 10.80           C..."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="renderRawPdbInput()"><span class="dsw-icon-styled">🔮</span> Render Teks PDB</button>
+        </div>
+      </div>
+
+      <!-- Main 3D Display & Control Studio Grid -->
+      <div id="mol3dWorkspaceArea" style="display:none;">
+        <!-- Adaptive Screen & Layout Toolbar -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; background:var(--surface); padding:8px 14px; border-radius:var(--radius); border:1px solid var(--border);">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span style="font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px;">Mode Layar:</span>
+            <button class="btn btn-outline btn-xs active-layout" id="mol3dLayoutSplitBtn" onclick="setMol3DLayoutMode('split')" title="Tata letak 2 kolom (Kanvas & Kontrol berdampingan)"><span class="dsw-icon-styled">◫</span> Bagi Kolom</button>
+            <button class="btn btn-outline btn-xs" id="mol3dLayoutFullBtn" onclick="setMol3DLayoutMode('full')" title="Kanvas 3D 100% Lebar Layar Laptop (Kontrol di bawah)"><span class="dsw-icon-styled">🖥️</span> Lebar Penuh (100% Laptop)</button>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+            <span style="font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px;">Tinggi Kanvas:</span>
+            <button class="btn btn-outline btn-xs" id="hbtn-400" onclick="setMol3DHeight('400px')">400px (Ringkas)</button>
+            <button class="btn btn-outline btn-xs active" id="hbtn-540" onclick="setMol3DHeight('540px')">540px (Standar)</button>
+            <button class="btn btn-outline btn-xs" id="hbtn-680" onclick="setMol3DHeight('680px')">680px (Tinggi)</button>
+            <button class="btn btn-outline btn-xs" id="hbtn-auto" onclick="setMol3DHeight('clamp(360px, 58vh, 600px)')">Adaptif Layar</button>
+          </div>
+        </div>
+
+        <div id="mol3dLayoutGrid" class="mol3d-grid-split">
+          
+          <!-- Column 1: 3D Viewport -->
+          <div>
+            <div class="mol3d-container" id="mol3dViewportContainer">
+              <div id="mol3dViewer" class="mol3d-viewport"></div>
+              
+              <!-- Floating Top-Left Action Bar -->
+              <div class="mol3d-overlay-top" id="mol3dTopOverlay">
+                <button class="mol3d-btn" onclick="zoomInMol3D()" title="Perbesar (Zoom In)"><span class="dsw-icon-styled">🔍+</span> Zoom In</button>
+                <button class="mol3d-btn" onclick="zoomOutMol3D()" title="Perkecil (Zoom Out)"><span class="dsw-icon-styled">🔍-</span> Zoom Out</button>
+                <button class="mol3d-btn" onclick="fitMol3DToScreen()" title="Sesuaikan Ukuran dengan Layar Laptop (Auto-Fit)"><span class="dsw-icon-styled">📐</span> Auto-Fit</button>
+                <button class="mol3d-btn" id="mol3dBtnSpin" onclick="toggleMol3DSpin()" title="Putar 3D Otomatis"><span class="dsw-icon-styled">🔄</span> Spin</button>
+                <button class="mol3d-btn" onclick="centerMol3DView()" title="Pusatkan Kamera"><span class="dsw-icon-styled">🎯</span> Center</button>
+                <button class="mol3d-btn" onclick="resetMol3DCamera()" title="Reset Orientasi Kamera"><span class="dsw-icon-styled">↺</span> Reset</button>
+                <button class="mol3d-btn" id="mol3dBtnAxes" onclick="toggleMol3DAxes()" title="Tampilkan/Sembunyikan Sumbu Koordinat"><span class="dsw-icon-styled">📊</span> Sumbu</button>
+                <button class="mol3d-btn" onclick="cycleMol3DBackground()" title="Ganti Warna Latar (Gelap / Hitam / Putih)"><span class="dsw-icon-styled">🎨</span> BG</button>
+                <button class="mol3d-btn" onclick="captureMol3DScreenshot()" title="Unduh Gambar HD"><span class="dsw-icon-styled">📷</span> HD PNG</button>
+                <button class="mol3d-btn" onclick="toggleMol3DFullscreen()" title="Layar Penuh"><span class="dsw-icon-styled">⛶</span> Layar Penuh</button>
+              </div>
+
+              <!-- Floating Bottom Info Tooltip -->
+              <div class="mol3d-overlay-bottom" id="mol3dHoverInfo">
+                <span>Arahkan atau klik atom/residu untuk melihat rincian koordinat</span>
+              </div>
+            </div>
+
+            <!-- Sequence Track (Clickable Residues) -->
+            <div class="card" style="margin-top:14px; padding:14px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div style="font-size:12px; font-weight:700; color:var(--text);"><span class="dsw-icon-styled">🧬</span> Sekuens Asam Amino Interaktif</div>
+                <span style="font-size:11px; color:var(--text3);" id="mol3dSeqCountLabel">0 Residu</span>
+              </div>
+              <div class="mol3d-seq-track" id="mol3dSeqTrack">
+                <span style="color:var(--text3); font-size:12px; padding:4px;">Memuat sekuens...</span>
+              </div>
+              <div style="font-size:11px; color:var(--text3); margin-top:6px;">
+                💡 <em>Klik salah satu residu untuk memfokuskan dan menyorot posisi 3D-nya pada molekul.</em>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Controls & Scientific Metadata -->
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            
+            <!-- Card: Representation & Style Controls -->
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-title"><span class="dsw-icon-styled">🎨</span> Gaya &amp; Tampilan 3D</div>
+              
+              <label style="font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; margin-bottom:6px; display:block;">Model Representasi</label>
+              <div class="mol3d-style-grid">
+                <button class="mol3d-opt-btn active" id="mol3d-style-cartoon" onclick="setMol3DStyle('cartoon')">🎀 Kartun</button>
+                <button class="mol3d-opt-btn" id="mol3d-style-stick" onclick="setMol3DStyle('stick')">🥢 Stick</button>
+                <button class="mol3d-opt-btn" id="mol3d-style-sphere" onclick="setMol3DStyle('sphere')">⚪ Sphere</button>
+                <button class="mol3d-opt-btn" id="mol3d-style-surface" onclick="setMol3DStyle('surface')">🌐 Surface</button>
+                <button class="mol3d-opt-btn" id="mol3d-style-line" onclick="setMol3DStyle('line')">〰️ Line</button>
+                <button class="mol3d-opt-btn" id="mol3d-style-cross" onclick="setMol3DStyle('cross')">➕ Cross</button>
+              </div>
+
+              <div class="form-group" style="margin-bottom:12px;">
+                <label>Skema Pewarnaan (Color Scheme)</label>
+                <select id="mol3dColorSelect" class="form-control" onchange="setMol3DColorScheme(this.value)">
+                  <option value="ss" selected>Struktur Sekunder (Heliks / Sheet / Loop)</option>
+                  <option value="spectrum">Spektrum Pelangi (N-Terminus → C-Terminus)</option>
+                  <option value="elem">Unsur Kimia (CPK: C, N, O, S, P)</option>
+                  <option value="chain">Rantai Polipeptida (Chain A, B, C...)</option>
+                  <option value="polarity">Polaritas &amp; Hidrofobisitas Residu</option>
+                  <option value="bfactor">Faktor B / Suhu Termal (Fleksibilitas)</option>
+                </select>
+              </div>
+
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+                <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text); cursor:pointer;">
+                  <input type="checkbox" id="mol3dToggleLigands" checked onchange="updateMol3DDisplayOptions()"> Ligan &amp; Kofaktor
+                </label>
+                <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text); cursor:pointer;">
+                  <input type="checkbox" id="mol3dToggleSidechains" onchange="updateMol3DDisplayOptions()"> Rantai Samping
+                </label>
+                <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text); cursor:pointer;">
+                  <input type="checkbox" id="mol3dToggleWaters" onchange="updateMol3DDisplayOptions()"> Air Kristal (HOH)
+                </label>
+                <label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text); cursor:pointer;">
+                  <input type="checkbox" id="mol3dToggleLabels" checked onchange="updateMol3DDisplayOptions()"> Label Residu Aktif
+                </label>
+              </div>
+
+              <div id="mol3dSurfaceControls" style="margin-top:8px; display:none; padding-top:10px; border-top:1px dashed var(--border);">
+                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:4px;">
+                  <span style="font-weight:700; color:var(--text3);">Transparansi Permukaan (Surface Opacity):</span>
+                  <span id="mol3dOpacityVal" style="font-family:var(--font-mono); font-weight:bold;">0.70</span>
+                </div>
+                <input type="range" id="mol3dSurfaceOpacity" min="0.1" max="1.0" step="0.05" value="0.7" style="width:100%; accent-color:var(--primary);" oninput="setMol3DSurfaceOpacity(this.value)">
+              </div>
+            </div>
+
+            <!-- Card: Structure Metadata & Stats -->
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-title"><span class="dsw-icon-styled">📊</span> Metadata &amp; Statistik Struktur</div>
+              
+              <div style="margin-bottom:10px;">
+                <div style="font-size:13px; font-weight:700; color:var(--text);" id="mol3dMetaTitle">—</div>
+                <div style="font-size:11px; color:var(--text3); margin-top:2px;" id="mol3dMetaSub">—</div>
+              </div>
+
+              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:12px;">
+                <div class="stat-box" style="padding:8px 4px;">
+                  <div class="stat-label" style="font-size:9px;">Total Atom</div>
+                  <div class="stat-value" id="mol3dStatAtoms" style="font-size:18px; color:var(--primary);">0</div>
+                </div>
+                <div class="stat-box" style="padding:8px 4px;">
+                  <div class="stat-label" style="font-size:9px;">Total Residu</div>
+                  <div class="stat-value" id="mol3dStatResidues" style="font-size:18px; color:var(--success);">0</div>
+                </div>
+                <div class="stat-box" style="padding:8px 4px;">
+                  <div class="stat-label" style="font-size:9px;">Rantai (Chains)</div>
+                  <div class="stat-value" id="mol3dStatChains" style="font-size:18px; color:var(--warning);">0</div>
+                </div>
+                <div class="stat-box" style="padding:8px 4px;">
+                  <div class="stat-label" style="font-size:9px;">Heliks Alfa</div>
+                  <div class="stat-value" id="mol3dStatHelices" style="font-size:18px; color:var(--purple);">0</div>
+                </div>
+                <div class="stat-box" style="padding:8px 4px;">
+                  <div class="stat-label" style="font-size:9px;">Beta Sheet</div>
+                  <div class="stat-value" id="mol3dStatSheets" style="font-size:18px; color:var(--blue);">0</div>
+                </div>
+                <div class="stat-box" style="padding:8px 4px;">
+                  <div class="stat-label" style="font-size:9px;">Ligan / HET</div>
+                  <div class="stat-value" id="mol3dStatLigands" style="font-size:18px; color:var(--danger);">0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Chains & Ligands Inspector Table -->
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-title"><span class="dsw-icon-styled">🧪</span> Rantai &amp; Ligan Teridentifikasi</div>
+              <div class="table-wrap" style="max-height:160px;">
+                <table id="mol3dChainsTable">
+                  <thead>
+                    <tr><th>Tipe</th><th>ID / Nama</th><th>Jumlah</th><th>Aksi Fokus</th></tr>
+                  </thead>
+                  <tbody id="mol3dChainsBody">
+                    <tr><td colspan="4" style="text-align:center; color:var(--text3); font-size:11px;">Belum ada molekul dimuat</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
 
@@ -993,6 +1281,33 @@ svg path, svg line { fill: none; stroke: var(--primary); stroke-width: 2px; }
 
 <div class="toast-container" id="toastContainer"></div>
 
+<div class="overlay" id="dlgOrfConfirm">
+  <div class="dialog" style="width:520px; max-width:92vw;">
+    <div class="dialog-header">
+      <span style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:20px;">⚠️</span> Konfirmasi Sekuens Non-Nukleotida
+      </span>
+      <button class="btn-icon" onclick="closeDialog('dlgOrfConfirm')" style="font-size:18px; border:none; background:none; cursor:pointer; color:var(--text3);">×</button>
+    </div>
+    <div class="dialog-body">
+      <div class="info-box warning" style="margin-bottom:0;">
+        Terdeteksi <strong id="orfNonNucCount">0</strong> karakter non-nukleotida selain <strong>A, T, C, G, N</strong> pada sekuens input Anda.
+      </div>
+      <p style="font-size:13px; color:var(--text); margin:0;">
+        Karakter non-ATCGN yang terdeteksi: <br>
+        <code id="orfNonNucChars" style="background:var(--surface-hover); padding:4px 8px; border-radius:4px; font-family:var(--font-mono); font-size:13px; font-weight:bold; color:var(--danger); display:inline-block; margin-top:6px; word-break:break-all;">—</code>
+      </p>
+      <p style="font-size:12px; color:var(--text3); margin:0;">
+        Apakah Anda yakin ingin melanjutkan analisis? Karakter non-nukleotida tersebut akan diabaikan secara otomatis untuk menjaga keakuratan translasi frame ORF.
+      </p>
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-outline" onclick="closeDialog('dlgOrfConfirm')">Batal</button>
+      <button class="btn btn-primary" onclick="proceedORFFinder(true)">Lanjutkan Analisis</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="dlgHelp">
   <div class="dialog">
     <div class="dialog-header">
@@ -1113,6 +1428,9 @@ function loadSampleBioTools(type) {
         case 'primer-auto':
             document.getElementById('targetGen').value = 'ATGCGTACGTAGCTAGCTATTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAGCTAGCTAGCTAGCATCGATGCGTACGTAGCTAGCTATTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAGCTAGCTAGCTAGCATCG';
             break;
+        case 'mol3d':
+            loadMol3DPreset('1CRN');
+            break;
     }
     toast("Data sampel berhasil dimuat. Silakan klik tombol analisis.");
 }
@@ -1122,6 +1440,12 @@ function switchView(viewId, el) {
   document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
   document.getElementById(viewId).classList.add('active');
   el.classList.add('active');
+  if (viewId === 'v-mol3d' && typeof Mol3DState !== 'undefined') {
+    setTimeout(() => {
+      if (Mol3DState.glViewer) { Mol3DState.glViewer.resize(); Mol3DState.glViewer.render(); }
+      if (Mol3DState.fallbackCanvas) resizeMol3DFallbackCanvas();
+    }, 120);
+  }
 }
 function openSub(btn, id, grp) {
   const pane = btn.closest('.tab-pane');
@@ -1132,7 +1456,11 @@ function openSub(btn, id, grp) {
 }
 function toggleTheme() {
   const h = document.documentElement;
-  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  const next = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  h.setAttribute('data-theme', next);
+  localStorage.setItem('ares_theme', next);
+  if(typeof renderSSRCharts === 'function' && typeof ssrResults !== 'undefined' && ssrResults.length > 0) renderSSRCharts();
+  if(typeof proceedProtParam === 'function' && document.getElementById('protResultArea')?.style.display !== 'none') proceedProtParam();
 }
 function copyText(elementId) {
   const text = document.getElementById(elementId);
@@ -1452,14 +1780,51 @@ function runProteinAnalysis() {
     document.getElementById('resProtMW').textContent = (mw / 1000).toFixed(2) + " kDa"; document.getElementById('resProtPI').textContent = pI.toFixed(2); document.getElementById('resProtLen').textContent = seq.length;
     let labels = Object.keys(aaMass).sort(), dataFreq = labels.map(aa => ((aaCounts[aa]||0) / seq.length) * 100);
     const ctx = document.getElementById('protChart').getContext('2d'); if(protChartInstance) protChartInstance.destroy();
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark', gridC = isDark ? '#334155' : '#E2E8F0', txtC = isDark ? '#94A3B8' : '#475569';
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark', gridC = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)', txtC = isDark ? '#E2E8F0' : '#1E293B';
     protChartInstance = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ label: 'Komposisi (%)', data: dataFreq, backgroundColor: '#10B981', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: txtC } }, y: { grid: { color: gridC }, ticks: { color: txtC } } } } });
     document.getElementById('protResultArea').style.display = 'block'; toast("Analisis protein berhasil.");
 }
 
 function revCompForORF(seq) { const m = {'A':'T','T':'A','C':'G','G':'C'}; return seq.split('').reverse().map(b=>m[b]||b).join(''); }
-function runORFFinder() {
-    const seq = cleanDNA(document.getElementById('orfInput').value); if(seq.length < 90) return alert("Min. 90 bp.");
+function proceedORFFinder(bypassConfirm = true) {
+    runORFFinder(bypassConfirm);
+}
+function runORFFinder(bypassConfirm = false) {
+    const rawVal = document.getElementById('orfInput').value;
+    if (!rawVal.trim()) return alert("Masukkan sekuens DNA mentah terlebih dahulu.");
+
+    const lines = rawVal.split(/\r?\n/).filter(line => !line.trim().startsWith('>'));
+    const seqOnly = lines.join('').replace(/\s+/g, '');
+    if (!seqOnly) return alert("Sekuens DNA tidak ditemukan dalam input.");
+
+    const nonNucleotides = seqOnly.toUpperCase().match(/[^ATCGN]/g) || [];
+
+    if (!bypassConfirm && nonNucleotides.length > 0) {
+        const uniqueChars = Array.from(new Set(nonNucleotides.map(c => c.toUpperCase())));
+        const count = nonNucleotides.length;
+
+        const dlgEl = document.getElementById('dlgOrfConfirm');
+        const countEl = document.getElementById('orfNonNucCount');
+        const charsEl = document.getElementById('orfNonNucChars');
+
+        if (dlgEl && countEl && charsEl) {
+            countEl.textContent = `${count}`;
+            charsEl.textContent = uniqueChars.join(', ');
+            openDialog('dlgOrfConfirm');
+            return;
+        } else {
+            const isConfirmed = confirm(`Sekuens yang Anda masukkan mengandung ${count} karakter non-nukleotida selain ATCGN (karakter: ${uniqueChars.join(', ')}).\n\nApakah Anda yakin ingin melanjutkan analisis ORF? (Karakter non-ATCGN akan diabaikan)`);
+            if (!isConfirmed) return;
+        }
+    }
+
+    if (document.getElementById('dlgOrfConfirm')) {
+        closeDialog('dlgOrfConfirm');
+    }
+
+    const seq = seqOnly.toUpperCase().replace(/[^ATCGN]/g, '');
+    if (seq.length < 90) return alert("Sekuens DNA terlalu pendek (Min. 90 bp untuk kandidat protein fungsional).");
+
     const revSeq = revCompForORF(seq), stops = ['TAA', 'TAG', 'TGA']; let orfs = [];
     function scanFrame(dna, frameOffset, isRev) {
         for (let i = frameOffset; i < dna.length - 2; i += 3) {
@@ -1476,7 +1841,7 @@ function runORFFinder() {
     }
     scanFrame(seq, 0, false); scanFrame(seq, 1, false); scanFrame(seq, 2, false); scanFrame(revSeq, 0, true); scanFrame(revSeq, 1, true); scanFrame(revSeq, 2, true);
     orfs.sort((a,b) => b.len - a.len); const tb = document.getElementById('orfBody'); tb.innerHTML = '';
-    if(orfs.length === 0) tb.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--warning); padding:20px;">Tidak ada frame.</td></tr>';
+    if(orfs.length === 0) tb.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--warning); padding:20px;">Tidak ada frame terbuka utuh (>30 aa) yang terdeteksi.</td></tr>';
     else orfs.forEach(orf => {
         let tr = document.createElement('tr'), color = orf.frame.includes('+') ? 'var(--primary)' : 'var(--purple)';
         tr.innerHTML = `<td style="font-weight:bold; color:${color};">${orf.frame}</td><td style="font-family:var(--font-mono);">${orf.start}</td><td style="font-family:var(--font-mono);">${orf.end}</td><td>${orf.len} bp / ${orf.len/3} aa</td><td><button class="btn btn-outline btn-sm" onclick="showOrfTranslation('${orf.seq}')">Translasi</button></td>`;
@@ -2037,26 +2402,29 @@ function renderSSRPrimerTable() {
 }
 
 function renderSSRCharts() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const txtC = isDark ? '#E2E8F0' : '#1E293B';
+    const gridC = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)';
     const typeLabels = ['Mono','Di','Tri','Tetra','Penta','Hexa']; const typeColors = ['#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
     const counts = [0,0,0,0,0,0]; ssrResults.forEach(r => counts[r.type-1]++);
     [ssrChartPieInst, ssrChartLenInst, ssrChartRepInst, ssrChartMapInst].forEach(c => { if(c) c.destroy(); });
 
     const ctxPie = document.getElementById('ssrChartPie').getContext('2d');
-    ssrChartPieInst = new Chart(ctxPie, { type: 'doughnut', data: { labels: typeLabels, datasets: [{ data: counts, backgroundColor: typeColors, borderWidth: 2, borderColor: getComputedStyle(document.documentElement).getPropertyValue('--surface') }] }, options: { responsive: true, plugins: { legend: { position: 'right', labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text'), font: { family: "'DM Sans', sans-serif", size: 12 }, boxWidth: 14 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${counts.reduce((a,b)=>a+b,0)>0?(ctx.raw/counts.reduce((a,b)=>a+b,0)*100).toFixed(1):0}%)` } } } } });
+    ssrChartPieInst = new Chart(ctxPie, { type: 'doughnut', data: { labels: typeLabels, datasets: [{ data: counts, backgroundColor: typeColors, borderWidth: 2, borderColor: getComputedStyle(document.documentElement).getPropertyValue('--surface') }] }, options: { responsive: true, plugins: { legend: { position: 'right', labels: { color: txtC, font: { family: "'DM Sans', sans-serif", size: 12 }, boxWidth: 14 } }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${counts.reduce((a,b)=>a+b,0)>0?(ctx.raw/counts.reduce((a,b)=>a+b,0)*100).toFixed(1):0}%)` } } } } });
 
     const lenBuckets = {}; ssrResults.forEach(r => { lenBuckets[r.length] = (lenBuckets[r.length]||0)+1; });
     const lenSorted = Object.keys(lenBuckets).map(Number).sort((a,b)=>a-b);
     const ctxLen = document.getElementById('ssrChartLen').getContext('2d');
-    ssrChartLenInst = new Chart(ctxLen, { type: 'bar', data: { labels: lenSorted, datasets: [{ label: 'Jumlah SSR', data: lenSorted.map(k=>lenBuckets[k]), backgroundColor: '#10B98155', borderColor: '#10B981', borderWidth: 1 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Panjang (bp)', color: '#94A3B8' }, ticks: { color: '#94A3B8' } }, y: { title: { display: true, text: 'Jumlah', color: '#94A3B8' }, ticks: { color: '#94A3B8', stepSize: 1 }, beginAtZero: true } } } });
+    ssrChartLenInst = new Chart(ctxLen, { type: 'bar', data: { labels: lenSorted, datasets: [{ label: 'Jumlah SSR', data: lenSorted.map(k=>lenBuckets[k]), backgroundColor: '#10B98155', borderColor: '#10B981', borderWidth: 1 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Panjang (bp)', color: txtC }, ticks: { color: txtC }, grid: { display: false } }, y: { title: { display: true, text: 'Jumlah', color: txtC }, ticks: { color: txtC, stepSize: 1 }, grid: { color: gridC }, beginAtZero: true } } } });
 
     const repBuckets = {}; ssrResults.forEach(r => { repBuckets[r.repeats] = (repBuckets[r.repeats]||0)+1; });
     const repSorted = Object.keys(repBuckets).map(Number).sort((a,b)=>a-b);
     const ctxRep = document.getElementById('ssrChartRep').getContext('2d');
-    ssrChartRepInst = new Chart(ctxRep, { type: 'bar', data: { labels: repSorted, datasets: [{ label: 'Jumlah SSR', data: repSorted.map(k=>repBuckets[k]), backgroundColor: '#F59E0B55', borderColor: '#F59E0B', borderWidth: 1 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Jumlah Repeat (n)', color: '#94A3B8' }, ticks: { color: '#94A3B8' } }, y: { title: { display: true, text: 'Jumlah', color: '#94A3B8' }, ticks: { color: '#94A3B8', stepSize: 1 }, beginAtZero: true } } } });
+    ssrChartRepInst = new Chart(ctxRep, { type: 'bar', data: { labels: repSorted, datasets: [{ label: 'Jumlah SSR', data: repSorted.map(k=>repBuckets[k]), backgroundColor: '#F59E0B55', borderColor: '#F59E0B', borderWidth: 1 }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { title: { display: true, text: 'Jumlah Repeat (n)', color: txtC }, ticks: { color: txtC }, grid: { display: false } }, y: { title: { display: true, text: 'Jumlah', color: txtC }, ticks: { color: txtC, stepSize: 1 }, grid: { color: gridC }, beginAtZero: true } } } });
 
     const totalLen = ssrSequences[0] ? ssrSequences[0].seq.length : 1; const mapColors = ['','#10B981','#F59E0B','#EF4444','#8B5CF6','#3B82F6','#EC4899'];
     const ctxMap = document.getElementById('ssrChartMap').getContext('2d');
-    ssrChartMapInst = new Chart(ctxMap, { type: 'bar', data: { labels: ssrResults.map((r,i) => `${r.motif}@${r.start}`), datasets: [{ label: 'Posisi SSR', data: ssrResults.map(r => r.start), backgroundColor: ssrResults.map(r => mapColors[r.type] + '99'), borderColor: ssrResults.map(r => mapColors[r.type]), borderWidth: 1, barThickness: 6 }] }, options: { indexAxis: 'x', responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => { const r = ssrResults[ctx.dataIndex]; return ` ${r.typeName}: ${r.motif}×${r.repeats} @ pos ${r.start}–${r.end}`; } } } }, scales: { x: { display: false }, y: { title: { display: true, text: 'Posisi (bp)', color: '#94A3B8' }, ticks: { color: '#94A3B8' }, beginAtZero: true, max: totalLen } } } });
+    ssrChartMapInst = new Chart(ctxMap, { type: 'bar', data: { labels: ssrResults.map((r,i) => `${r.motif}@${r.start}`), datasets: [{ label: 'Posisi SSR', data: ssrResults.map(r => r.start), backgroundColor: ssrResults.map(r => mapColors[r.type] + '99'), borderColor: ssrResults.map(r => mapColors[r.type]), borderWidth: 1, barThickness: 6 }] }, options: { indexAxis: 'x', responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => { const r = ssrResults[ctx.dataIndex]; return ` ${r.typeName}: ${r.motif}×${r.repeats} @ pos ${r.start}–${r.end}`; } } } }, scales: { x: { display: false }, y: { title: { display: true, text: 'Posisi (bp)', color: txtC }, ticks: { color: txtC }, grid: { color: gridC }, beginAtZero: true, max: totalLen } } } });
 }
 
 function exportSSRCSV() {
@@ -2342,6 +2710,81 @@ function resetAB1() {
     toast("Modul Kromatogram direset.");
 }
 
+// ==========================================
+// PERSISTENCE & SHORTCUTS INTEGRATION
+// ==========================================
+function saveBioToolsData() {
+  try {
+    const data = {
+      pcrFwd: document.getElementById('pcrFwd') ? document.getElementById('pcrFwd').value : '',
+      pcrRev: document.getElementById('pcrRev') ? document.getElementById('pcrRev').value : '',
+      rcSeq: document.getElementById('rcInput') ? document.getElementById('rcInput').value : '',
+      transSeq: document.getElementById('transInput') ? document.getElementById('transInput').value : '',
+      phyloInput: document.getElementById('phyloInput') ? document.getElementById('phyloInput').value : '',
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('biotools_data', JSON.stringify(data));
+    if (window.ARESStorageSync && typeof window.ARESStorageSync.notifyChange === 'function') {
+      window.ARESStorageSync.notifyChange('biotools_data');
+    }
+    toast('Data BioTools tersimpan.');
+    return true;
+  } catch (err) {
+    console.error('Error saving BioTools data:', err);
+    return false;
+  }
+}
+
+function loadBioToolsData() {
+  try {
+    const raw = localStorage.getItem('biotools_data');
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    if (!parsed) return false;
+    if (parsed.pcrFwd && document.getElementById('pcrFwd')) document.getElementById('pcrFwd').value = parsed.pcrFwd;
+    if (parsed.pcrRev && document.getElementById('pcrRev')) document.getElementById('pcrRev').value = parsed.pcrRev;
+    if (parsed.rcSeq && document.getElementById('rcInput')) document.getElementById('rcInput').value = parsed.rcSeq;
+    if (parsed.transSeq && document.getElementById('transInput')) document.getElementById('transInput').value = parsed.transSeq;
+    if (parsed.phyloInput && document.getElementById('phyloInput')) document.getElementById('phyloInput').value = parsed.phyloInput;
+    return true;
+  } catch (err) {
+    console.warn('Could not load BioTools data:', err);
+    return false;
+  }
+}
+
+function exportActiveBioToolsData() {
+  const activePane = document.querySelector('.tab-pane.active');
+  if (!activePane) return false;
+  const ta = activePane.querySelector('textarea, input[type="text"]');
+  if (!ta || !ta.value.trim()) {
+    toast('Tidak ada data aktif untuk diekspor.');
+    return false;
+  }
+  const content = ta.value.trim();
+  const isFasta = content.startsWith('>') || /^[ATGCN\s\r\n]+$/i.test(content);
+  const ext = isFasta ? 'fasta' : 'txt';
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `BioTools_${activePane.id || 'export'}.${ext}`;
+  a.click();
+  toast('Data aktif berhasil diunduh.');
+  return true;
+}
+
+window.saveBioToolsData = saveBioToolsData;
+window.loadBioToolsData = loadBioToolsData;
+window.exportActiveBioToolsData = exportActiveBioToolsData;
+
+loadBioToolsData();
+
+if (window.ARESShortcuts) {
+  window.ARESShortcuts.on('save', saveBioToolsData);
+  window.ARESShortcuts.on('export', exportActiveBioToolsData);
+}
+
 </script>
+<script src="../js/mol3d.js"></script>
 </body>
 </html>

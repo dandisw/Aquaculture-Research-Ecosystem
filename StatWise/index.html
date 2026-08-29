@@ -7,57 +7,157 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%2338BDF8%22>📊</text></svg>">
 <meta property="og:title" content="StatWise by DSW">
 <meta property="og:description" content="Mesin komputasi statistik dan uji hipotesis in-browser.">
+<script src="../js/theme-manager.js"></script>
+<script src="../js/storage-sync.js"></script>
+<script src="../js/i18n.js"></script>
 <meta property="og:image" content="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=MuseoModerno:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <style>
 :root {
-  --bg: #F8FAFC; --surface: #FFFFFF; --surface-hover: #F1F5F9;
-  --border: #E2E8F0; --border-focus: #94A3B8;
-  --text: #0F172A; --text2: #475569; --text3: #94A3B8;
-  --primary: #0284C7; --primary-light: #E0F2FE; --primary-dark: #0369A1;
-  --success: #16A34A; --success-light: #DCFCE7;
-  --danger: #DC2626; --danger-light: #FEE2E2;
-  --info: #0C4A6E; --info-light: #E0F2FE;
-  --font-sans: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; --font-serif: 'Fraunces', serif;
-  --radius: 10px; --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+  --bg: #F8FAFC; 
+  --surface: #FFFFFF; 
+  --surface-hover: #F1F5F9;
+  --border: #CBD5E1; 
+  --border-table: #94A3B8;
+  --border-table-cell: #CBD5E1;
+  --border-focus: #0284C7;
+  --text: #0F172A; 
+  --text2: #334155; 
+  --text3: #64748B;
+  --primary: #0284C7; 
+  --primary-light: #E0F2FE; 
+  --primary-dark: #0369A1;
+  --success: #15803D; 
+  --success-light: #DCFCE7;
+  --danger: #DC2626; 
+  --danger-light: #FEE2E2;
+  --info: #0284C7; 
+  --info-light: #E0F2FE;
+  
+  --font-sans: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-serif: 'MuseoModerno', 'Syne', 'Fraunces', sans-serif;
+  
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 10px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
 }
 
 [data-theme="dark"] {
-  --bg: #0F172A; --surface: #1E293B; --surface-hover: #334155;
-  --border: #334155; --border-focus: #475569;
-  --text: #F8FAFC; --text2: #CBD5E1; --text3: #94A3B8;
-  --primary: #38BDF8; --primary-light: #0C4A6E; --primary-dark: #7DD3FC;
-  --success: #4ADE80; --success-light: #064E3B;
-  --danger: #F87171; --danger-light: #7F1D1D;
-  --info: #38BDF8; --info-light: #0C4A6E;
+  --bg: #090D16; 
+  --surface: #111C35; 
+  --surface-hover: #1A2B50;
+  --border: #1E2F52; 
+  --border-table: #2D426E;
+  --border-table-cell: #1E2F52;
+  --border-focus: #38BDF8;
+  --text: #F8FAFC; 
+  --text2: #CBD5E1; 
+  --text3: #94A3B8;
+  --primary: #38BDF8; 
+  --primary-light: rgba(56, 189, 248, 0.14); 
+  --primary-dark: #7DD3FC;
+  --success: #4ADE80; 
+  --success-light: rgba(74, 222, 128, 0.16);
+  --danger: #F87171; 
+  --danger-light: rgba(248, 113, 113, 0.16);
+  --info: #38BDF8; 
+  --info-light: rgba(56, 189, 248, 0.14);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 8px 24px -2px rgba(0, 0, 0, 0.35);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); background: var(--bg); color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; font-size: 14px; transition: background 0.3s, color 0.3s; }
+body { 
+  font-family: var(--font-sans); 
+  background: var(--bg); 
+  color: var(--text); 
+  height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  overflow: hidden; 
+  font-size: 14px; 
+  line-height: 1.55;
+  transition: background 0.3s ease, color 0.3s ease; 
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Unified Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
 
 /* Class Khusus untuk Mengubah Warna Emoji Menjadi Biru DSW Ecosystem */
-.dsw-icon-styled { filter: grayscale(100%); display: inline-block; vertical-align: middle; margin-right: 5px; transition: filter 0.3s ease; }
+.dsw-icon-styled { 
+  filter: grayscale(100%); 
+  display: inline-block; 
+  vertical-align: middle; 
+  margin-right: 5px; 
+  transition: filter 0.3s ease, transform 0.2s ease; 
+}
 [data-theme="dark"] .dsw-icon-styled { filter: grayscale(100%) brightness(1.2) sepia(1) hue-rotate(180deg) saturate(4); }
 [data-theme="light"] .dsw-icon-styled { filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(180deg) saturate(3); }
-.menu-item:hover .dsw-icon-styled, .btn:hover .dsw-icon-styled { filter: grayscale(100%) brightness(1.5) sepia(1) hue-rotate(180deg) saturate(6); }
+.menu-item:hover .dsw-icon-styled, .btn:hover .dsw-icon-styled { 
+  filter: grayscale(100%) brightness(1.4) sepia(1) hue-rotate(180deg) saturate(6); 
+  transform: scale(1.08);
+}
 
 /* HEADER & RESPONSIVE */
-header { background: var(--surface); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 10; box-shadow: var(--shadow); transition: background 0.3s; }
+header { 
+  background: var(--surface); 
+  padding: 0 24px; 
+  height: 60px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  border-bottom: 1px solid var(--border); 
+  flex-shrink: 0; 
+  z-index: 20; 
+  box-shadow: var(--shadow-sm); 
+  transition: background 0.3s ease, border-color 0.3s ease; 
+}
 .header-left { display: flex; align-items: center; gap: 12px; }
-.menu-toggle { display: none; font-size: 18px; cursor: pointer; background: transparent; border: none; color: var(--text); }
+.menu-toggle { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; font-size: 15px; cursor: pointer; background: var(--surface-hover); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); transition: all 0.2s ease; }
+.menu-toggle:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
 
 /* Efek Animasi Logo AREs pada Header */
 .ares-logo-header { height: 32px; width: auto; display: block; margin-right: 8px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.ares-logo-header:hover { transform: scale(1.05) rotate(-2deg); }
+.ares-logo-header:hover { transform: scale(1.06) rotate(-2deg); }
 
-.brand { font-family: var(--font-serif); font-size: 22px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 4px; }
+.brand { font-family: var(--font-serif); font-size: 22px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 4px; letter-spacing: -0.5px; }
 .brand span { color: var(--primary); }
 .header-actions { display: flex; gap: 8px; align-items: center; }
-.btn { padding: 8px 16px; border-radius: 6px; font-family: var(--font-sans); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; white-space: nowrap; }
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-dark); }
+
+.btn { 
+  padding: 7px 15px; 
+  border-radius: var(--radius-sm); 
+  font-family: var(--font-sans); 
+  font-size: 13px; 
+  font-weight: 600; 
+  cursor: pointer; 
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+  border: 1px solid transparent; 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px; 
+  text-decoration: none; 
+  white-space: nowrap; 
+}
+.btn:active { transform: scale(0.98); }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25); }
+.btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); transform: translateY(-1px); box-shadow: 0 4px 10px rgba(2, 132, 199, 0.35); }
 .btn-outline { background: var(--surface); border-color: var(--border); color: var(--text2); }
-.btn-outline:hover { background: var(--surface-hover); color: var(--text); }
+.btn-outline:hover { background: var(--surface-hover); color: var(--text); border-color: var(--border-focus); transform: translateY(-1px); }
 .btn-sm { padding: 4px 10px; font-size: 11px; border-radius: 4px; }
 
 /* SIDEBAR & OVERLAY */
@@ -80,14 +180,18 @@ header { background: var(--surface); padding: 0 24px; height: 60px; display: fle
 .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
 .view-area { flex: 1; overflow: auto; padding: 16px; display: none; background: var(--bg); transition: background 0.3s; flex-direction: column; }
 .view-area.active { display: flex; }
-.table-wrapper { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); overflow: auto; flex: 1; box-shadow: var(--shadow); transition: background 0.3s; }
+.table-wrapper { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); overflow: auto; flex: 1; box-shadow: var(--shadow); transition: background 0.3s; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: var(--border-focus) transparent; }
+.table-wrapper::-webkit-scrollbar, .tbl-container::-webkit-scrollbar { height: 6px; width: 6px; }
+.table-wrapper::-webkit-scrollbar-thumb, .tbl-container::-webkit-scrollbar-thumb { background-color: var(--border-focus); border-radius: 4px; }
+
 table { width: 100%; border-collapse: collapse; text-align: left; table-layout: fixed; min-width: 600px; }
-th, td { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); height: 36px; padding: 0; }
-th { background: var(--surface-hover); color: var(--text2); font-size: 12px; font-weight: 600; position: sticky; top: 0; z-index: 2; padding: 0 12px; white-space: nowrap; transition: background 0.3s; }
-.row-index { width: 50px; text-align: center; background: var(--surface-hover); font-family: var(--font-mono); font-size: 11px; color: var(--text3); position: sticky; left: 0; z-index: 3; transition: background 0.3s; }
+th, td { border-bottom: 1.5px solid var(--border-table-cell); border-right: 1.5px solid var(--border-table-cell); height: 36px; padding: 0; }
+th { background: var(--surface-hover); color: var(--text2); font-size: 12px; font-weight: 700; position: sticky; top: 0; z-index: 2; padding: 0 12px; white-space: nowrap; transition: background 0.3s; border-bottom: 2px solid var(--border-table); border-right: 1.5px solid var(--border-table); }
+.row-index { width: 50px; text-align: center; background: var(--surface-hover); font-family: var(--font-mono); font-size: 11px; color: var(--text3); position: sticky; left: 0; z-index: 3; transition: background 0.3s; border-right: 2px solid var(--border-table); font-weight: 600; }
+th.row-index { position: sticky; top: 0; left: 0; z-index: 4; background: var(--surface-hover); border-bottom: 2px solid var(--border-table); border-right: 2px solid var(--border-table); }
 .cell-input, .var-input { width: 100%; height: 100%; border: none; background: transparent; padding: 0 12px; font-family: var(--font-sans); font-size: 13px; outline: none; color: var(--text); transition: background 0.1s; }
 .cell-input { font-family: var(--font-mono); text-align: right; }
-.cell-input:focus, .var-input:focus { background: var(--primary-light); }
+.cell-input:focus, .var-input:focus { background: var(--primary-light); box-shadow: inset 0 0 0 2px var(--primary); }
 .cell-input.invalid { color: var(--danger); background: var(--danger-light); }
 select.var-input { cursor: pointer; }
 select.var-input option { background: var(--surface); color: var(--text); }
@@ -113,12 +217,15 @@ select.var-input option { background: var(--surface); color: var(--text); }
 .v-fail { background: var(--danger-light); color: var(--danger); border: 1px solid var(--danger); }
 .r-note { background: var(--surface-hover); padding: 12px; border-radius: 8px; font-size: 13px; color: var(--text2); line-height: 1.6; border-left: 4px solid var(--primary); margin-top: 15px; margin-bottom: 25px; overflow-x: auto;}
 .r-alert { background: var(--danger-light); color: var(--danger); padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 10px; }
-.res-table { width: 100%; font-size: 12px; border-collapse: collapse; min-width: 400px; }
-.res-table th { background: var(--bg); font-weight: 600; padding: 8px; border-bottom: 1px solid var(--border); text-align: left; color: var(--text); }
-.res-table td { padding: 8px; font-family: var(--font-mono); border-bottom: 1px solid var(--border); color: var(--text); }
+.res-table { width: 100%; font-size: 12px; border-collapse: collapse; min-width: 380px; }
+.res-table th { background: var(--surface-hover); font-weight: 600; padding: 8px 10px; border-bottom: 2px solid var(--border); text-align: left; color: var(--text); position: sticky; top: 0; z-index: 1; }
+.res-table td { padding: 8px 10px; font-family: var(--font-mono); border-bottom: 1px solid var(--border); color: var(--text); }
+.res-table tbody tr:hover, #data-table tbody tr:hover { background: var(--primary-light); }
+tbody tr:nth-child(even) { background: rgba(0, 0, 0, 0.015); }
+[data-theme="dark"] tbody tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
 .notation-b { color: var(--danger); font-family: var(--font-sans) !important; font-weight: 600; font-size: 13px; }
-.tbl-container { position: relative; margin-bottom: 16px; overflow-x: auto; padding-top: 15px; }
-.copy-btn { position: absolute; top: -10px; right: 0; z-index: 5; }
+.tbl-container { position: relative; margin-bottom: 16px; overflow-x: auto; padding-top: 32px; -webkit-overflow-scrolling: touch; scrollbar-width: thin; border-radius: 6px; }
+.copy-btn { position: absolute; top: 0; right: 0; z-index: 5; font-size: 11px; padding: 4px 8px; }
 
 .sig { color: var(--danger) !important; font-weight: 700; }
 
@@ -150,6 +257,10 @@ select.var-input option { background: var(--surface); color: var(--text); }
 .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
 .form-control { width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 6px; font-family: var(--font-sans); font-size: 13px; outline: none; transition: border 0.3s; }
 .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-light); }
+.btn-danger-confirm { background: var(--danger) !important; border-color: var(--danger) !important; color: #ffffff !important; font-weight: 600 !important; }
+.btn-danger-confirm:hover { background: #b91c1c !important; border-color: #b91c1c !important; }
+.row-index { cursor: pointer; transition: background 0.2s, color 0.2s; }
+.row-index:hover { background: var(--danger-light) !important; color: var(--danger) !important; font-weight: 700; }
 .toolbar { display: flex; gap: 8px; margin-bottom: 12px; flex-shrink: 0; flex-wrap: wrap; }
 .multi-select-container { display: flex; flex-direction: column; gap: 8px; max-height: 120px; overflow-y: auto; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 10px; }
 .checkbox-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); cursor: pointer; }
@@ -177,8 +288,69 @@ select.var-input option { background: var(--surface); color: var(--text); }
   .sidebar.open { transform: translateX(0); }
   .sidebar-overlay.open { display: block; opacity: 1; }
   .result-panel { width: 100%; border-left: none; }
-  .toolbar { margin-bottom: 10px; }
+  .toolbar { margin-bottom: 8px; gap: 6px; }
+  .toolbar .btn { padding: 6px 10px; font-size: 12px; }
+  .toolbar span { width: 100%; font-size: 11px; margin-top: 2px; }
   .btn { padding: 6px 10px; }
+
+  /* Responsive Table Layout Adjustments */
+  .view-area { padding: 10px 8px; }
+  .table-wrapper { border-radius: 8px; }
+  table { min-width: 500px; }
+  th, td { height: 34px; }
+  th { font-size: 11px; padding: 0 8px; }
+  .row-index { width: 42px; font-size: 10px; }
+  .cell-input, .var-input { padding: 0 6px; font-size: 12px; }
+  
+  /* Variable View Table Column Constraints */
+  #view-var table { min-width: 480px; }
+  #view-var th:nth-child(1), #view-var td:nth-child(1) { width: 40px; min-width: 40px; }
+  #view-var th:nth-child(2), #view-var td:nth-child(2) { min-width: 110px; }
+  #view-var th:nth-child(3), #view-var td:nth-child(3) { min-width: 90px; }
+  #view-var th:nth-child(4), #view-var td:nth-child(4) { min-width: 90px; }
+  #view-var th:nth-child(5), #view-var td:nth-child(5) { min-width: 120px; }
+
+  /* Output Result Tables */
+  .res-table { min-width: 320px; font-size: 11px; }
+  .res-table th, .res-table td { padding: 6px 8px; }
+  .tbl-container { padding-top: 30px; margin-bottom: 12px; }
+  .copy-btn { font-size: 11px; padding: 3px 8px; top: 0; }
+  
+  /* Report Cards & Stats Grid */
+  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-box { padding: 8px 10px; }
+  .stat-box .value { font-size: 14px; }
+  .report-block { padding: 12px; margin-bottom: 14px; }
+  .result-body { padding: 12px; }
+  .verdict { padding: 10px 12px; font-size: 12px; }
+  .r-note { padding: 10px 12px; font-size: 12px; margin-top: 10px; margin-bottom: 16px; }
+}
+
+@media (max-width: 480px) {
+  .view-area { padding: 6px 4px; }
+  table { min-width: 440px; }
+  th, td { height: 32px; }
+  .row-index { width: 36px; font-size: 10px; }
+  .cell-input, .var-input { padding: 0 4px; font-size: 11.5px; }
+  
+  .toolbar { gap: 4px; }
+  .toolbar .btn { padding: 5px 8px; font-size: 11px; }
+  .toolbar span { width: 100%; font-size: 10.5px; margin-top: 2px; }
+  
+  .res-table { min-width: 290px; font-size: 10.5px; }
+  .res-table th, .res-table td { padding: 5px 6px; }
+  .res-table td { white-space: nowrap; }
+  .res-table td:first-child { white-space: normal; word-break: break-word; }
+  
+  .tbl-container { padding-top: 28px; }
+  .copy-btn { font-size: 10px; padding: 2px 6px; }
+  
+  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .stat-box { padding: 6px 8px; }
+  .stat-box .label { font-size: 9px; }
+  .stat-box .value { font-size: 13px; }
+  .result-title { font-size: 15px; }
+  .result-header { padding: 10px 12px; }
 }
 
 @media print {
@@ -186,23 +358,26 @@ select.var-input option { background: var(--surface); color: var(--text); }
   header, .sidebar, .tabs, .view-area, .result-header button, .overlay, .remove-block-btn, #btn-clear-report, .copy-btn { display: none !important; }
   .main-container, .workspace { overflow: visible !important; display: block !important; }
   .result-panel { position: static !important; width: 100% !important; transform: none !important; box-shadow: none !important; border: none !important; display: block !important; background: #fff !important; color: #000 !important; }
-  .result-header { padding: 0 0 20px 0; border-bottom: 2px solid #000; background: transparent !important; }
-  .print-logo { display: block !important; height: 45px; margin-right: 15px; }
-  .result-title { display: flex !important; align-items: center !important; font-size: 24px !important; color: #000 !important; }
-  .result-body { padding: 20px 0; overflow: visible !important; }
-  .report-block { border: none !important; padding: 0 !important; margin-bottom: 40px !important; background: transparent !important; page-break-inside: avoid; }
-  .report-header { border-bottom: 2px solid #000 !important; margin-bottom: 15px !important; padding-bottom: 5px !important; }
-  .report-title { font-size: 18px !important; color: #000 !important; }
-  .stat-box { border: 1px solid #ccc !important; background: #fff !important; break-inside: avoid; }
-  .stat-box .value, .stat-box .label { color: #000 !important; }
-  .res-table th { background: #f0f0f0 !important; color: #000 !important; border-bottom: 1px solid #000 !important; }
-  .res-table td { color: #000 !important; border-bottom: 1px solid #ccc !important; }
-  .native-chart-card { break-inside: avoid; border: 1px solid #ccc !important; background: #fff !important; }
-  .r-note { background: #f9f9f9 !important; border-left: 4px solid #000 !important; color: #000 !important; break-inside: avoid; }
-  .verdict { border: 1px solid #000 !important; background: #fff !important; color: #000 !important; break-inside: avoid;}
+  .result-header { padding: 0 0 15px 0; border-bottom: 2px solid #0284c7; background: transparent !important; margin-bottom: 15px; }
+  .print-top-bar { display: block !important; height: 4px; width: 100%; background: linear-gradient(90deg, #0284c7, #0d9488, #6366f1) !important; margin-bottom: 12px; }
+  .print-logo { display: block !important; height: 48px; margin-right: 15px; }
+  .print-inst-sub, .print-ref-sub { display: block !important; }
+  .result-title { display: flex !important; align-items: center !important; font-size: 20px !important; color: #0f172a !important; font-family: 'Fraunces', serif; }
+  .result-body { padding: 15px 0; overflow: visible !important; }
+  .report-block { border: 1px solid #cbd5e1 !important; padding: 14px !important; margin-bottom: 24px !important; background: #fff !important; page-break-inside: avoid; border-radius: 6px; }
+  .report-header { border-bottom: 2px solid #0284c7 !important; margin-bottom: 12px !important; padding-bottom: 6px !important; }
+  .report-title { font-size: 16px !important; color: #0f172a !important; font-weight: 700; }
+  .stat-box { border: 1px solid #cbd5e1 !important; background: #f8fafc !important; break-inside: avoid; border-radius: 4px; }
+  .stat-box .value { color: #0284c7 !important; font-weight: 700; }
+  .stat-box .label { color: #334155 !important; }
+  .res-table th { background: #e0f2fe !important; color: #0369a1 !important; border-bottom: 1.5px solid #0284c7 !important; font-weight: 700; }
+  .res-table td { color: #0f172a !important; border-bottom: 1px solid #e2e8f0 !important; }
+  .native-chart-card { break-inside: avoid; border: 1px solid #cbd5e1 !important; background: #fff !important; padding: 12px !important; border-radius: 6px; }
+  .r-note { background: #f8fafc !important; border-left: 4px solid #0284c7 !important; color: #0f172a !important; break-inside: avoid; border-radius: 4px; }
+  .verdict { border: 1px solid #0284c7 !important; background: #f0f9ff !important; color: #0369a1 !important; break-inside: avoid; font-weight: 600;}
   .bp-whisker-center, .bp-whisker-cap, .bp-box, .bp-median { border-color: #000 !important; }
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  @page { margin: 2cm; size: A4 portrait; }
+  @page { margin: 15mm; size: A4 portrait; }
 }
 </style>
 </head>
@@ -217,12 +392,20 @@ select.var-input option { background: var(--surface); color: var(--text); }
     <div class="brand">Stat<span>Wise</span> <span style="font-size:12px; color:var(--text3); font-family:var(--font-sans); font-weight:400;">by DSW</span></div>
   </div>
   <div class="header-actions">
+    <button class="btn btn-outline ares-suite-switcher-btn" onclick="openAresSuiteNavigator()" title="Buka AREs Suite Navigator (Pindah Cepat Antar Modul)">
+      <span class="dsw-icon-styled">⚡</span> <span class="btn-text">Modul AREs</span>
+    </button>
+    <div id="aresDataSyncIndicator" class="ares-sync-indicator" title="Status Sinkronisasi & Penyimpanan Lokal Data Riset AREs (Klik untuk melihat rincian)"></div>
+    <div id="pwa-network-badge" class="pwa-status-badge online" title="Status koneksi jaringan &amp; mode penyimpanan lokal PWA">
+      <span id="pwa-status-dot" class="pwa-dot"></span>
+      <span id="pwa-status-text">Online (Lokal Ready)</span>
+    </div>
     <a href="../index.html" class="btn btn-outline" style="text-decoration: none;">
         <span class="dsw-icon-styled">🏠</span> <span class="btn-text">Home AREs</span>
     </a>
-    <button class="btn btn-outline" onclick="openAboutDialog()"><span class="dsw-icon-styled">ℹ️</span> <span class="btn-text">Panduan & Info</span></button>
+    <button class="btn btn-outline" onclick="openAboutDialog()"><span class="dsw-icon-styled">ℹ️</span> <span class="btn-text">Panduan &amp; Info</span></button>
     <button class="btn btn-outline" id="theme-btn" onclick="toggleTheme()"><span class="dsw-icon-styled">☀️</span> <span class="btn-text">Tema</span></button>
-    <button class="btn btn-outline" style="color:var(--danger)" onclick="clearAll()"><span class="dsw-icon-styled">🗑️</span> <span class="btn-text">Bersihkan</span></button>
+    <button class="btn btn-outline" style="color:var(--danger)" onclick="confirmClearAll()"><span class="dsw-icon-styled">🗑️</span> <span class="btn-text">Bersihkan</span></button>
   </div>
 </header>
 
@@ -256,7 +439,10 @@ select.var-input option { background: var(--surface); color: var(--text); }
     </div>
     <div class="menu-group">
       <div class="menu-title">Hubungan Variabel</div>
-      <div class="menu-item" onclick="openDialog('correg')"><span class="dsw-icon-styled">📈</span> Korelasi & Regresi Linear</div>
+      <div class="menu-item" onclick="openDialog('heatmap')"><span class="dsw-icon-styled">🔥</span> Korelasi Heatmap Matriks</div>
+      <div class="menu-item" onclick="openDialog('spearman')"><span class="dsw-icon-styled">📊</span> Uji Korelasi Spearman</div>
+      <div class="menu-item" onclick="openDialog('regresi')"><span class="dsw-icon-styled">📉</span> Regresi Linear Sederhana</div>
+      <div class="menu-item" onclick="openDialog('correg')"><span class="dsw-icon-styled">📈</span> Korelasi Pearson & Regresi</div>
     </div>
     
     <div class="menu-group" style="margin-top:auto; padding-top:20px;">
@@ -274,8 +460,9 @@ select.var-input option { background: var(--surface); color: var(--text); }
       <div class="toolbar">
         <button class="btn btn-outline" onclick="addColumns(1)">+ Variabel</button>
         <button class="btn btn-outline" onclick="addRows(10)">+ Baris</button>
+        <button class="btn btn-outline" style="color:var(--danger); border-color:rgba(220,38,38,0.35);" onclick="confirmDeleteRow()" title="Hapus baris tertentu dengan konfirmasi keamanan data"><span class="dsw-icon-styled">🗑️</span> Hapus Baris</button>
         <button class="btn btn-primary" style="margin-left:10px;" onclick="downloadCSV()"><span class="dsw-icon-styled">📥</span> Unduh CSV</button>
-        <span style="margin-left:auto; font-size:12px; color:var(--text3); align-self:center;"><span class="dsw-icon-styled">💡</span> Tips: Paste data Excel ke tabel</span>
+        <span style="margin-left:auto; font-size:12px; color:var(--text3); align-self:center;"><span class="dsw-icon-styled">💡</span> Tips: Paste data Excel ke tabel / Klik nomor baris untuk hapus</span>
       </div>
       <div class="table-wrapper">
         <table id="data-table">
@@ -298,7 +485,8 @@ select.var-input option { background: var(--surface); color: var(--text); }
               <th style="width:25%;">Nama Variabel</th>
               <th style="width:20%;">Tipe</th>
               <th style="width:20%;">Peran</th>
-              <th style="width:35%;">Values (Label)</th>
+              <th style="width:30%;">Values (Label)</th>
+              <th style="width:36px; text-align:center;">Aksi</th>
             </tr>
           </thead>
           <tbody id="var-body"></tbody>
@@ -308,12 +496,17 @@ select.var-input option { background: var(--surface); color: var(--text); }
 
     <div class="result-panel" id="result-panel">
       <div class="result-header">
+        <div style="display:none;" class="print-top-bar"></div>
         <div class="result-title" id="res-title">
             <img src="../AREs%20Logo%20Outline.png" alt="AREs Logo" class="print-logo">
-            <span>Laporan Analisis</span>
+            <div>
+              <div class="print-inst-sub" style="display:none; font-size:10px; font-weight:bold; color:#0284c7; text-transform:uppercase;">FPIK Universitas Jenderal Soedirman</div>
+              <span style="font-weight:700;">Laporan Analisis Komputasi StatWise</span>
+              <div class="print-ref-sub" style="display:none; font-size:10px; color:#64748b;">AREs Ecosystem · Verified Statistical Output</div>
+            </div>
         </div>
         <div style="display:flex; gap:8px; align-items:center;">
-            <button class="btn btn-outline" id="btn-clear-report" style="padding: 6px 10px; font-size: 12px; color:var(--danger)" onclick="clearReport()"><span class="dsw-icon-styled">🗑️</span> Reset</button>
+            <button class="btn btn-outline" id="btn-clear-report" style="padding: 6px 10px; font-size: 12px; color:var(--danger)" onclick="confirmClearReport()"><span class="dsw-icon-styled">🗑️</span> Reset</button>
             <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="window.print()"><span class="dsw-icon-styled">🖨️</span> Ekspor PDF</button>
             <button class="close-btn" onclick="closeResult()">×</button>
         </div>
@@ -332,6 +525,23 @@ select.var-input option { background: var(--surface); color: var(--text); }
     <div class="dialog-footer">
       <button class="btn btn-outline" onclick="closeDialog()">Batal</button>
       <button class="btn btn-primary" id="dlg-btn">Jalankan</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="confirm-dialog-overlay" style="z-index: 110;">
+  <div class="dialog" style="max-width: 440px;">
+    <div class="dialog-header" style="background: var(--surface-hover); border-bottom: 1px solid var(--border);">
+      <span id="confirm-dialog-title" style="display:flex; align-items:center; gap:8px; font-weight:700;">
+        <span class="dsw-icon-styled">⚠️</span> Konfirmasi Tindakan
+      </span>
+      <button class="close-btn" onclick="closeConfirmDialog()" style="font-size:20px; border:none; background:none;">×</button>
+    </div>
+    <div class="dialog-body" id="confirm-dialog-body" style="padding: 18px 20px; font-size:13px; line-height:1.6;">
+    </div>
+    <div class="dialog-footer" style="padding: 12px 20px; background: var(--surface-hover); border-top: 1px solid var(--border); display:flex; justify-content:flex-end; gap:10px;">
+      <button class="btn btn-outline" id="confirm-dialog-cancel-btn" onclick="closeConfirmDialog()">Batal</button>
+      <button class="btn btn-primary btn-danger-confirm" id="confirm-dialog-action-btn">Ya, Lanjutkan</button>
     </div>
   </div>
 </div>
@@ -406,37 +616,326 @@ select.var-input option { background: var(--surface); color: var(--text); }
 // UI RESPONSIVE & STATE LOGIC
 // ==========================================
 function toggleSidebar() {
-    const sb = document.getElementById('sidebar');
-    const ov = document.querySelector('.sidebar-overlay');
-    sb.classList.toggle('open');
-    ov.classList.toggle('open');
+    if (window.ARES_I18N && typeof window.ARES_I18N.toggleSidebar === 'function') {
+        window.ARES_I18N.toggleSidebar();
+    } else {
+        const sb = document.getElementById('sidebar');
+        const ov = document.querySelector('.sidebar-overlay');
+        if (window.innerWidth <= 768) {
+            sb.classList.toggle('open');
+            if (ov) ov.classList.toggle('open');
+        } else {
+            sb.classList.toggle('collapsed');
+        }
+    }
 }
 
 function toggleTheme() {
   const html = document.documentElement; const btn = document.getElementById('theme-btn');
-  if (html.getAttribute('data-theme') === 'dark') { 
-      html.setAttribute('data-theme', 'light'); 
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('ares_theme', next);
+  if (btn) {
+    if (next === 'light') { 
       btn.innerHTML = '<span class="dsw-icon-styled">🌙</span> <span class="btn-text">Mode Gelap</span>'; 
-  } 
-  else { 
-      html.setAttribute('data-theme', 'dark'); 
+    } else { 
       btn.innerHTML = '<span class="dsw-icon-styled">☀️</span> <span class="btn-text">Mode Terang</span>'; 
+    }
   }
 }
 
 const S = { rows: 25, cols: 2, vars: [{ name: 'Perlakuan', type: 'nominal', role: 'factor', values: '' }, { name: 'Hasil', type: 'scale', role: 'dep', values: '' }], data: [] };
+let lastActiveRow = 0;
 
-function init() { for(let r=0; r<S.rows; r++) S.data.push(Array(S.cols).fill('')); renderAll(); }
+// ==========================================
+// TOAST NOTIFICATION UTILITY
+// ==========================================
+function showToast(msg) {
+  let toast = document.getElementById('statwise-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'statwise-toast';
+    toast.style.cssText = 'position:fixed; bottom:24px; right:24px; background:var(--surface); color:var(--text); border:1px solid var(--border); border-left:4px solid var(--primary); padding:10px 18px; border-radius:8px; box-shadow:0 10px 25px rgba(0,0,0,0.18); font-size:13px; font-weight:600; z-index:9999; display:flex; align-items:center; gap:8px; opacity:0; transform:translateY(10px); transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1); pointer-events:none; font-family:var(--font-sans);';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<span class="dsw-icon-styled">✅</span> <span>${msg}</span>`;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateY(0)';
+  clearTimeout(window._statwiseToastTimer);
+  window._statwiseToastTimer = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px)';
+  }, 2500);
+}
+
+// ==========================================
+// GENERIC CONFIRMATION DIALOG MODAL
+// ==========================================
+let _pendingConfirmCallback = null;
+
+function openConfirmDialog({ title, bodyHtml, confirmText = 'Lanjutkan', confirmClass = 'btn-danger-confirm', onConfirm }) {
+  const overlay = document.getElementById('confirm-dialog-overlay');
+  const titleEl = document.getElementById('confirm-dialog-title');
+  const bodyEl = document.getElementById('confirm-dialog-body');
+  const actionBtn = document.getElementById('confirm-dialog-action-btn');
+
+  if (titleEl) titleEl.innerHTML = title;
+  if (bodyEl) bodyEl.innerHTML = bodyHtml;
+  if (actionBtn) {
+    actionBtn.textContent = confirmText;
+    actionBtn.className = `btn btn-primary ${confirmClass}`;
+    actionBtn.onclick = function() {
+      const cb = _pendingConfirmCallback;
+      closeConfirmDialog();
+      if (typeof cb === 'function') cb();
+    };
+  }
+
+  _pendingConfirmCallback = onConfirm;
+  if (overlay) overlay.classList.add('active');
+}
+
+function closeConfirmDialog() {
+  const overlay = document.getElementById('confirm-dialog-overlay');
+  if (overlay) overlay.classList.remove('active');
+  _pendingConfirmCallback = null;
+}
+
+// ==========================================
+// CLEAR ALL WITH CONFIRMATION
+// ==========================================
+function confirmClearAll() {
+  let filledCells = 0;
+  for(let r=0; r<S.rows; r++) {
+    for(let c=0; c<S.cols; c++) {
+      if(S.data[r] && S.data[r][c] !== undefined && String(S.data[r][c]).trim() !== '') filledCells++;
+    }
+  }
+  const reportBlockCount = document.querySelectorAll('#res-content-area .report-block').length;
+
+  const title = `<span class="dsw-icon-styled">⚠️</span> Konfirmasi Bersihkan Semua Data`;
+  const body = `
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <p style="margin:0; font-size:13.5px; color:var(--text);">Apakah Anda yakin ingin <strong>menghapus seluruh data tabel dan mereset ruang kerja</strong>?</p>
+      <div style="background:var(--bg); border:1px solid var(--border); border-left:4px solid var(--danger); border-radius:8px; padding:12px; font-size:12.5px; line-height:1.6;">
+        <div style="font-weight:700; color:var(--danger); margin-bottom:6px;">Ringkasan Data yang Akan Direset:</div>
+        <div>• <strong>Tabel Data View:</strong> ${filledCells} nilai terisi (${S.rows} baris × ${S.cols} variabel)</div>
+        <div>• <strong>Variable View:</strong> ${S.vars.length} variabel akan dikembalikan ke konfigurasi awal</div>
+        <div>• <strong>Laporan Hasil:</strong> ${reportBlockCount > 0 ? reportBlockCount + ' blok analisis aktif akan dikosongkan' : 'Belum ada laporan aktif'}</div>
+      </div>
+      <p style="color:var(--danger); font-size:12px; font-weight:600; margin:0; display:flex; align-items:center; gap:6px;">
+        <span>⚠️</span> Tindakan ini tidak dapat dibatalkan. Pastikan Anda telah mengunduh CSV jika masih memerlukan data ini.
+      </p>
+    </div>
+  `;
+
+  openConfirmDialog({
+    title: title,
+    bodyHtml: body,
+    confirmText: 'Ya, Bersihkan Semua',
+    confirmClass: 'btn-danger-confirm',
+    onConfirm: () => {
+      executeClearAll();
+      showToast('Seluruh data tabel dan laporan berhasil dibersihkan.');
+    }
+  });
+}
+
+function executeClearAll() {
+  S.rows = 25;
+  S.cols = 2;
+  S.data = Array.from({length: S.rows}, () => Array(S.cols).fill(''));
+  S.vars = [
+    { name: 'Perlakuan', type: 'nominal', role: 'factor', values: '' },
+    { name: 'Hasil', type: 'scale', role: 'dep', values: '' }
+  ];
+  clearReport();
+  renderAll();
+}
+
+function clearAll() {
+  confirmClearAll();
+}
+
+// ==========================================
+// DELETE ROW WITH CONFIRMATION
+// ==========================================
+function confirmDeleteRow(rowIndex) {
+  if (S.rows <= 1) {
+    alert("Tabel harus memiliki minimal 1 baris data.");
+    return;
+  }
+
+  let targetRow = (rowIndex !== undefined && rowIndex !== null) ? parseInt(rowIndex) : lastActiveRow;
+  if (isNaN(targetRow) || targetRow < 0 || targetRow >= S.rows) {
+    targetRow = 0;
+  }
+
+  const generateRowOptions = (selected) => {
+    let opts = '';
+    for(let r=0; r<S.rows; r++) {
+      let previewSummary = S.data[r].filter(c => c !== undefined && String(c).trim() !== '').slice(0, 3).join(', ');
+      if (previewSummary) previewSummary = ` — [${previewSummary}]`;
+      opts += `<option value="${r}" ${r === selected ? 'selected' : ''}>Baris #${r+1}${previewSummary}</option>`;
+    }
+    return opts;
+  };
+
+  const getRowDetailHtml = (r) => {
+    let hasData = false;
+    let details = S.vars.map((v, c) => {
+      const hasVal = (S.data[r] && S.data[r][c] !== undefined && String(S.data[r][c]).trim() !== '');
+      if (hasVal) hasData = true;
+      const val = hasVal ? S.data[r][c] : '<span style="color:var(--text3); font-style:italic;">(kosong)</span>';
+      return `<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed var(--border);"><span style="color:var(--text2); font-weight:500;">${v.name}:</span> <span style="font-weight:600; color:var(--text);">${val}</span></div>`;
+    }).join('');
+    return { html: details, hasData };
+  };
+
+  const currentPreview = getRowDetailHtml(targetRow);
+
+  const title = `<span class="dsw-icon-styled">🗑️</span> Konfirmasi Hapus Baris`;
+  const body = `
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div class="form-group" style="margin:0;">
+        <label style="font-weight:600; margin-bottom:6px; display:block; color:var(--text);">Pilih Baris yang Ingin Dihapus:</label>
+        <select class="form-control" id="confirm-del-row-select" onchange="updateDeleteRowPreview(this.value)">
+          ${generateRowOptions(targetRow)}
+        </select>
+      </div>
+      <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 12px;">
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text3); margin-bottom:6px;">Pratinjau Nilai Baris:</div>
+        <div id="confirm-del-row-preview" style="font-size:12px; font-family:var(--font-mono); max-height:120px; overflow-y:auto;">
+          ${currentPreview.html}
+        </div>
+      </div>
+      <p style="color:var(--danger); font-size:12px; font-weight:600; margin:0; display:flex; align-items:center; gap:6px;">
+        <span>⚠️</span> Baris ini akan dihapus dari matriks data dan baris di bawahnya akan bergeser naik.
+      </p>
+    </div>
+  `;
+
+  window.updateDeleteRowPreview = function(newIdx) {
+    const previewEl = document.getElementById('confirm-del-row-preview');
+    if (previewEl) {
+      previewEl.innerHTML = getRowDetailHtml(parseInt(newIdx)).html;
+    }
+  };
+
+  openConfirmDialog({
+    title: title,
+    bodyHtml: body,
+    confirmText: 'Ya, Hapus Baris Ini',
+    confirmClass: 'btn-danger-confirm',
+    onConfirm: () => {
+      const selectEl = document.getElementById('confirm-del-row-select');
+      const rowToDelete = selectEl ? parseInt(selectEl.value) : targetRow;
+      executeDeleteRow(rowToDelete);
+    }
+  });
+}
+
+function executeDeleteRow(rowIndex) {
+  if (rowIndex < 0 || rowIndex >= S.rows) return;
+  if (S.rows <= 1) {
+    alert("Tabel harus memiliki minimal 1 baris data.");
+    return;
+  }
+  S.data.splice(rowIndex, 1);
+  S.rows--;
+  if (lastActiveRow >= S.rows) lastActiveRow = Math.max(0, S.rows - 1);
+  renderDataBody();
+  showToast(`Baris #${rowIndex + 1} berhasil dihapus.`);
+}
+
+// ==========================================
+// REPORT RESET WITH CONFIRMATION
+// ==========================================
+function confirmClearReport() {
+  const count = document.querySelectorAll('#res-content-area .report-block').length;
+  if (count === 0) {
+    showToast('Laporan sudah dalam kondisi kosong.');
+    return;
+  }
+  openConfirmDialog({
+    title: `<span class="dsw-icon-styled">🗑️</span> Reset Laporan Hasil Analisis`,
+    bodyHtml: `<p style="margin:0; font-size:13.5px; color:var(--text); line-height:1.6;">Apakah Anda yakin ingin mengosongkan <strong>${count} blok laporan analisis</strong>? Data pada tabel Data View dan Variable View tidak akan terpengaruh.</p>`,
+    confirmText: 'Ya, Kosongkan Laporan',
+    confirmClass: 'btn-danger-confirm',
+    onConfirm: () => {
+      clearReport();
+      showToast('Laporan hasil analisis telah dikosongkan.');
+    }
+  });
+}
+
+// ==========================================
+// PERSISTENCE & SHORTCUTS INTEGRATION
+// ==========================================
+function saveStatWiseData() {
+  try {
+    const payload = {
+      rows: S.rows,
+      cols: S.cols,
+      vars: S.vars,
+      data: S.data,
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('sw_data', JSON.stringify(payload));
+    showToast('Dataset StatWise berhasil disimpan.');
+    if (window.ARESStorageSync && typeof window.ARESStorageSync.notifyChange === 'function') {
+      window.ARESStorageSync.notifyChange('sw_data');
+    }
+    return true;
+  } catch (err) {
+    console.error('Error saving StatWise data:', err);
+    return false;
+  }
+}
+
+function loadStatWiseData() {
+  try {
+    const raw = localStorage.getItem('sw_data');
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    if (!parsed || !parsed.vars || !parsed.data) return false;
+    S.rows = parsed.rows || parsed.data.length;
+    S.cols = parsed.cols || parsed.vars.length;
+    S.vars = parsed.vars;
+    S.data = parsed.data;
+    return true;
+  } catch (err) {
+    console.warn('Could not load StatWise data from localStorage:', err);
+    return false;
+  }
+}
+
+window.saveStatWiseData = saveStatWiseData;
+window.loadStatWiseData = loadStatWiseData;
+window.switchSWTab = function(num) { 
+  if (num === 1) switchView('data'); 
+  else if (num === 2) switchView('var'); 
+};
+
+function init() { 
+  const loaded = loadStatWiseData();
+  if (!loaded) {
+    for(let r=0; r<S.rows; r++) S.data.push(Array(S.cols).fill('')); 
+  }
+  renderAll(); 
+
+  // Register with ARES Keyboard Shortcuts
+  if (window.ARESShortcuts) {
+    window.ARESShortcuts.on('save', saveStatWiseData);
+    window.ARESShortcuts.on('export', downloadCSV);
+    window.ARESShortcuts.on('newRow', () => addRows(5));
+  }
+}
 function renderAll() { renderDataHead(); renderDataBody(); renderVarBody(); }
 function switchView(view) {
   document.getElementById('tab-data').classList.toggle('active', view === 'data'); document.getElementById('tab-var').classList.toggle('active', view === 'var');
   document.getElementById('view-data').classList.toggle('active', view === 'data'); document.getElementById('view-var').classList.toggle('active', view === 'var');
   if(view === 'data') renderDataHead();
-}
-function clearAll() {
-  S.cols = 2; S.data = Array.from({length: S.rows}, () => Array(S.cols).fill(''));
-  S.vars = [{ name: 'Perlakuan', type: 'nominal', role: 'factor', values: '' }, { name: 'Hasil', type: 'scale', role: 'dep', values: '' }];
-  clearReport(); renderAll();
 }
 function clearReport() { document.getElementById('res-content-area').innerHTML = ''; }
 function removeBlock(btn) { btn.closest('.report-block').remove(); }
@@ -465,18 +964,43 @@ function downloadCSV() {
 // ==========================================
 // RENDER DATA & VAR VIEW
 // ==========================================
+function deleteColumn(colIdx) {
+  if (S.cols <= 1) {
+    showToast('Tabel harus memiliki minimal 1 kolom variabel.');
+    return;
+  }
+  const varName = S.vars[colIdx] ? S.vars[colIdx].name : `Kolom #${colIdx+1}`;
+  openConfirmDialog({
+    title: `<span class="dsw-icon-styled">🗑️</span> Hapus Variabel`,
+    bodyHtml: `<p style="margin:0; font-size:13.5px; color:var(--text); line-height:1.6;">Apakah Anda yakin ingin menghapus variabel <strong>${varName}</strong> beserta seluruh nilainya di Data View?</p>`,
+    confirmText: 'Ya, Hapus Variabel',
+    confirmClass: 'btn-danger-confirm',
+    onConfirm: () => {
+      S.vars.splice(colIdx, 1);
+      S.data.forEach(row => row.splice(colIdx, 1));
+      S.cols--;
+      renderAll();
+      showToast(`Variabel ${varName} telah dihapus.`);
+    }
+  });
+}
+
 function renderDataHead() {
   const tr = document.createElement('tr'); tr.innerHTML = `<th class="row-index">#</th>`;
-  S.vars.forEach(v => { const icon = v.type === 'scale' ? '∑' : v.type === 'nominal' ? 'A' : '◈'; tr.innerHTML += `<th>${icon} ${v.name}</th>`; });
+  S.vars.forEach((v, idx) => { 
+    const icon = v.type === 'scale' ? '∑' : v.type === 'nominal' ? 'A' : '◈'; 
+    tr.innerHTML += `<th style="position:relative; padding-right:24px;">${icon} ${v.name} <button class="btn-icon" style="position:absolute; right:4px; top:50%; transform:translateY(-50%); font-size:13px; opacity:0.6; line-height:1; padding:2px;" title="Hapus kolom ${v.name}" onclick="event.stopPropagation(); deleteColumn(${idx});">×</button></th>`; 
+  });
   document.getElementById('data-head').innerHTML = ''; document.getElementById('data-head').appendChild(tr);
 }
 function renderDataBody() {
   const tbody = document.getElementById('data-body'); tbody.innerHTML = '';
   for(let r=0; r<S.rows; r++) {
-    const tr = document.createElement('tr'); tr.innerHTML = `<td class="row-index">${r+1}</td>`;
+    const tr = document.createElement('tr'); tr.innerHTML = `<td class="row-index" title="Klik untuk opsi hapus baris #${r+1}" onclick="confirmDeleteRow(${r})">${r+1}</td>`;
     for(let c=0; c<S.cols; c++) {
       const td = document.createElement('td'), inp = document.createElement('input');
       inp.type = 'text'; inp.className = 'cell-input'; inp.value = S.data[r][c]; inp.dataset.r = r; inp.dataset.c = c;
+      inp.onfocus = function() { lastActiveRow = r; };
       inp.oninput = function() { S.data[r][c] = this.value; validateCell(this, c); };
       inp.onkeydown = (e) => handleGridNav(e, r, c); inp.onpaste = (e) => handlePaste(e, r, c);
       validateCell(inp, c); td.appendChild(inp); tr.appendChild(td);
@@ -509,7 +1033,8 @@ function renderVarBody() {
       <td><input class="var-input" style="font-weight:600; color:var(--primary)" value="${v.name}" onchange="S.vars[${i}].name=this.value"></td>
       <td><select class="var-input" onchange="S.vars[${i}].type=this.value"><option value="scale" ${v.type==='scale'?'selected':''}>∑ Numerik</option><option value="nominal" ${v.type==='nominal'?'selected':''}>A Nominal</option><option value="ordinal" ${v.type==='ordinal'?'selected':''}>◈ Ordinal</option></select></td>
       <td><select class="var-input" onchange="S.vars[${i}].role=this.value"><option value="none" ${v.role==='none'?'selected':''}>— Tdk Tentu</option><option value="dep" ${v.role==='dep'?'selected':''}>Target (Y)</option><option value="factor" ${v.role==='factor'?'selected':''}>Faktor (X)</option></select></td>
-      <td><input class="var-input" placeholder="1=Kontrol, 2=Pakan" value="${v.values}" onchange="S.vars[${i}].values=this.value"></td>`;
+      <td><input class="var-input" placeholder="1=Kontrol, 2=Pakan" value="${v.values}" onchange="S.vars[${i}].values=this.value"></td>
+      <td style="text-align:center;"><button class="btn-icon" style="color:var(--danger); font-size:16px;" title="Hapus Variabel ${v.name}" onclick="deleteColumn(${i})">×</button></td>`;
     tbody.appendChild(tr);
   });
 }
@@ -956,6 +1481,20 @@ function openDialog(type) {
     dlgTitle.innerHTML = '<span class="dsw-icon-styled">📉</span> Kruskal-Wallis'; html += depSelector + `<div class="form-group"><label>Faktor</label><select class="form-control" id="dlg-fac">${getFilteredOptions('nominal')}</select></div><div class="form-group"><label>Uji Lanjut</label><select class="form-control" id="dlg-method"><option value="dunn">Dunn's Test (R Standard)</option><option value="mw">Pairwise Mann-Whitney</option></select></div>` + chartOptions; dlgBtn.onclick = () => runKruskal();
   } else if(type === 'mannwhitney') {
     dlgTitle.innerHTML = '<span class="dsw-icon-styled">🔀</span> Mann-Whitney U'; html += depSelector + `<div class="form-group"><label>Faktor (2 Grup)</label><select class="form-control" id="dlg-fac">${getFilteredOptions('nominal')}</select></div><div class="form-group"><label>Arah Uji</label><select class="form-control" id="dlg-tail"><option value="two">Two-tailed</option><option value="right">One-tailed Kanan</option><option value="left">One-tailed Kiri</option></select></div>` + chartOptions; dlgBtn.onclick = () => runMannWhitney();
+  } else if (type === 'heatmap') {
+    dlgTitle.innerHTML = '<span class="dsw-icon-styled">🔥</span> Heatmap Korelasi Matriks D3';
+    html += `
+      <div class="form-group"><label>Metode Korelasi</label><select class="form-control" id="dlg-method"><option value="pearson">Pearson (Parametrik)</option><option value="spearman">Spearman Rank (Non-Parametrik)</option></select></div>
+      <div class="form-group"><label>Skema Warna Heatmap D3</label><select class="form-control" id="dlg-color"><option value="coolwarm">Coolwarm (Biru - Putih - Merah)</option><option value="viridis">Viridis (Ungu - Hijau - Kuning)</option><option value="spectral">Spectral (Merah - Kuning - Biru)</option><option value="blues">Blues (Putih ke Biru Tua)</option></select></div>
+      <div class="form-group"><label>Nilai & Signifikansi di Sel</label><select class="form-control" id="dlg-show-text"><option value="true">Tampilkan Nilai (r) & Bintang (*)</option><option value="false">Hanya Gradasi Warna</option></select></div>
+    `;
+    dlgBtn.onclick = () => runCorrelationHeatmap();
+  } else if (type === 'spearman') {
+    dlgTitle.innerHTML = '<span class="dsw-icon-styled">📊</span> Uji Korelasi Spearman (Rank Correlation)';
+    html += `<div class="form-group"><label>Variabel X (Ordinal / Scale)</label><select class="form-control" id="dlg-varX">${getFilteredOptions('scale')}</select></div><div class="form-group"><label>Variabel Y (Ordinal / Scale)</label><select class="form-control" id="dlg-varY">${getFilteredOptions('scale')}</select></div><div class="form-group"><label>Arah Uji</label><select class="form-control" id="dlg-tail"><option value="two">Two-tailed (Dua Arah)</option><option value="one">One-tailed (Satu Arah)</option></select></div><div class="form-group"><label>Tema Grafik</label><select class="form-control" id="dlg-theme"><option value="var(--primary)">Klasik Biru</option><option value="#A78BFA">Pastel Ungu</option><option value="#10B981">Viridis Hijau</option></select></div>`; dlgBtn.onclick = () => runSpearman();
+  } else if (type === 'regresi') {
+    dlgTitle.innerHTML = '<span class="dsw-icon-styled">📉</span> Regresi Linear Sederhana';
+    html += `<div class="form-group"><label>Variabel Prediktor / Independen (X)</label><select class="form-control" id="dlg-varX">${getFilteredOptions('scale')}</select></div><div class="form-group"><label>Variabel Terikat / Dependen (Y)</label><select class="form-control" id="dlg-varY">${getFilteredOptions('scale')}</select></div><div class="form-group"><label>Tema Grafik & Trendline</label><select class="form-control" id="dlg-theme"><option value="var(--primary)">Klasik Biru</option><option value="#A78BFA">Pastel Ungu</option><option value="#10B981">Viridis Hijau</option></select></div>`; dlgBtn.onclick = () => runLinearRegression();
   } else if (type === 'correg') {
     dlgTitle.innerHTML = '<span class="dsw-icon-styled">📈</span> Korelasi & Regresi Linear';
     html += `<div class="form-group"><label>Var Bebas (X)</label><select class="form-control" id="dlg-varX">${getFilteredOptions('scale')}</select></div><div class="form-group"><label>Var Terikat (Y)</label><select class="form-control" id="dlg-varY">${getFilteredOptions('scale')}</select></div><div class="form-group"><label>Korelasi</label><select class="form-control" id="dlg-method"><option value="pearson">Pearson (Parametrik)</option><option value="spearman">Spearman (Non-Parametrik)</option></select></div><div class="form-group"><label>Tema Grafik</label><select class="form-control" id="dlg-theme"><option value="var(--primary)">Klasik Biru</option><option value="#A78BFA">Pastel Ungu</option><option value="#10B981">Viridis Hijau</option></select></div>`; dlgBtn.onclick = () => runCorReg();
@@ -1129,18 +1668,707 @@ function runCorReg() {
   const vX = parseInt(document.getElementById('dlg-varX').value), vY = parseInt(document.getElementById('dlg-varY').value), meth = document.getElementById('dlg-method').value, theme = document.getElementById('dlg-theme').value; if(vX===vY) return alert('X & Y harus beda!'); closeDialog(); const {a1: x, a2: y} = extractPair(vX, vY); if(x.length < 3) return alert('Data min 3!');
   let r = meth === 'pearson' ? pearsonReg(x, y) : spearman(x, y); const pass = r.p <= 0.05;
   let fullHtml = `<div style="font-weight:bold; margin-bottom:8px;">X: ${S.vars[vX].name} | Y: ${S.vars[vY].name}</div>`;
-  fullHtml += `<div class="verdict ${pass?'v-fail':'v-pass'}">${pass ? '✅ Terdapat korelasi signifikan' : '❌ Tidak terdapat korelasi nyata'}</div>
+  fullHtml += `<div class="verdict ${pass?'v-pass':'v-fail'}">${pass ? '✅ Terdapat korelasi signifikan' : '❌ Tidak terdapat korelasi nyata'}</div>
               <div class="stat-grid"><div class="stat-box"><div class="label">Korelasi (r)</div><div class="value">${fmt(r.r)}</div></div><div class="stat-box"><div class="label">R² (Determinasi)</div><div class="value">${fmt(r.r2)}</div></div><div class="stat-box"><div class="label">p-value</div><div class="value ${pass?'sig':''}">${fmtp(r.p)}</div></div></div>`;
   if (meth === 'pearson') { fullHtml += `<div class="r-note" style="margin-bottom:10px;"><b>Regresi:</b> Y = ${fmt(r.slope)}X ${r.intercept >= 0 ? '+' : '-'} ${fmt(Math.abs(r.intercept))}</div>` + drawScatter(x, y, `Scatter Plot & Trendline`, theme, S.vars[vX].name, S.vars[vY].name, r.slope, r.intercept); } 
   fullHtml += generateInterpretation('correg', r, 0.05, "");
   appendToReport(meth === 'pearson' ? 'Korelasi Pearson' : 'Korelasi Spearman', fullHtml + '<hr>');
 }
 
+function spearmanDetailed(x, y, tail) {
+  const n = x.length;
+  const getRanks = arr => {
+    let s = arr.map((v,i) => ({v, i})).sort((a,b) => a.v - b.v);
+    let r = 1;
+    for (let i = 0; i < s.length;) {
+      let j = i;
+      while (j < s.length && s[j].v === s[i].v) j++;
+      let avg = (r + r + j - i - 1) / 2;
+      for (let k = i; k < j; k++) s[k].rank = avg;
+      r += j - i;
+      i = j;
+    }
+    let res = new Array(arr.length);
+    s.forEach(obj => res[obj.i] = obj.rank);
+    return res;
+  };
+
+  const rankX = getRanks(x);
+  const rankY = getRanks(y);
+  let d = [], d2 = [], sumD2 = 0;
+  for (let i = 0; i < n; i++) {
+    let diff = rankX[i] - rankY[i];
+    d.push(diff);
+    let sq = diff * diff;
+    d2.push(sq);
+    sumD2 += sq;
+  }
+
+  const pReg = pearsonReg(rankX, rankY);
+  const r = pReg.r;
+  const r2 = r * r;
+  const t = r * Math.sqrt((n - 2) / (1 - r * r + 1e-15));
+  let p = 2 * (1 - tDistPVal(Math.abs(t), n - 2));
+  let tailText = 'Dua Arah';
+  if (tail === 'one') {
+    p = p / 2;
+    tailText = 'Satu Arah';
+  }
+
+  const absR = Math.abs(r);
+  let strengthLabel = 'Sangat Lemah / Tidak Ada';
+  if (absR >= 0.8) strengthLabel = 'Sangat Kuat';
+  else if (absR >= 0.6) strengthLabel = 'Kuat';
+  else if (absR >= 0.4) strengthLabel = 'Sedang';
+  else if (absR >= 0.2) strengthLabel = 'Lemah';
+
+  const directionLabel = r >= 0 ? 'Positif (+)' : 'Negatif (-)';
+
+  return {
+    n, r, r2, t, p, rankX, rankY, d, d2, sumD2,
+    strengthLabel, directionLabel, tailText,
+    slope: pReg.slope, intercept: pReg.intercept
+  };
+}
+
+function runSpearman() {
+  const vX = parseInt(document.getElementById('dlg-varX').value);
+  const vY = parseInt(document.getElementById('dlg-varY').value);
+  const tail = document.getElementById('dlg-tail').value;
+  const theme = document.getElementById('dlg-theme').value;
+  
+  if (vX === vY) return alert('Pilih dua variabel yang berbeda!');
+  closeDialog();
+  
+  const { a1: x, a2: y } = extractPair(vX, vY);
+  if (x.length < 3) return alert('Data minimal 3 pasangan sampel!');
+  
+  const r = spearmanDetailed(x, y, tail);
+  const pass = r.p <= 0.05;
+  
+  let fullHtml = `<div style="font-weight:bold; font-size:15px; margin-bottom:10px;">📊 Uji Korelasi Spearman Rank</div>`;
+  fullHtml += `<div style="margin-bottom:8px; color:var(--text2); font-size:13px;">Variabel X: <b>${S.vars[vX].name}</b> | Variabel Y: <b>${S.vars[vY].name}</b> (N = ${r.n})</div>`;
+  
+  fullHtml += `<div class="verdict ${pass ? 'v-pass' : 'v-fail'}">
+    ${pass ? '✅ Terdapat hubungan korelasi Spearman yang signifikan secara statistik' : '❌ Tidak terdapat hubungan korelasi Spearman yang signifikan (p ≥ 0.05)'}
+  </div>`;
+  
+  fullHtml += `
+    <div class="stat-grid">
+      <div class="stat-box"><div class="label">Koefisien Spearman (rₛ)</div><div class="value">${fmt(r.r)}</div></div>
+      <div class="stat-box"><div class="label">R² (Determinasi Rank)</div><div class="value">${fmt(r.r2)}</div></div>
+      <div class="stat-box"><div class="label">t-Hitung</div><div class="value">${fmt(r.t)}</div></div>
+      <div class="stat-box"><div class="label">p-value (${r.tailText})</div><div class="value ${pass ? 'sig' : ''}">${fmtp(r.p)}</div></div>
+      <div class="stat-box" style="grid-column: span 2;"><div class="label">Kekuatan & Arah Hubungan</div><div class="value" style="font-size:13px; font-weight:600;">${r.strengthLabel} (${r.directionLabel})</div></div>
+    </div>
+  `;
+  
+  let tbl = `<table class="res-table">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>X (${S.vars[vX].name})</th>
+        <th>Y (${S.vars[vY].name})</th>
+        <th>Rank X</th>
+        <th>Rank Y</th>
+        <th>d (Rank X - Rank Y)</th>
+        <th>d²</th>
+      </tr>
+    </thead>
+    <tbody>`;
+  
+  const limit = Math.min(10, r.n);
+  for (let i = 0; i < limit; i++) {
+    tbl += `<tr>
+      <td>${i+1}</td>
+      <td>${fmt(x[i])}</td>
+      <td>${fmt(y[i])}</td>
+      <td>${fmt(r.rankX[i])}</td>
+      <td>${fmt(r.rankY[i])}</td>
+      <td>${fmt(r.d[i])}</td>
+      <td>${fmt(r.d2[i])}</td>
+    </tr>`;
+  }
+  if (r.n > 10) {
+    tbl += `<tr><td colspan="7" style="text-align:center; color:var(--text3); font-style:italic;">... (+ ${r.n - 10} sampel lainnya) ...</td></tr>`;
+  }
+  tbl += `<tr style="font-weight:bold; background:var(--surface-hover);">
+    <td colspan="5" style="text-align:right;">Total Σd² :</td>
+    <td colspan="2">${fmt(r.sumD2)}</td>
+  </tr>`;
+  tbl += `</tbody></table>`;
+  
+  fullHtml += generateTable(tbl);
+  fullHtml += drawScatter(x, y, `Scatter Plot & Peringkat Data`, theme, S.vars[vX].name, S.vars[vY].name, r.slope, r.intercept);
+  
+  let interp = `
+    <div class="r-note">
+      <b>Interpretasi Akademis Korelasi Spearman:</b><br>
+      Berdasarkan hasil uji korelasi rank Spearman antara <b>${S.vars[vX].name}</b> dan <b>${S.vars[vY].name}</b> pada N = ${r.n} sampel, diperoleh koefisien korelasi <b>rₛ = ${fmt(r.r)}</b> dengan p-value = <b>${fmtp(r.p)}</b>.<br>
+      • Tingkat signifikansi (α = 0.05): ${pass ? `<b>p < 0.05</b>, menunjukkan terdapat korelasi monotonik yang signifikan secara statistik.` : `<b>p ≥ 0.05</b>, menunjukkan tidak terdapat bukti korelasi yang signifikan.`}<br>
+      • Kekuatan korelasi tergolong <b>${r.strengthLabel}</b> dengan arah <b>${r.directionLabel}</b>. ${r.r > 0 ? `Artinya, peningkatan nilai ${S.vars[vX].name} cenderung diikuti oleh peningkatan nilai ${S.vars[vY].name}.` : `Artinya, peningkatan nilai ${S.vars[vX].name} cenderung diikuti oleh penurunan nilai ${S.vars[vY].name}.`}<br>
+      • Koefisien determinasi R² = <b>${fmt(r.r2)}</b> (${(r.r2*100).toFixed(1)}%), menunjukkan bahwa ${(r.r2*100).toFixed(1)}% variasi urutan data dipengaruhi oleh hubungan antar variabel ini.
+    </div>
+  `;
+  fullHtml += interp + '<hr>';
+  appendToReport('Uji Korelasi Spearman', fullHtml);
+}
+
+function linearRegressionDetailed(x, y) {
+  const n = x.length;
+  const mx = mean(x), my = mean(y);
+  let num = 0, denX = 0, denY = 0;
+  for (let i = 0; i < n; i++) {
+    let dx = x[i] - mx, dy = y[i] - my;
+    num += dx * dy;
+    denX += dx * dx;
+    denY += dy * dy;
+  }
+
+  const slope = num / denX;
+  const intercept = my - slope * mx;
+  const R = num / Math.sqrt(denX * denY);
+  const R2 = R * R;
+  const adjR2 = 1 - ((1 - R2) * (n - 1)) / Math.max(1, n - 2);
+
+  let SSreg = 0, SSres = 0, SStot = 0;
+  for (let i = 0; i < n; i++) {
+    let yHat = intercept + slope * x[i];
+    SSreg += Math.pow(yHat - my, 2);
+    SSres += Math.pow(y[i] - yHat, 2);
+    SStot += Math.pow(y[i] - my, 2);
+  }
+
+  const dfReg = 1;
+  const dfRes = Math.max(1, n - 2);
+  const dfTot = n - 1;
+
+  const MSreg = SSreg / dfReg;
+  const MSres = SSres / dfRes;
+
+  const F = MSreg / (MSres + 1e-15);
+  const pF = fPVal(F, dfReg, dfRes);
+
+  const Se = Math.sqrt(MSres);
+  const SEb = Se / Math.sqrt(denX + 1e-15);
+  const tb = slope / (SEb + 1e-15);
+  const pb = 2 * (1 - tDistPVal(Math.abs(tb), dfRes));
+
+  const SEa = Se * Math.sqrt((1 / n) + (mx * mx) / (denX + 1e-15));
+  const ta = intercept / (SEa + 1e-15);
+  const pa = 2 * (1 - tDistPVal(Math.abs(ta), dfRes));
+
+  const beta = R;
+
+  return {
+    n, slope, intercept, R, R2, adjR2, Se,
+    SSreg, SSres, SStot, dfReg, dfRes, dfTot,
+    MSreg, MSres, F, pF, SEb, tb, pb, SEa, ta, pa, beta
+  };
+}
+
+function runLinearRegression() {
+  const vX = parseInt(document.getElementById('dlg-varX').value);
+  const vY = parseInt(document.getElementById('dlg-varY').value);
+  const theme = document.getElementById('dlg-theme').value;
+  
+  if (vX === vY) return alert('Pilih dua variabel yang berbeda!');
+  closeDialog();
+  
+  const { a1: x, a2: y } = extractPair(vX, vY);
+  if (x.length < 3) return alert('Data minimal 3 sampel untuk regresi!');
+  
+  const r = linearRegressionDetailed(x, y);
+  const passModel = r.pF <= 0.05;
+  
+  let fullHtml = `<div style="font-weight:bold; font-size:15px; margin-bottom:10px;">📉 Regresi Linear Sederhana</div>`;
+  fullHtml += `<div style="margin-bottom:8px; color:var(--text2); font-size:13px;">Prediktor (X): <b>${S.vars[vX].name}</b> | Variabel Terikat (Y): <b>${S.vars[vY].name}</b> (N = ${r.n})</div>`;
+  
+  fullHtml += `
+    <div style="background:var(--primary-light); padding:12px 16px; border-radius:8px; border:1px solid var(--primary); margin-bottom:14px;">
+      <div style="font-size:11px; text-transform:uppercase; font-weight:700; color:var(--primary-dark); margin-bottom:4px;">Persamaan Regresi Linear:</div>
+      <div style="font-family:var(--font-mono); font-size:16px; font-weight:700; color:var(--text);">
+        ${S.vars[vY].name} = ${fmt(r.intercept)} ${r.slope >= 0 ? '+' : '-'} ${fmt(Math.abs(r.slope))} × ${S.vars[vX].name}
+      </div>
+    </div>
+  `;
+  
+  fullHtml += `<div class="verdict ${passModel ? 'v-pass' : 'v-fail'}">
+    ${passModel ? '✅ Model Regresi signifikan secara simultan (p < 0.05)' : '❌ Model Regresi tidak signifikan secara statistik (p ≥ 0.05)'}
+  </div>`;
+  
+  let summaryTbl = `<div style="font-weight:600; margin-bottom:6px; font-size:13px;">1. Ringkasan Model (Model Summary)</div>
+    <table class="res-table">
+      <thead>
+        <tr>
+          <th>R (Korelasi)</th>
+          <th>R² (Determinasi)</th>
+          <th>Adjusted R²</th>
+          <th>Std. Error Estimasi (Sₑ)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>${fmt(r.R)}</td>
+          <td>${fmt(r.R2)}</td>
+          <td>${fmt(r.adjR2)}</td>
+          <td>${fmt(r.Se)}</td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+  fullHtml += generateTable(summaryTbl);
+  
+  let anovaTbl = `<div style="font-weight:600; margin-top:10px; margin-bottom:6px; font-size:13px;">2. Tabel Uji Kelayakan Model (ANOVA)</div>
+    <table class="res-table">
+      <thead>
+        <tr>
+          <th>Sumber Variasi</th>
+          <th>Jumlah Kuadrat (SS)</th>
+          <th>Derajat Bebas (df)</th>
+          <th>Rata-Rata Kuadrat (MS)</th>
+          <th>F-Hitung</th>
+          <th>p-value (Sig.)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Regresi</td>
+          <td>${fmt(r.SSreg)}</td>
+          <td>${r.dfReg}</td>
+          <td>${fmt(r.MSreg)}</td>
+          <td>${fmt(r.F)}</td>
+          <td class="${r.pF <= 0.05 ? 'sig' : ''}">${fmtp(r.pF)}</td>
+        </tr>
+        <tr>
+          <td>Residu (Error)</td>
+          <td>${fmt(r.SSres)}</td>
+          <td>${r.dfRes}</td>
+          <td>${fmt(r.MSres)}</td>
+          <td>—</td>
+          <td>—</td>
+        </tr>
+        <tr style="font-weight:bold; background:var(--surface-hover);">
+          <td>Total</td>
+          <td>${fmt(r.SStot)}</td>
+          <td>${r.dfTot}</td>
+          <td>—</td>
+          <td>—</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+  fullHtml += generateTable(anovaTbl);
+  
+  let coefTbl = `<div style="font-weight:600; margin-top:10px; margin-bottom:6px; font-size:13px;">3. Koefisien Regresi (Coefficients)</div>
+    <table class="res-table">
+      <thead>
+        <tr>
+          <th>Model Parameter</th>
+          <th>Unstandardized B</th>
+          <th>Std. Error</th>
+          <th>Standardized Beta (β)</th>
+          <th>t-Hitung</th>
+          <th>p-value (Sig.)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Konstanta (a)</td>
+          <td>${fmt(r.intercept)}</td>
+          <td>${fmt(r.SEa)}</td>
+          <td>—</td>
+          <td>${fmt(r.ta)}</td>
+          <td class="${r.pa <= 0.05 ? 'sig' : ''}">${fmtp(r.pa)}</td>
+        </tr>
+        <tr>
+          <td>${S.vars[vX].name} (b)</td>
+          <td>${fmt(r.slope)}</td>
+          <td>${fmt(r.SEb)}</td>
+          <td>${fmt(r.beta)}</td>
+          <td>${fmt(r.tb)}</td>
+          <td class="${r.pb <= 0.05 ? 'sig' : ''}">${fmtp(r.pb)}</td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+  fullHtml += generateTable(coefTbl);
+  
+  fullHtml += drawScatter(x, y, `Garis Regresi & Distribusi Data`, theme, S.vars[vX].name, S.vars[vY].name, r.slope, r.intercept);
+
+  const calcId = 'reg-calc-' + Date.now();
+  const inputId = 'reg-input-' + Date.now();
+  const resId = 'reg-res-' + Date.now();
+
+  let calcWidget = `
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; margin-top:14px; margin-bottom:14px; box-shadow:var(--shadow-sm);">
+      <div style="font-weight:700; font-size:14px; color:var(--text); margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+        <span class="dsw-icon-styled">🔮</span> Kalkulator Simulasi Prediksi Trend Data
+      </div>
+      <div style="font-size:12px; color:var(--text2); margin-bottom:12px; line-height:1.4;">
+        Masukkan estimasi nilai parameter prediktor <b>${S.vars[vX].name}</b> untuk memprediksi respon/nilai parameter <b>${S.vars[vY].name}</b> berdasarkan model regresi.
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+        <div style="flex:1; min-width:180px;">
+          <label style="font-size:11px; font-weight:600; color:var(--text3); display:block; margin-bottom:4px;">Nilai Input ${S.vars[vX].name} (X):</label>
+          <input type="number" id="${inputId}" class="form-control" placeholder="Contoh: 25.5" step="any" style="padding:8px 12px; font-weight:600;">
+        </div>
+        <button class="btn btn-primary" onclick="
+          const xVal = parseFloat(document.getElementById('${inputId}').value);
+          if (isNaN(xVal)) { alert('Masukkan angka valid untuk nilai X!'); return; }
+          const slope = ${r.slope};
+          const intercept = ${r.intercept};
+          const yPred = intercept + slope * xVal;
+          document.getElementById('${resId}').style.display = 'block';
+          document.getElementById('${resId}').innerHTML = '🎯 Prediksi Nilai <b>${S.vars[vY].name} (Y)</b> = <span style=\"color:var(--primary); font-size:18px;\">' + yPred.toFixed(4) + '</span>';
+        " style="margin-top:18px; padding:8px 16px;">
+          Hitung Prediksi Y
+        </button>
+      </div>
+      <div id="${resId}" style="display:none; margin-top:12px; padding:10px 14px; background:var(--primary-light); border:1px solid var(--primary); border-radius:8px; font-size:13px; font-weight:600; color:var(--text);"></div>
+    </div>
+  `;
+  fullHtml += calcWidget;
+  
+  let interp = `
+    <div class="r-note">
+      <b>Interpretasi Akademis Regresi Linear Sederhana:</b><br>
+      • <b>Persamaan Regresi:</b> Y = ${fmt(r.intercept)} ${r.slope >= 0 ? '+' : '-'} ${fmt(Math.abs(r.slope))} X. Setiap kenaikan 1 satuan pada <b>${S.vars[vX].name}</b> diprediksi akan ${r.slope >= 0 ? 'meningkatkan' : 'menurunkan'} <b>${S.vars[vY].name}</b> sebesar <b>${fmt(Math.abs(r.slope))}</b> satuan.<br>
+      • <b>Koefisien Determinasi (R²):</b> Nilai R² = <b>${fmt(r.R2)}</b> (${(r.R2*100).toFixed(1)}%). Hal ini berarti ${(r.R2*100).toFixed(1)}% variabilitas variabel terikat (<b>${S.vars[vY].name}</b>) dapat dijelaskan oleh variabel bebas (<b>${S.vars[vX].name}</b>), sedangkan sisanya (${((1-r.R2)*100).toFixed(1)}%) dipengaruhi oleh faktor/parameter luar lainnya.<br>
+      • <b>Uji Kelayakan Model (ANOVA):</b> F = <b>${fmt(r.F)}</b> dengan p-value = <b>${fmtp(r.pF)}</b>. ${passModel ? 'Model regresi ini layak digunakan untuk memprediksi nilai target secara signifikan (p < 0.05).' : 'Model regresi ini tidak signifikan secara statistik (p ≥ 0.05).'}<br>
+      • <b>Uji Parsial Parameter Slop (b):</b> Nilai t-hitung prediktor = <b>${fmt(r.tb)}</b> (p = <b>${fmtp(r.pb)}</b>). ${r.pb <= 0.05 ? 'Menunjukkan pengaruh signifikan dari prediktor terhadap variabel terikat.' : 'Menunjukkan prediktor tidak memberikan pengaruh parsial yang signifikan.'}
+    </div>
+  `;
+  fullHtml += interp + '<hr>';
+  appendToReport('Regresi Linear Sederhana', fullHtml);
+}
+
+function runCorrelationHeatmap() {
+  const scaleVars = [];
+  S.vars.forEach((v, i) => {
+    if (v.type === 'scale') {
+      scaleVars.push({ name: v.name, idx: i });
+    }
+  });
+
+  if (scaleVars.length < 2) {
+    return alert("Dibutuhkan minimal 2 variabel bertipe 'Scale' (Numerik) untuk membuat Heatmap Korelasi!\n\nSilakan atur tipe variabel di tab 'Variable View' menjadi 'scale'.");
+  }
+
+  const method = document.getElementById('dlg-method').value;
+  const colorScheme = document.getElementById('dlg-color').value;
+  const showText = document.getElementById('dlg-show-text').value === 'true';
+
+  closeDialog();
+
+  const matrix = [];
+  const dataset = [];
+
+  for (let i = 0; i < scaleVars.length; i++) {
+    const row = [];
+    for (let j = 0; j < scaleVars.length; j++) {
+      let r = 0, p = 1, r2 = 0, n = 0;
+      if (i === j) {
+        r = 1; p = 0; r2 = 1; n = S.rows;
+      } else {
+        const { a1: x, a2: y } = extractPair(scaleVars[i].idx, scaleVars[j].idx);
+        n = x.length;
+        if (n >= 3) {
+          if (method === 'pearson') {
+            const res = pearsonReg(x, y);
+            r = res.r; p = res.p; r2 = res.r2;
+          } else {
+            const res = spearman(x, y);
+            r = res.r; p = res.p; r2 = res.r2;
+          }
+        }
+      }
+      row.push({ r, p, r2, n });
+      dataset.push({
+        xVar: scaleVars[j].name,
+        yVar: scaleVars[i].name,
+        xIdx: j,
+        yIdx: i,
+        r, p, r2, n
+      });
+    }
+    matrix.push(row);
+  }
+
+  const containerId = 'heatmap-d3-' + Date.now();
+  
+  let fullHtml = `<div style="font-weight:bold; font-size:15px; margin-bottom:10px;">🔥 Heatmap Korelasi Matriks D3 (${method === 'pearson' ? 'Pearson' : 'Spearman Rank'})</div>`;
+  fullHtml += `<div style="margin-bottom:12px; color:var(--text2); font-size:13px;">Mengevaluasi <b>${scaleVars.length}</b> variabel tipe Scale: ${scaleVars.map(v => `<b>${v.name}</b>`).join(', ')}</div>`;
+
+  fullHtml += `
+    <div style="padding:14px; text-align:center; background:var(--surface); border:1px solid var(--border); border-radius:10px; margin-bottom:14px; overflow-x:auto;">
+      <div id="${containerId}" style="display:inline-block; max-width:100%;"></div>
+    </div>
+  `;
+
+  let matrixTbl = `<div style="font-weight:600; margin-top:14px; margin-bottom:6px; font-size:13px;">Tabel Nilai Koefisien Korelasi Matrix (${method.toUpperCase()})</div>
+    <table class="res-table">
+      <thead>
+        <tr>
+          <th>Variabel</th>
+          ${scaleVars.map(v => `<th>${v.name}</th>`).join('')}
+        </tr>
+      </thead>
+      <tbody>`;
+
+  for (let i = 0; i < scaleVars.length; i++) {
+    matrixTbl += `<tr>
+      <td style="font-weight:600; background:var(--surface-hover);">${scaleVars[i].name}</td>`;
+    for (let j = 0; j < scaleVars.length; j++) {
+      const cell = matrix[i][j];
+      const isSig = cell.p <= 0.05 && i !== j;
+      const stars = cell.p <= 0.001 ? '***' : cell.p <= 0.01 ? '**' : cell.p <= 0.05 ? '*' : '';
+      matrixTbl += `<td style="${isSig ? 'font-weight:bold; color:var(--primary);' : ''}">
+        ${cell.r.toFixed(3)}${stars ? `<span class="sig" style="margin-left:2px;">${stars}</span>` : ''}
+      </td>`;
+    }
+    matrixTbl += `</tr>`;
+  }
+  matrixTbl += `</tbody></table>`;
+  fullHtml += generateTable(matrixTbl);
+
+  let sigPairsCount = 0;
+  for (let i = 0; i < scaleVars.length; i++) {
+    for (let j = i + 1; j < scaleVars.length; j++) {
+      if (matrix[i][j].p <= 0.05) sigPairsCount++;
+    }
+  }
+  const totalPairs = (scaleVars.length * (scaleVars.length - 1)) / 2;
+
+  let interp = `
+    <div class="r-note">
+      <b>Interpretasi Akademis Heatmap Korelasi:</b><br>
+      • Evaluasi matriks korelasi ${method === 'pearson' ? 'Pearson' : 'Spearman Rank'} terhadap ${scaleVars.length} variabel (${totalPairs} pasangan kombinasi).<br>
+      • Ditemukan <b>${sigPairsCount} dari ${totalPairs} pasangan variabel</b> yang memiliki hubungan korelasi signifikan secara statistik (p < 0.05, ditandai dengan tanda bintang *).<br>
+      • <b>Petunjuk Visual:</b> Arahkan kursor / sentuh sel pada Heatmap D3 di atas untuk melihat rincian koefisien korelasi (r), nilai R², p-value, dan tingkat signifikansi secara parsial.
+    </div>
+  `;
+  fullHtml += interp + '<hr>';
+
+  appendToReport('Heatmap Korelasi Matriks', fullHtml);
+
+  setTimeout(() => {
+    renderD3HeatmapSvg(containerId, scaleVars, dataset, colorScheme, showText);
+  }, 120);
+}
+
+function renderD3HeatmapSvg(containerId, scaleVars, dataset, colorScheme, showText) {
+  if (typeof d3 === 'undefined') {
+    console.error('Library D3.js belum siap dimuat.');
+    return;
+  }
+
+  const container = d3.select('#' + containerId);
+  if (container.empty()) return;
+  container.html('');
+
+  const n = scaleVars.length;
+  const cellSize = Math.max(55, Math.min(85, Math.floor(520 / n)));
+  const margin = { top: 90, right: 110, bottom: 90, left: 110 };
+  const width = n * cellSize;
+  const height = n * cellSize;
+
+  const svg = container.append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .style("max-width", "100%")
+    .style("height", "auto")
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  let interpolator = d3.interpolateRdBu;
+  if (colorScheme === 'coolwarm') {
+    interpolator = t => d3.interpolateRdBu(1 - t);
+  } else if (colorScheme === 'viridis') {
+    interpolator = d3.interpolateViridis;
+  } else if (colorScheme === 'spectral') {
+    interpolator = t => d3.interpolateSpectral(1 - t);
+  } else if (colorScheme === 'blues') {
+    interpolator = d3.interpolateBlues;
+  }
+
+  const domain = colorScheme === 'blues' ? [0, 1] : [-1, 1];
+  const colorScale = d3.scaleSequential().interpolator(interpolator).domain(domain);
+
+  const varNames = scaleVars.map(v => v.name);
+  const x = d3.scaleBand().range([0, width]).domain(varNames).padding(0.06);
+  const y = d3.scaleBand().range([0, height]).domain(varNames).padding(0.06);
+
+  const xAxis = svg.append("g").call(d3.axisTop(x).tickSize(0));
+  xAxis.select(".domain").remove();
+  xAxis.selectAll(".tick text")
+    .style("fill", "var(--text)")
+    .style("font-weight", "600")
+    .style("font-size", "12px")
+    .style("font-family", "var(--font-sans)")
+    .attr("transform", "rotate(-35)")
+    .style("text-anchor", "start");
+
+  const yAxis = svg.append("g").call(d3.axisLeft(y).tickSize(0));
+  yAxis.select(".domain").remove();
+  yAxis.selectAll(".tick text")
+    .style("fill", "var(--text)")
+    .style("font-weight", "600")
+    .style("font-size", "12px")
+    .style("font-family", "var(--font-sans)");
+
+  let tooltip = d3.select("body").select(".dsw-heatmap-tooltip");
+  if (tooltip.empty()) {
+    tooltip = d3.select("body").append("div")
+      .attr("class", "dsw-heatmap-tooltip")
+      .style("position", "absolute")
+      .style("visibility", "hidden")
+      .style("background", "var(--surface)")
+      .style("color", "var(--text)")
+      .style("border", "1px solid var(--border)")
+      .style("border-radius", "8px")
+      .style("padding", "8px 12px")
+      .style("font-size", "12px")
+      .style("box-shadow", "var(--shadow)")
+      .style("pointer-events", "none")
+      .style("z-index", "9999");
+  }
+
+  svg.selectAll(".cell")
+    .data(dataset)
+    .enter()
+    .append("rect")
+    .attr("class", "cell")
+    .attr("x", d => x(d.xVar))
+    .attr("y", d => y(d.yVar))
+    .attr("rx", 6)
+    .attr("ry", 6)
+    .attr("width", x.bandwidth())
+    .attr("height", y.bandwidth())
+    .style("fill", d => colorScale(d.r))
+    .style("stroke", "var(--bg)")
+    .style("stroke-width", "2px")
+    .style("cursor", "pointer")
+    .on("mouseover", function(event, d) {
+      d3.select(this).style("stroke", "var(--primary)").style("stroke-width", "3px");
+      const stars = d.p <= 0.001 ? '***' : d.p <= 0.01 ? '**' : d.p <= 0.05 ? '*' : '(ns)';
+      tooltip.html(`
+        <div style="font-weight:700; border-bottom:1px solid var(--border); padding-bottom:4px; margin-bottom:4px;">
+          ${d.xVar} × ${d.yVar}
+        </div>
+        <div>Koefisien Korelasi (r): <b>${d.r.toFixed(3)}</b> ${stars}</div>
+        <div>R² (Determinasi): <b>${d.r2.toFixed(3)}</b></div>
+        <div>p-value: <b>${fmtp(d.p)}</b></div>
+        <div>Jumlah Sampel (N): <b>${d.n}</b></div>
+      `).style("visibility", "visible");
+    })
+    .on("mousemove", function(event) {
+      tooltip.style("top", (event.pageY - 10) + "px").style("left", (event.pageX + 15) + "px");
+    })
+    .on("mouseout", function() {
+      d3.select(this).style("stroke", "var(--bg)").style("stroke-width", "2px");
+      tooltip.style("visibility", "hidden");
+    });
+
+  if (showText) {
+    svg.selectAll(".cell-text")
+      .data(dataset)
+      .enter()
+      .append("text")
+      .attr("class", "cell-text")
+      .attr("x", d => x(d.xVar) + x.bandwidth() / 2)
+      .attr("y", d => y(d.yVar) + y.bandwidth() / 2 + 4)
+      .attr("text-anchor", "middle")
+      .style("font-size", Math.max(10, Math.min(13, cellSize / 4.5)) + "px")
+      .style("font-weight", "600")
+      .style("font-family", "var(--font-mono)")
+      .style("pointer-events", "none")
+      .style("fill", d => {
+        const c = d3.hsl(colorScale(d.r));
+        return c.l > 0.6 ? "#0F172A" : "#FFFFFF";
+      })
+      .text(d => {
+        const stars = d.p <= 0.001 ? '***' : d.p <= 0.01 ? '**' : d.p <= 0.05 ? '*' : '';
+        return d.r.toFixed(2) + stars;
+      });
+  }
+
+  const legendWidth = 14;
+  const legendHeight = height;
+  const legendG = svg.append("g").attr("transform", `translate(${width + 30}, 0)`);
+
+  const defs = svg.append("defs");
+  const gradientId = "heatmap-legend-grad-" + Math.floor(Math.random()*10000);
+  const linearGradient = defs.append("linearGradient")
+    .attr("id", gradientId)
+    .attr("x1", "0%").attr("y1", "100%")
+    .attr("x2", "0%").attr("y2", "0%");
+
+  const stops = 10;
+  for (let i = 0; i <= stops; i++) {
+    const t = i / stops;
+    const val = domain[0] + t * (domain[1] - domain[0]);
+    linearGradient.append("stop")
+      .attr("offset", (t * 100) + "%")
+      .attr("stop-color", colorScale(val));
+  }
+
+  legendG.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .attr("rx", 3)
+    .style("fill", `url(#${gradientId})`);
+
+  const legendScale = d3.scaleLinear().domain(domain).range([legendHeight, 0]);
+  const legendAxis = d3.axisRight(legendScale)
+    .ticks(5)
+    .tickFormat(d => d > 0 ? `+${d.toFixed(1)}` : d.toFixed(1));
+
+  const legendAxisG = legendG.append("g")
+    .attr("transform", `translate(${legendWidth}, 0)`)
+    .call(legendAxis);
+
+  legendAxisG.select(".domain").remove();
+  legendAxisG.selectAll(".tick text")
+    .style("fill", "var(--text)")
+    .style("font-size", "10px")
+    .style("font-family", "var(--font-mono)");
+}
+
 function loadSampleData() {
-  clearAll(); const rawData = [[1, 10.2], [1, 10.5], [1, 10.1], [1, 10.8], [1, 10.6], [2, 12.5], [2, 12.8], [2, 12.4], [2, 14.2], [2, 14.5], [3, 16.0], [3, 16.2], [3, 16.5], [3, 17.8], [3, 17.6]];
-  if(S.rows < rawData.length) addRows(rawData.length - S.rows);
-  rawData.forEach((row, r) => { S.data[r][0] = row[0]; S.data[r][1] = row[1]; }); S.vars[0].values = '1=Kontrol, 2=Pakan_A, 3=Pakan_B';
-  renderAll(); alert("Data Sampel Berhasil Dimuat!");
+  executeClearAll();
+  const rawData = [
+    [1, 10.2, 28.5, 2.45, 1.12],
+    [1, 10.5, 29.1, 2.50, 1.10],
+    [1, 10.1, 27.8, 2.38, 1.15],
+    [1, 10.8, 30.2, 2.58, 1.08],
+    [1, 10.6, 29.8, 2.54, 1.09],
+    [2, 12.5, 38.4, 3.12, 0.98],
+    [2, 12.8, 39.2, 3.18, 0.96],
+    [2, 12.4, 37.9, 3.08, 1.01],
+    [2, 14.2, 42.5, 3.42, 0.92],
+    [2, 14.5, 43.1, 3.48, 0.90],
+    [3, 16.0, 52.0, 4.10, 0.82],
+    [3, 16.2, 53.2, 4.18, 0.80],
+    [3, 16.5, 54.1, 4.25, 0.78],
+    [3, 17.8, 58.0, 4.50, 0.75],
+    [3, 17.6, 57.2, 4.45, 0.76]
+  ];
+  if (S.rows < rawData.length) addRows(rawData.length - S.rows);
+  if (S.cols < 5) addColumns(5 - S.cols);
+  S.vars[0].name = "Perlakuan"; S.vars[0].type = "nominal"; S.vars[0].values = "1=Kontrol, 2=Pakan_A, 3=Pakan_B";
+  S.vars[1].name = "Bobot_Awal"; S.vars[1].type = "scale";
+  S.vars[2].name = "Bobot_Akhir"; S.vars[2].type = "scale";
+  S.vars[3].name = "Laju_SGR"; S.vars[3].type = "scale";
+  S.vars[4].name = "Rasio_FCR"; S.vars[4].type = "scale";
+  rawData.forEach((row, r) => {
+    row.forEach((val, c) => {
+      S.data[r][c] = val;
+    });
+  });
+  renderAll();
+  alert("Data Sampel Penelitian Akuakultur Berhasil Dimuat!\n(Variabel: Perlakuan, Bobot_Awal, Bobot_Akhir, Laju_SGR, Rasio_FCR)");
 }
 init();
 </script>

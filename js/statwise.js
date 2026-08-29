@@ -10,13 +10,12 @@ function toggleSidebar() {
 
 function toggleTheme() {
   const html = document.documentElement; const btn = document.getElementById('theme-btn');
-  if (html.getAttribute('data-theme') === 'dark') { 
-      html.setAttribute('data-theme', 'light'); 
-      btn.innerHTML = '<span class="dsw-icon-styled">🌙</span> <span class="btn-text">Mode Gelap</span>'; 
-  } 
-  else { 
-      html.setAttribute('data-theme', 'dark'); 
-      btn.innerHTML = '<span class="dsw-icon-styled">☀️</span> <span class="btn-text">Mode Terang</span>'; 
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('ares_theme', next);
+  if (btn) {
+    if (next === 'light') btn.innerHTML = '<span class="dsw-icon-styled">🌙</span> <span class="btn-text">Mode Gelap</span>'; 
+    else btn.innerHTML = '<span class="dsw-icon-styled">☀️</span> <span class="btn-text">Mode Terang</span>'; 
   }
 }
 
@@ -61,9 +60,43 @@ function downloadCSV() {
 // ==========================================
 // RENDER DATA & VAR VIEW
 // ==========================================
+function deleteColumn(colIdx) {
+  if (S.cols <= 1) {
+    if (typeof showToast === 'function') showToast('Tabel harus memiliki minimal 1 kolom variabel.');
+    else alert('Tabel harus memiliki minimal 1 kolom variabel.');
+    return;
+  }
+  const varName = S.vars[colIdx] ? S.vars[colIdx].name : `Kolom #${colIdx+1}`;
+  if (typeof openConfirmDialog === 'function') {
+    openConfirmDialog({
+      title: `<span class="dsw-icon-styled">🗑️</span> Hapus Variabel`,
+      bodyHtml: `<p style="margin:0; font-size:13.5px; color:var(--text); line-height:1.6;">Apakah Anda yakin ingin menghapus variabel <strong>${varName}</strong> beserta seluruh nilainya di Data View?</p>`,
+      confirmText: 'Ya, Hapus Variabel',
+      confirmClass: 'btn-danger-confirm',
+      onConfirm: () => {
+        S.vars.splice(colIdx, 1);
+        S.data.forEach(row => row.splice(colIdx, 1));
+        S.cols--;
+        renderAll();
+        if (typeof showToast === 'function') showToast(`Variabel ${varName} telah dihapus.`);
+      }
+    });
+  } else {
+    if (confirm(`Hapus variabel ${varName}?`)) {
+      S.vars.splice(colIdx, 1);
+      S.data.forEach(row => row.splice(colIdx, 1));
+      S.cols--;
+      renderAll();
+    }
+  }
+}
+
 function renderDataHead() {
   const tr = document.createElement('tr'); tr.innerHTML = `<th class="row-index">#</th>`;
-  S.vars.forEach(v => { const icon = v.type === 'scale' ? '∑' : v.type === 'nominal' ? 'A' : '◈'; tr.innerHTML += `<th>${icon} ${v.name}</th>`; });
+  S.vars.forEach((v, idx) => { 
+    const icon = v.type === 'scale' ? '∑' : v.type === 'nominal' ? 'A' : '◈'; 
+    tr.innerHTML += `<th style="position:relative; padding-right:24px;">${icon} ${v.name} <button class="btn-icon" style="position:absolute; right:4px; top:50%; transform:translateY(-50%); font-size:13px; opacity:0.6; line-height:1; padding:2px;" title="Hapus kolom ${v.name}" onclick="event.stopPropagation(); deleteColumn(${idx});">×</button></th>`; 
+  });
   document.getElementById('data-head').innerHTML = ''; document.getElementById('data-head').appendChild(tr);
 }
 function renderDataBody() {
@@ -105,7 +138,8 @@ function renderVarBody() {
       <td><input class="var-input" style="font-weight:600; color:var(--primary)" value="${v.name}" onchange="S.vars[${i}].name=this.value"></td>
       <td><select class="var-input" onchange="S.vars[${i}].type=this.value"><option value="scale" ${v.type==='scale'?'selected':''}>∑ Numerik</option><option value="nominal" ${v.type==='nominal'?'selected':''}>A Nominal</option><option value="ordinal" ${v.type==='ordinal'?'selected':''}>◈ Ordinal</option></select></td>
       <td><select class="var-input" onchange="S.vars[${i}].role=this.value"><option value="none" ${v.role==='none'?'selected':''}>— Tdk Tentu</option><option value="dep" ${v.role==='dep'?'selected':''}>Target (Y)</option><option value="factor" ${v.role==='factor'?'selected':''}>Faktor (X)</option></select></td>
-      <td><input class="var-input" placeholder="1=Kontrol, 2=Pakan" value="${v.values}" onchange="S.vars[${i}].values=this.value"></td>`;
+      <td><input class="var-input" placeholder="1=Kontrol, 2=Pakan" value="${v.values}" onchange="S.vars[${i}].values=this.value"></td>
+      <td style="text-align:center;"><button class="btn-icon" style="color:var(--danger); font-size:16px;" title="Hapus Variabel ${v.name}" onclick="deleteColumn(${i})">×</button></td>`;
     tbody.appendChild(tr);
   });
 }

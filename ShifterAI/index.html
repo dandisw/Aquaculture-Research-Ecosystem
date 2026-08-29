@@ -4,9 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ShifterAI by DSW</title>
+<script src="../js/theme-manager.js"></script>
+<script src="../js/storage-sync.js"></script>
+<script src="../js/i18n.js"></script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%230284C7%22>✨</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=MuseoModerno:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
 
 <!-- OMNI-READER LIBRARIES -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -16,7 +20,7 @@
 
 <style>
 /* ============================================================
-   AREs DESIGN SYSTEM — Consistent with StatWise / AquaLab
+   AREs DESIGN SYSTEM — ShifterAI Scientific Manuscript Workspace
    ============================================================ */
 :root {
   --bg: #F8FAFC; --surface: #FFFFFF; --surface-hover: #F1F5F9;
@@ -27,15 +31,15 @@
   --danger: #DC2626; --danger-light: #FEE2E2;
   --warning: #D97706; --warning-light: #FEF3C7;
   --info: #0C4A6E; --info-light: #E0F2FE;
-  --font-sans: 'DM Sans', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'DM Mono', monospace;
-  --font-serif: 'Fraunces', serif;
-  --radius: 10px;
+  --font-serif: 'MuseoModerno', 'Syne', 'Fraunces', sans-serif;
+  --radius: 12px;
   --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-  --shadow-md: 0 10px 15px -3px rgba(0,0,0,0.07), 0 4px 6px -2px rgba(0,0,0,0.04);
+  --shadow-md: 0 10px 20px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
 }
 [data-theme="dark"] {
-  --bg: #0B1120; --surface: #1E293B; --surface-hover: #334155;
+  --bg: #0B1120; --surface: #1E293B; --surface-hover: #273549;
   --border: #334155; --border-focus: #475569;
   --text: #F8FAFC; --text2: #CBD5E1; --text3: #64748B;
   --primary: #38BDF8; --primary-light: #0C4A6E; --primary-dark: #7DD3FC;
@@ -57,6 +61,9 @@ body {
 .dsw-icon-styled { display: inline-block; vertical-align: middle; transition: filter 0.3s; }
 [data-theme="dark"] .dsw-icon-styled { filter: drop-shadow(0 0 2px rgba(56,189,248,0.5)); }
 
+.ares-logo-header { height: 32px; width: auto; display: block; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.ares-logo-header:hover { transform: scale(1.05) rotate(-2deg); }
+
 /* ── STICKY HEADER ── */
 header {
   background: var(--surface); padding: 0 24px; height: 64px;
@@ -64,52 +71,60 @@ header {
   border-bottom: 1px solid var(--border); flex-shrink: 0;
   position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow); transition: background 0.3s;
 }
+.header-left { display: flex; align-items: center; gap: 14px; }
 .brand {
-  font-family: var(--font-serif); font-size: 22px; font-weight: 600;
+  font-family: var(--font-serif); font-size: 20px; font-weight: 700;
   color: var(--text); letter-spacing: -0.3px; display: flex; align-items: baseline; gap: 6px;
+  text-decoration: none;
 }
 .brand-name { display: inline-flex; }
 .brand span.accent { color: var(--primary); }
-.brand-sub { font-family: var(--font-sans); font-size: 11px; font-weight: 400; color: var(--text3); margin-left: 2px; }
+.brand-sub { font-family: var(--font-sans); font-size: 11px; font-weight: 500; color: var(--text3); margin-left: 2px; }
 .header-actions { display: flex; gap: 8px; align-items: center; }
 
 /* ── BUTTONS ── */
 .btn {
-  padding: 8px 16px; border-radius: 6px; font-family: var(--font-sans);
-  font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  padding: 8px 16px; border-radius: 8px; font-family: var(--font-sans);
+  font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid transparent; display: inline-flex; align-items: center;
-  justify-content: center; gap: 6px; white-space: nowrap;
+  justify-content: center; gap: 6px; white-space: nowrap; text-decoration: none;
 }
-.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
-.btn-primary:hover:not(:disabled) { background: var(--primary-dark); border-color: var(--primary-dark); }
-.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; }
-.btn-outline { background: transparent; border-color: var(--border); color: var(--text2); }
-.btn-outline:hover { background: var(--surface-hover); color: var(--text); }
-.btn-sm { padding: 6px 10px; font-size: 12px; }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25); }
+.btn-primary:hover:not(:disabled) { background: var(--primary-dark); border-color: var(--primary-dark); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; transform: none; }
+.btn-outline { background: var(--surface); border-color: var(--border); color: var(--text2); }
+.btn-outline:hover { background: var(--surface-hover); color: var(--text); border-color: var(--border-focus); }
+.btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
 
 /* ── LAYOUT ── */
 .main-container { flex: 1; display: flex; justify-content: center; width: 100%; }
-.workspace { width: 100%; max-width: 860px; padding: 32px 24px 80px 24px; display: flex; flex-direction: column; gap: 20px; }
+.workspace { width: 100%; max-width: 920px; padding: 28px 24px 80px 24px; display: flex; flex-direction: column; gap: 20px; }
 @media (max-width: 640px) {
-  .workspace { padding: 20px 16px 80px 16px; }
-  header { padding: 0 16px; }
-  .brand { font-size: 18px; }
+  .workspace { padding: 18px 14px 80px 14px; }
+  header { padding: 0 14px; }
+  .brand { font-size: 17px; }
+  .brand-sub { display: none; }
   .status-pill { display: none; }
   .btn-text-hide { display: none; }
 }
 
 /* ── PAGE HEADER ── */
-.page-header { text-align: center; margin-bottom: 8px; }
-.page-title { font-family: var(--font-serif); font-size: 26px; font-weight: 500; color: var(--text); letter-spacing: -0.3px; }
-
-/* PENYESUAIAN TAGLINE ACRONYM */
-.page-tagline { 
-  font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--text3); 
-  letter-spacing: 0.5px; margin: 8px 0 12px 0; text-transform: uppercase; 
+.page-header { text-align: center; margin-bottom: 4px; }
+.page-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--primary-light); color: var(--primary);
+  border: 1px solid rgba(56,189,248,0.3); border-radius: 20px;
+  padding: 4px 12px; font-size: 11px; font-weight: 700; font-family: var(--font-mono);
+  letter-spacing: 0.5px; margin-bottom: 10px; text-transform: uppercase;
 }
-.page-tagline .hl { color: var(--primary); font-weight: 700; }
+.page-title { font-family: var(--font-serif); font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.4px; }
 
-.page-desc { font-size: 13px; color: var(--text3); line-height: 1.6; }
+/* PENYESUAIAN TAGLINE ACRONYM (UNIFORM & PROFESIONAL) */
+.page-tagline { 
+  font-family: var(--font-sans); font-size: 12px; font-weight: 500; color: var(--text3); 
+  letter-spacing: 0.2px; margin: 6px 0 10px 0; line-height: 1.5;
+}
+.page-desc { font-size: 13px; color: var(--text2); line-height: 1.6; max-width: 680px; margin: 0 auto; }
 
 /* ── STATUS PILL ── */
 .status-pill {
@@ -124,65 +139,93 @@ header {
 .card {
   background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; flex-shrink: 0;
 }
-.card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
-.card-title { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; font-family: var(--font-mono); }
-.card-body { padding: 20px; }
-.step-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--primary); background: var(--primary-light); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; flex-shrink: 0; }
+.card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.card-header-left { display: flex; align-items: center; gap: 10px; }
+.card-title { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.3px; font-family: var(--font-mono); text-transform: uppercase; }
+.card-body { padding: 22px; }
+.step-label { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--primary); background: var(--primary-light); border: 1px solid var(--border); border-radius: 6px; padding: 3px 8px; flex-shrink: 0; }
+
+/* ── TAB SELECTOR UNTUK INPUT ── */
+.input-tabs { display: flex; gap: 6px; background: var(--surface-hover); border-radius: 8px; padding: 4px; margin-bottom: 16px; border: 1px solid var(--border); }
+.input-tab-btn {
+  flex: 1; padding: 7px 12px; border: none; border-radius: 6px; background: transparent; color: var(--text2);
+  font-family: var(--font-sans); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.input-tab-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-weight: 700; }
 
 /* ── DROPZONE ── */
 .dropzone {
-  border: 2px dashed var(--border-focus); background: var(--surface-hover); border-radius: var(--radius); padding: 28px 20px; text-align: center; transition: all 0.25s; cursor: pointer; position: relative;
+  border: 2px dashed var(--border-focus); background: var(--surface-hover); border-radius: var(--radius); padding: 26px 20px; text-align: center; transition: all 0.25s; cursor: pointer; position: relative;
 }
 .dropzone:hover, .dropzone.dragover { background: var(--primary-light); border-color: var(--primary); }
 .dropzone.ready { border-color: var(--success); background: var(--success-light); border-style: solid; }
 .dropzone input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-.dz-icon { font-size: 28px; margin-bottom: 8px; }
-.dz-title { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
+.dz-icon { font-size: 30px; margin-bottom: 8px; }
+.dz-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .dz-sub { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
 .dropzone.ready .dz-title { color: var(--success); }
-.dropzone.ready .dz-sub { color: var(--success); opacity: 0.8; }
+.dropzone.ready .dz-sub { color: var(--success); opacity: 0.9; }
 
 /* ── INPUT GRID ── */
 .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
-@media (max-width: 640px) { .input-grid { grid-template-columns: 1fr; } }
+@media (max-width: 680px) { .input-grid { grid-template-columns: 1fr; } }
 
 /* ── TEXTAREA ── */
 .prompt-textarea {
-  width: 100%; min-height: 90px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 13px; resize: vertical; outline: none; line-height: 1.5; transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%; min-height: 96px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 13px; resize: vertical; outline: none; line-height: 1.5; transition: border-color 0.2s, box-shadow 0.2s;
 }
-.prompt-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
-.prompt-textarea::placeholder { color: var(--text3); }
-label.field-label { display: block; font-size: 12px; font-weight: 600; color: var(--text2); margin-bottom: 6px; font-family: var(--font-mono); }
+.prompt-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12); }
+.prompt-textarea::placeholder { color: var(--text3); font-style: italic; }
+label.field-label { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 6px; font-family: var(--font-mono); }
+
+/* ── CHIPS & SUGGESTIONS ── */
+.chip-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.prompt-chip {
+  font-size: 11px; font-family: var(--font-sans); padding: 3px 9px; border-radius: 14px; background: var(--surface-hover); color: var(--text2); border: 1px solid var(--border); cursor: pointer; transition: all 0.15s;
+}
+.prompt-chip:hover { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
 
 /* ── MODE SELECTOR ── */
-.mode-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.mode-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
 .mode-chip {
-  padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--surface-hover); color: var(--text2); font-family: var(--font-mono); transition: all 0.15s;
+  padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: var(--surface-hover); color: var(--text2); font-family: var(--font-mono); transition: all 0.15s; display: flex; align-items: center; gap: 6px;
 }
-.mode-chip.active { background: var(--primary); border-color: var(--primary); color: #fff; }
-.mode-chip:hover:not(.active) { background: var(--border); }
+.mode-chip.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 2px 6px rgba(2,132,199,0.25); }
+.mode-chip:hover:not(.active) { background: var(--border); color: var(--text); }
 
 /* ── OUTPUT SECTION ── */
 .output-card { display: none; }
-.output-card.visible { display: block; }
-.output-topbar { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.output-meta { display: flex; align-items: center; gap: 10px; }
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 5px; font-size: 11px; font-weight: 600; font-family: var(--font-mono); background: var(--primary-light); color: var(--info); border: 1px solid var(--border); }
-.output-type-label { font-size: 11px; color: var(--text3); font-family: var(--font-mono); display: inline-block;}
-@media (max-width: 480px) { .output-type-label { display: none; } }
+.output-card.visible { display: block; animation: fadeInUp 0.3s ease; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+.output-topbar { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.output-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; font-family: var(--font-mono); background: var(--primary-light); color: var(--primary); border: 1px solid var(--border); }
+.meta-stat { font-size: 11.5px; color: var(--text3); font-family: var(--font-mono); display: inline-flex; align-items: center; gap: 4px; }
+
+.output-view-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.manuscript-container { padding: 24px; background: var(--surface); }
 .manuscript-box {
-  padding: 24px; font-family: 'Times New Roman', Times, serif; font-size: 16px; line-height: 1.85; color: var(--text); text-align: justify; white-space: pre-wrap; min-height: 160px; text-indent: 2em;
+  font-family: 'Times New Roman', Times, serif; font-size: 16px; line-height: 1.85; color: var(--text); text-align: justify; white-space: pre-wrap; min-height: 180px; text-indent: 2.2em;
 }
+.manuscript-box.font-sans-mode { font-family: var(--font-sans); text-indent: 0; }
 .manuscript-box.ai-typing { border-right: 2px solid var(--primary); animation: blink 0.75s step-end infinite; }
 @keyframes blink { from, to { border-color: transparent } 50% { border-color: var(--primary); } }
 
-/* ── INFO BANNER ── */
-.info-banner { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; background: var(--info-light); border: 1px solid var(--primary-light); border-radius: 8px; font-size: 12px; color: var(--info); line-height: 1.5; }
-.info-banner .dsw-icon-styled { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+/* ── APA CITATIONS BOX ── */
+.apa-references-card {
+  margin: 0 24px 24px 24px; padding: 18px 20px; background: var(--surface-hover); border: 1px solid var(--border); border-left: 4px solid var(--primary); border-radius: 8px;
+}
+.apa-ref-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.apa-ref-title { font-size: 12.5px; font-weight: 700; font-family: var(--font-mono); color: var(--text); display: flex; align-items: center; gap: 6px; }
+.apa-ref-list { font-family: 'Times New Roman', Times, serif; font-size: 14.5px; line-height: 1.7; color: var(--text); }
+.apa-ref-item { margin-bottom: 8px; padding-left: 2em; text-indent: -2em; }
+.apa-ref-item:last-child { margin-bottom: 0; }
 
 /* ── PROGRESS BAR ── */
-.progress-wrap { display: none; padding: 0 20px 16px; }
+.progress-wrap { display: none; padding: 16px 20px 0; }
 .progress-wrap.visible { display: block; }
 .progress-label { font-size: 11px; color: var(--text3); font-family: var(--font-mono); margin-bottom: 6px; }
 .progress-bar-track { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
@@ -191,6 +234,13 @@ label.field-label { display: block; font-size: 12px; font-weight: 600; color: va
 }
 @keyframes progress-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+.form-control-select {
+  width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 12px;
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s; cursor: pointer;
+}
+.form-control-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1); }
 
 /* ── TOAST ── */
 .toast-container { position: fixed; bottom: 20px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
@@ -211,17 +261,27 @@ label.field-label { display: block; font-size: 12px; font-weight: 600; color: va
 
 <!-- HEADER -->
 <header>
-  <div class="brand">
-    <span class="dsw-icon-styled">✨</span>
-    <span class="brand-name">Shifter<span class="accent">AI</span></span>
-    <span class="brand-sub">by DSW</span>
+  <div class="header-left">
+    <a href="../index.html" title="Kembali ke Ekosistem AREs">
+      <img src="../AREs%20Logo%20Acronim.png" alt="AREs Logo" class="ares-logo-header">
+    </a>
+    <div class="brand">
+      <span class="dsw-icon-styled">✨</span>
+      <span class="brand-name">Shifter<span class="accent">AI</span></span>
+      <span class="brand-sub">by DSW</span>
+    </div>
   </div>
   <div class="header-actions">
+    <div id="aresDataSyncIndicator" class="ares-sync-indicator" title="Status Sinkronisasi & Penyimpanan Lokal Data Riset AREs (Klik untuk melihat rincian)"></div>
     <div class="status-pill online" id="engineStatus">
       <span class="status-dot"></span>
-      <span id="engineLabel">Vercel Proxy · Gemini AI</span>
+      <span id="engineLabel">AREs Proxy · Gemini AI</span>
     </div>
     
+    <a href="../index.html" class="btn btn-outline btn-sm" style="text-decoration:none;" title="Kembali ke Beranda AREs">
+      <span class="dsw-icon-styled">🏠</span> <span class="btn-text">Home AREs</span>
+    </a>
+
     <!-- Language Toggle Button -->
     <button class="btn btn-outline btn-sm" onclick="toggleLang()" id="langBtn" title="Ganti Bahasa Output">
       <span class="dsw-icon-styled">🇮🇩</span>
@@ -240,40 +300,118 @@ label.field-label { display: block; font-size: 12px; font-weight: 600; color: va
   <div class="workspace">
 
     <div class="page-header">
-      <div class="page-title">Generator Draf Akademik</div>
+      <div class="page-badge">✨ Scientific Manuscript Generator</div>
+      <div class="page-title">Generator Draf Akademik &amp; Sintesis Riset</div>
       
-      <!-- SHIFTER ACRONYM TAGLINE DENGAN HIGHLIGHT -->
+      <!-- SHIFTER ACRONYM TAGLINE (CLEAN, UNIFORM, TANPA PENCAHAYAAN WARNA BERBEDA) -->
       <div class="page-tagline">
-        <span class="hl">SHIFTER</span> (<span class="hl">S</span>mart <span class="hl">H</span>euristic <span class="hl">I</span>nterpreter for <span class="hl">F</span>ormatting <span class="hl">T</span>ext &amp; <span class="hl">E</span>xperimental <span class="hl">R</span>esults)
+        SHIFTER (Smart Heuristic Interpreter for Formatting Text &amp; Experimental Results)
       </div>
       
       <div class="page-desc">
-        Sistem akan otomatis menyusun draf saat data berhasil diekstrak.<br>
-        Isi kolom instruksi jika Anda ingin merevisi detail atau mengubah arah narasi.
+        Sintesis otomatis data riset laboratorium, matriks statistik, dan uji lapang menjadi draf naskah publikasi ilmiah terstruktur lengkap dengan sitasi standar APA Style.
       </div>
     </div>
 
     <!-- CARD 1: Input -->
     <div class="card">
       <div class="card-header">
-        <span class="step-label">01</span>
-        <span class="card-title">Sumber Data &amp; Instruksi Khusus</span>
+        <div class="card-header-left">
+          <span class="step-label">01</span>
+          <span class="card-title">Konfigurasi Bab &amp; Sumber Data Riset</span>
+        </div>
       </div>
       <div class="card-body">
 
-        <label class="field-label">Mode Penyusunan</label>
+        <label class="field-label">
+          <span>Struktur Bab Naskah</span>
+          <span style="font-weight:400; color:var(--text3); font-size:11px;">Pilih bagian yang akan disusun</span>
+        </label>
         <div class="mode-row">
-          <div class="mode-chip active" onclick="selectMode(this, 'results')" data-mode="results">📄 Hasil &amp; Pembahasan</div>
+          <div class="mode-chip active" onclick="selectMode(this, 'results')" data-mode="results">📊 Hasil &amp; Pembahasan</div>
           <div class="mode-chip" onclick="selectMode(this, 'intro')" data-mode="intro">📖 Pendahuluan</div>
+          <div class="mode-chip" onclick="selectMode(this, 'methods')" data-mode="methods">🔬 Metodologi</div>
           <div class="mode-chip" onclick="selectMode(this, 'conclusion')" data-mode="conclusion">✅ Kesimpulan</div>
           <div class="mode-chip" onclick="selectMode(this, 'abstract')" data-mode="abstract">📋 Abstrak</div>
         </div>
 
         <div class="divider"></div>
 
+        <!-- PREFERENSI & KONFIGURASI GEMINI AI & APA CITATION -->
+        <div style="background:var(--surface-hover); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-bottom:18px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; cursor:pointer;" onclick="toggleGeminiPref()">
+            <div style="font-size:12px; font-weight:700; font-family:var(--font-mono); color:var(--text); display:flex; align-items:center; gap:8px;">
+              <span class="dsw-icon-styled">⚙️</span> Parameter Engine &amp; Format Sitasi APA
+              <span style="font-size:10px; padding:2px 8px; border-radius:4px; background:var(--primary-light); color:var(--primary); font-weight:700;" id="activeModelBadge">Gemini 3.6 Flash</span>
+            </div>
+            <span id="geminiPrefArrow" style="font-size:11px; color:var(--primary); font-weight:700;">▲ Sembunyikan</span>
+          </div>
+
+          <div id="geminiPrefBody" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:14px;">
+            <div>
+              <label class="field-label" for="prefModel">Model Gemini API</label>
+              <select id="prefModel" class="form-control-select" onchange="onModelChange()">
+                <option value="gemini-3.6-flash" selected>Gemini 3.6 Flash (Standar - Cepat &amp; Presisi)</option>
+                <option value="gemini-3.1-pro-preview">Gemini 3.1 Pro (Deep Reasoning &amp; Synthesis)</option>
+                <option value="gemini-3.1-flash-lite">Gemini Flash Lite (Generasi Kilat)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="field-label" for="prefTone">Gaya Penulisan Akademik</label>
+              <select id="prefTone" class="form-control-select">
+                <option value="formal" selected>Formal &amp; Kritis (Standar Jurnal Scopus/Sinta 1)</option>
+                <option value="concise">Ringkas, Lugas &amp; Padat Data</option>
+                <option value="exploratory">Analitis Komparatif &amp; Diskusi Biologis Mendalam</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="field-label" for="prefCitation">Format Sitasi &amp; Pustaka</label>
+              <select id="prefCitation" class="form-control-select">
+                <option value="apa7" selected>APA 7th Edition + Daftar Pustaka Otomatis</option>
+                <option value="ieee">IEEE / Vancouver (Numerik [1])</option>
+                <option value="none">Tanpa Tambahan Sitasi Literatur</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="field-label" for="prefLength">Kedalaman Naskah</label>
+              <select id="prefLength" class="form-control-select">
+                <option value="standard" selected>Standar Akademik (2-3 Paragraf)</option>
+                <option value="concise">Ringkas (~150-200 Kata)</option>
+                <option value="detailed">Komprehensif &amp; Rinci (4+ Paragraf)</option>
+              </select>
+            </div>
+
+            <div style="grid-column: span 2;">
+              <label class="field-label" for="prefTemp">Temperatur Presisi AI</label>
+              <select id="prefTemp" class="form-control-select">
+                <option value="0.2">0.2 — Konservatif (Presisi Tinggi pada Angka, Data Eksak &amp; Sitasi)</option>
+                <option value="0.5" selected>0.5 — Seimbang (Standar Naskah Publikasi Ilmiah)</option>
+                <option value="0.8">0.8 — Eksploratif (Eksplorasi Hipotesis &amp; Komparasi Literatur Luas)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- INPUT METHOD TABS -->
+        <div class="input-tabs">
+          <button class="input-tab-btn active" id="tabUploadBtn" onclick="switchInputTab('upload')">
+            <span class="dsw-icon-styled">📁</span> Unggah File Riset
+          </button>
+          <button class="input-tab-btn" id="tabTextBtn" onclick="switchInputTab('text')">
+            <span class="dsw-icon-styled">✍️</span> Tempel Data / Catatan Manual
+          </button>
+        </div>
+
         <div class="input-grid">
-          <div>
-            <label class="field-label">Lampiran Data (Pemicu Otomatis)</label>
+          <!-- AREA 1: DROPZONE / RAW DATA INPUT -->
+          <div id="uploadInputSection">
+            <label class="field-label">
+              <span>Lampiran Data Riset</span>
+              <span style="font-weight:400; color:var(--text3); font-size:11px;">Pemicu otomatis saat diunggah</span>
+            </label>
             <div class="dropzone" id="omniDropzone" onclick="document.getElementById('fileInput').click()">
               <input type="file" id="fileInput" accept=".csv,.tsv,.xlsx,.xls,.pdf,.docx,.txt,.fasta,.sav" onclick="event.stopPropagation()">
               <div class="dz-icon dsw-icon-styled" id="dzIcon">📂</div>
@@ -282,19 +420,47 @@ label.field-label { display: block; font-size: 12px; font-weight: 600; color: va
             </div>
           </div>
 
+          <div id="manualInputSection" style="display:none;">
+            <label class="field-label" for="rawTextInput">
+              <span>Data Mentah / Matriks / Catatan</span>
+              <span style="font-weight:400; color:var(--text3); font-size:11px;">Tabel, Nilai ANOVA, FCR, dll.</span>
+            </label>
+            <textarea id="rawTextInput" class="prompt-textarea" style="min-height: 120px;"
+              placeholder="Tempelkan data tabel atau ringkasan hasil lab di sini (misal: Perlakuan A: FCR 1.25, Sintasan 92%; Perlakuan B: FCR 1.40, Sintasan 85%; p-value = 0.014)..."
+              oninput="checkBtnState()"></textarea>
+          </div>
+
+          <!-- AREA 2: REVISI KHUSUS & QUICK CHIPS -->
           <div style="display:flex; flex-direction:column; gap:10px;">
             <div>
-              <label class="field-label" for="customPrompt">Revisi Khusus <span style="font-weight:400;color:var(--text3)">(opsional)</span></label>
+              <label class="field-label" for="customPrompt">
+                <span>Instruksi Khusus &amp; Arah Narasi</span>
+                <span style="font-weight:400;color:var(--text3)">(opsional)</span>
+              </label>
               <textarea id="customPrompt" class="prompt-textarea"
-                placeholder="Contoh: Fokuskan kesimpulan pada nilai p-value yang signifikan saja..."></textarea>
+                placeholder="Contoh: Tekankan perbandingan dengan baku mutu SNI dan sertakan sitasi studi akuakultur terdahulu dalam format APA..."></textarea>
+              
+              <!-- QUICK SUGGESTIONS -->
+              <div class="chip-container">
+                <span class="prompt-chip" onclick="appendPrompt('+ Sertakan sitasi literatur terkait (APA Style)')">+ Sitasi APA</span>
+                <span class="prompt-chip" onclick="appendPrompt('+ Bahas signifikansi p-value & FCR')">+ Analisis FCR & p-value</span>
+                <span class="prompt-chip" onclick="appendPrompt('+ Bandingkan dengan standar baku mutu SNI/FAO')">+ Standar SNI/FAO</span>
+                <span class="prompt-chip" onclick="appendPrompt('+ Elaborasi mekanisme fisiologis/biokimia')">+ Mekanisme Biokimia</span>
+              </div>
             </div>
-            <button id="btnGenerate" class="btn btn-primary" style="width:100%; padding:11px;" onclick="startAnalysis()" disabled>
-              <span class="dsw-icon-styled">✨</span> Perbarui Naskah
-            </button>
+
+            <div style="display:flex; gap:8px; margin-top:4px;">
+              <button id="btnGenerate" class="btn btn-primary" style="flex:1; padding:11px;" onclick="startAnalysis()" disabled>
+                <span class="dsw-icon-styled">✨</span> Susun Naskah Ilmiah
+              </button>
+              <button class="btn btn-outline btn-sm" onclick="resetAll()" title="Reset formulir">
+                <span class="dsw-icon-styled">🔄</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="progress-wrap" id="progressWrap" style="margin-top:16px; padding:0;">
+        <div class="progress-wrap" id="progressWrap">
           <div class="progress-label" id="progressLabel">Mengekstrak data...</div>
           <div class="progress-bar-track">
             <div class="progress-bar-fill" id="progressFill"></div>
@@ -309,18 +475,43 @@ label.field-label { display: block; font-size: 12px; font-weight: 600; color: va
       <div class="output-topbar">
         <div class="output-meta">
           <span class="badge" id="badgeTopic">Sistem Bersiaga…</span>
-          <span class="output-type-label" id="badgeSection">Hasil dan Pembahasan</span>
+          <span class="badge" id="badgeSection" style="background:var(--surface-hover); color:var(--text);">Hasil dan Pembahasan</span>
+          <span class="meta-stat" id="statWordCount">📝 0 kata</span>
+          <span class="meta-stat" id="statReadTime">⏱️ 0 mnt</span>
         </div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-outline btn-sm" onclick="copyText('aiManuskripArea')">
-            <span class="dsw-icon-styled">📋</span> Salin Teks
+        <div class="output-view-controls">
+          <!-- Font Style Toggle -->
+          <button class="btn btn-outline btn-sm" id="btnFontToggle" onclick="toggleManuscriptFont()" title="Ganti Font Serif / Sans">
+            <span class="dsw-icon-styled">🔤</span> <span class="btn-text">Times / Sans</span>
           </button>
-          <button class="btn btn-outline btn-sm" onclick="resetAll()">
-            <span class="dsw-icon-styled">🔄</span> Reset File
+          <button class="btn btn-outline btn-sm" onclick="copyManuscriptText()" title="Salin seluruh isi naskah">
+            <span class="dsw-icon-styled">📋</span> Salin Naskah
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="downloadWordDoc()" title="Unduh naskah sebagai berkas Word (.doc)">
+            <span class="dsw-icon-styled">💾</span> Unduh Doc
+          </button>
+          <button class="btn btn-outline btn-sm" onclick="window.print()" title="Cetak atau simpan ke PDF">
+            <span class="dsw-icon-styled">🖨️</span> Cetak
           </button>
         </div>
       </div>
-      <div class="manuscript-box" id="aiManuskripArea"></div>
+
+      <div class="manuscript-container">
+        <div class="manuscript-box" id="aiManuskripArea"></div>
+      </div>
+
+      <!-- DEDICATED APA REFERENCES BLOCK (MUNCUL OTOMATIS JIKA ADA SITASI) -->
+      <div class="apa-references-card" id="apaReferencesCard" style="display:none;">
+        <div class="apa-ref-header">
+          <div class="apa-ref-title">
+            <span class="dsw-icon-styled">📚</span> Daftar Pustaka &amp; Sitasi Terkait (APA 7th Edition)
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="copyApaReferences()" style="padding:4px 10px; font-size:11.5px;">
+            <span class="dsw-icon-styled">📋</span> Salin Daftar Pustaka Saja
+          </button>
+        </div>
+        <div class="apa-ref-list" id="apaRefListContent"></div>
+      </div>
     </div>
 
   </div>
@@ -336,13 +527,18 @@ let pendingData     = null;
 let pendingExt      = '';
 let pendingFileName = '';
 let selectedMode    = 'results';
-let currentLang     = 'id'; // Default Language: Indonesia
+let currentLang     = 'id';
+let currentActiveTab = 'upload';
+let generatedManuscriptText = '';
+let generatedApaRefText = '';
 
 function toggleTheme() {
   const h = document.documentElement;
   const next = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   h.setAttribute('data-theme', next);
-  document.getElementById('themeIcon').textContent = next === 'dark' ? '☀️' : '🌗';
+  localStorage.setItem('ares_theme', next);
+  const icon = document.getElementById('themeIcon');
+  if (icon) icon.textContent = next === 'dark' ? '☀️' : '🌗';
 }
 
 function toggleLang() {
@@ -352,6 +548,35 @@ function toggleLang() {
     ? '<span class="dsw-icon-styled">🇮🇩</span> <span class="btn-text btn-text-hide">ID</span>' 
     : '<span class="dsw-icon-styled">🇬🇧</span> <span class="btn-text btn-text-hide">EN</span>';
   toast(currentLang === 'id' ? 'Bahasa Naskah: Indonesia' : 'Manuscript Language: English', 'info');
+}
+
+function toggleManuscriptFont() {
+  const area = document.getElementById('aiManuskripArea');
+  const apaList = document.getElementById('apaRefListContent');
+  if (area) area.classList.toggle('font-sans-mode');
+  if (apaList) apaList.classList.toggle('font-sans-mode');
+  toast('Gaya font naskah dialihkan.');
+}
+
+function switchInputTab(tab) {
+  currentActiveTab = tab;
+  document.getElementById('tabUploadBtn').classList.toggle('active', tab === 'upload');
+  document.getElementById('tabTextBtn').classList.toggle('active', tab === 'text');
+  document.getElementById('uploadInputSection').style.display = tab === 'upload' ? 'block' : 'none';
+  document.getElementById('manualInputSection').style.display = tab === 'text' ? 'block' : 'none';
+  checkBtnState();
+}
+
+function appendPrompt(text) {
+  const el = document.getElementById('customPrompt');
+  if (!el) return;
+  if (el.value.trim().length > 0) {
+    el.value = el.value.trim() + ' ' + text;
+  } else {
+    el.value = text;
+  }
+  checkBtnState();
+  el.focus();
 }
 
 function toast(msg, type = 'success') {
@@ -364,18 +589,176 @@ function toast(msg, type = 'success') {
   setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 2800);
 }
 
-function copyText(id) {
-  const el = document.getElementById(id);
-  const range = document.createRange();
-  range.selectNodeContents(el);
-  const sel = window.getSelection();
-  sel.removeAllRanges(); sel.addRange(range);
-  document.execCommand('copy');
-  sel.removeAllRanges();
-  toast('Naskah berhasil disalin ke Clipboard.');
+function copyManuscriptText() {
+  const fullText = generatedManuscriptText + (generatedApaRefText ? '\n\nDAFTAR PUSTAKA (APA 7th Edition):\n' + generatedApaRefText : '');
+  if (!fullText) {
+    toast('Belum ada naskah untuk disalin.', 'info');
+    return;
+  }
+  navigator.clipboard.writeText(fullText).then(() => {
+    toast('Seluruh naskah & daftar pustaka berhasil disalin!');
+  }).catch(() => {
+    toast('Gagal menyalin naskah ke clipboard.', 'error');
+  });
 }
 
-function typeEffect(id, text, speed = 6) {
+function copyApaReferences() {
+  if (!generatedApaRefText) {
+    toast('Tidak ada entri daftar pustaka.', 'info');
+    return;
+  }
+  navigator.clipboard.writeText(generatedApaRefText).then(() => {
+    toast('Daftar pustaka APA berhasil disalin!');
+  }).catch(() => {
+    toast('Gagal menyalin daftar pustaka.', 'error');
+  });
+}
+
+function downloadWordDoc() {
+  const fullText = generatedManuscriptText + (generatedApaRefText ? '\n\nDAFTAR PUSTAKA (APA 7th Edition):\n' + generatedApaRefText : '');
+  if (!fullText) {
+    toast('Belum ada naskah untuk diunduh.', 'info');
+    return;
+  }
+  const modeLabels = { results: 'Hasil_Pembahasan', intro: 'Pendahuluan', methods: 'Metodologi', conclusion: 'Kesimpulan', abstract: 'Abstrak' };
+  const filename = `Naskah_ShifterAI_${modeLabels[selectedMode] || 'Draf'}.doc`;
+  
+  const headerHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>${filename}</title><style>body{font-family:'Times New Roman',serif;font-size:12pt;line-height:1.8;text-align:justify;}p{text-indent:1.27cm;margin:0 0 12pt 0;}.ref-item{padding-left:1.27cm;text-indent:-1.27cm;margin-bottom:8pt;}</style></head><body>`;
+  
+  let formattedBody = `<p>` + generatedManuscriptText.replace(/\n\n/g, `</p><p>`).replace(/\n/g, `<br>`) + `</p>`;
+  if (generatedApaRefText) {
+    formattedBody += `<h3>DAFTAR PUSTAKA</h3>`;
+    const refItems = generatedApaRefText.split('\n').filter(r => r.trim());
+    refItems.forEach(item => {
+      formattedBody += `<div class="ref-item">${item.trim()}</div>`;
+    });
+  }
+  const footerHtml = `</body></html>`;
+  
+  const blob = new Blob(['\ufeff' + headerHtml + formattedBody + footerHtml], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast(`Naskah diunduh sebagai ${filename}`);
+}
+
+function updateManuscriptStats(text) {
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const readTime = Math.ceil(words / 180);
+  const wordEl = document.getElementById('statWordCount');
+  const timeEl = document.getElementById('statReadTime');
+  if (wordEl) wordEl.textContent = `📝 ${words} kata`;
+  if (timeEl) timeEl.textContent = `⏱️ ~${readTime} mnt baca`;
+}
+
+/**
+ * Memformat dan membersihkan teks draf saintifik dari sintaks LaTeX ($...$, \text{...}, dsb.)
+ * dan simbol formatting Markdown (*, **, ###) menjadi tipografi akademik murni.
+ */
+function formatScientificManuscript(text) {
+  if (!text) return '';
+  let s = String(text);
+
+  // 1. Ganti TeX superscripts & subscripts standar menjadi simbol Unicode murni
+  s = s.replace(/_\{?10\}?/g, '₁₀');
+  s = s.replace(/_\{?0\}?/g, '₀');
+  s = s.replace(/_\{?1\}?/g, '₁');
+  s = s.replace(/_\{?2\}?/g, '₂');
+  s = s.replace(/_\{?3\}?/g, '₃');
+  s = s.replace(/_\{?4\}?/g, '₄');
+  s = s.replace(/_\{?5\}?/g, '₅');
+  s = s.replace(/_\{?6\}?/g, '₆');
+  s = s.replace(/_\{?7\}?/g, '₇');
+  s = s.replace(/_\{?8\}?/g, '₈');
+  s = s.replace(/_\{?9\}?/g, '₉');
+
+  s = s.replace(/\^\{?-1\}?/g, '⁻¹');
+  s = s.replace(/\^\{?-2\}?/g, '⁻²');
+  s = s.replace(/\^\{?-3\}?/g, '⁻³');
+  s = s.replace(/\^\{?2\}?/g, '²');
+  s = s.replace(/\^\{?3\}?/g, '³');
+  s = s.replace(/\^\{?0\}?/g, '⁰');
+  s = s.replace(/\^\{?1\}?/g, '¹');
+  s = s.replace(/\^\{?\+\}?/g, '⁺');
+  s = s.replace(/\^\{?-\}?/g, '⁻');
+
+  // 2. Bersihkan wrapper LaTeX macros
+  s = s.replace(/\\text(?:bf|it|rm|sf|tt)?\{([^}]+)\}/g, '$1');
+  s = s.replace(/\\mathrm\{([^}]+)\}/g, '$1');
+  s = s.replace(/\\mathbf\{([^}]+)\}/g, '$1');
+  s = s.replace(/\\mathit\{([^}]+)\}/g, '$1');
+  s = s.replace(/\\operatorname\{([^}]+)\}/g, '$1');
+  
+  // Derajat Celcius / Derajat
+  s = s.replace(/\\circ\s*C/gi, '°C');
+  s = s.replace(/\^\{?\\circ\}?\s*C/gi, '°C');
+  s = s.replace(/\^\{?\\circ\}?/g, '°');
+  s = s.replace(/\\degree/g, '°');
+
+  // Simbol Matematika TeX
+  s = s.replace(/\\pm/g, '±');
+  s = s.replace(/\\mp/g, '∓');
+  s = s.replace(/\\times/g, '×');
+  s = s.replace(/\\div/g, '÷');
+  s = s.replace(/\\leq?/g, '≤');
+  s = s.replace(/\\geq?/g, '≥');
+  s = s.replace(/\\neq/g, '≠');
+  s = s.replace(/\\approx/g, '≈');
+  s = s.replace(/\\sim/g, '~');
+  s = s.replace(/\\cdot/g, '·');
+
+  // Karakter Yunani umum
+  s = s.replace(/\\alpha/g, 'α');
+  s = s.replace(/\\beta/g, 'β');
+  s = s.replace(/\\gamma/g, 'γ');
+  s = s.replace(/\\delta/g, 'δ');
+  s = s.replace(/\\Delta/g, 'Δ');
+  s = s.replace(/\\mu/g, 'µ');
+  s = s.replace(/\\pi/g, 'π');
+  s = s.replace(/\\sigma/g, 'σ');
+  s = s.replace(/\\theta/g, 'θ');
+  s = s.replace(/\\lambda/g, 'λ');
+
+  // Subscript / superscript tersisa
+  s = s.replace(/_\{([^}]+)\}/g, '$1');
+  s = s.replace(/\^\{([^}]+)\}/g, '$1');
+
+  // Hapus delimiter LaTeX math $$...$$ dan $...$
+  s = s.replace(/\$\$([^$]+)\$\$/g, '$1');
+  s = s.replace(/\$([^$]+)\$/g, '$1');
+  s = s.replace(/\\\$/g, '$');
+  s = s.replace(/\\([a-zA-Z]+)/g, '$1');
+
+  // 3. Bersihkan formatting Markdown agar naskah bersih murni tanpa plain markdown asterisks
+  s = s.replace(/\*\*\*([^*]+)\*\*\*/g, '$1');
+  s = s.replace(/\*\*([^*]+)\*\*/g, '$1');
+  s = s.replace(/\*([^*\n]+)\*/g, '$1');
+  s = s.replace(/___([^_]+)___/g, '$1');
+  s = s.replace(/__([^_]+)__/g, '$1');
+  s = s.replace(/_([^_ \n][^_]*[^_ \n])_/g, '$1');
+  s = s.replace(/`([^`]+)`/g, '$1');
+
+  // Hapus header markdown (### Judul -> Judul)
+  s = s.replace(/^#{1,6}\s+(.+)$/gm, '$1');
+
+  // Standarisasi bullet points (* item atau - item -> • item)
+  s = s.replace(/^[\*\-]\s+(.+)$/gm, '• $1');
+
+  // Hapus sisa kurung kurawal LaTeX yang mungkin tersisa
+  s = s.replace(/\{([^{}]+)\}/g, '$1');
+
+  // Normalisasi spasi ganda horizontal
+  s = s.replace(/[ \t]{2,}/g, ' ');
+
+  return s.trim();
+}
+
+function typeEffect(id, text, speed = 4, onComplete = null) {
   const el = document.getElementById(id);
   el.textContent = ''; let i = 0;
   el.classList.add('ai-typing');
@@ -385,6 +768,7 @@ function typeEffect(id, text, speed = 6) {
       setTimeout(type, speed);
     } else {
       el.classList.remove('ai-typing');
+      if (onComplete) onComplete();
     }
   }
   type();
@@ -397,6 +781,7 @@ function selectMode(el, mode) {
   const labels = {
     results:    'Hasil dan Pembahasan',
     intro:      'Pendahuluan',
+    methods:    'Metodologi',
     conclusion: 'Kesimpulan',
     abstract:   'Abstrak',
   };
@@ -507,29 +892,80 @@ async function processFile(file) {
   }
 }
 
+function toggleGeminiPref() {
+  const body = document.getElementById('geminiPrefBody');
+  const arrow = document.getElementById('geminiPrefArrow');
+  if (body.style.display === 'none') {
+    body.style.display = 'grid';
+    arrow.textContent = '▲ Sembunyikan';
+  } else {
+    body.style.display = 'none';
+    arrow.textContent = '▼ Tampilkan';
+  }
+}
+
+function onModelChange() {
+  const model = document.getElementById('prefModel').value;
+  const modelLabels = {
+    'gemini-3.6-flash': 'Gemini 3.6 Flash',
+    'gemini-3.1-pro-preview': 'Gemini 3.1 Pro',
+    'gemini-3.1-flash-lite': 'Gemini Flash Lite'
+  };
+  const label = modelLabels[model] || model;
+  document.getElementById('activeModelBadge').textContent = label;
+  document.getElementById('engineLabel').textContent = `AREs Server · ${label}`;
+}
+
+function checkBtnState() {
+  const customPromptEl = document.getElementById('customPrompt');
+  const rawTextInputEl = document.getElementById('rawTextInput');
+  const hasPrompt = customPromptEl && customPromptEl.value.trim().length > 0;
+  const hasRawText = rawTextInputEl && rawTextInputEl.value.trim().length > 0;
+  const hasData = pendingData !== null;
+  document.getElementById('btnGenerate').disabled = !(hasPrompt || hasRawText || hasData);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const customPromptEl = document.getElementById('customPrompt');
+  if (customPromptEl) {
+    customPromptEl.addEventListener('input', checkBtnState);
+  }
+});
+
 function onExtractionComplete(data, sub) {
   pendingData = data;
   setDropzoneState('ready', pendingFileName, sub);
-  document.getElementById('btnGenerate').disabled = false;
+  checkBtnState();
   hideProgress();
   
   toast('Data siap! Memulai sintesis AI otomatis...', 'info');
-  
-  setTimeout(() => { startAnalysis(); }, 500);
+  setTimeout(() => { startAnalysis(); }, 400);
 }
 
 function resetAll() {
   pendingData = null; pendingExt = ''; pendingFileName = '';
   setDropzoneState('idle', '', '');
-  document.getElementById('btnGenerate').disabled = true;
   document.getElementById('customPrompt').value = '';
+  const rawInput = document.getElementById('rawTextInput');
+  if (rawInput) rawInput.value = '';
+  checkBtnState();
   document.getElementById('outputCard').classList.remove('visible');
+  document.getElementById('apaReferencesCard').style.display = 'none';
   hideProgress();
   fileInput.value = '';
+  generatedManuscriptText = '';
+  generatedApaRefText = '';
+  toast('Formulir direset.');
 }
 
 async function startAnalysis() {
-  if (!pendingData) return;
+  const promptInput = document.getElementById('customPrompt').value.trim();
+  const rawInput = document.getElementById('rawTextInput') ? document.getElementById('rawTextInput').value.trim() : '';
+  
+  if (!pendingData && !promptInput && !rawInput) {
+    toast('Silakan unggah file data riset, tempel data mentah, atau masukkan topik naskah!', 'info');
+    return;
+  }
 
   const outputCard = document.getElementById('outputCard');
   outputCard.classList.add('visible');
@@ -541,18 +977,20 @@ async function startAnalysis() {
   const sectionLabels = {
     results:    'Hasil dan Pembahasan',
     intro:      'Pendahuluan',
+    methods:    'Metodologi',
     conclusion: 'Kesimpulan',
     abstract:   'Abstrak',
   };
   
   document.getElementById('badgeSection').textContent = sectionLabels[selectedMode];
-  document.getElementById('aiManuskripArea').innerHTML = '<span class="dsw-icon-styled">✨</span> AI sedang menyusun naskah akademik...';
+  document.getElementById('aiManuskripArea').innerHTML = '<span class="dsw-icon-styled">✨</span> Gemini AI sedang menyusun naskah akademik &amp; memformat sitasi APA Style...';
   document.getElementById('aiManuskripArea').classList.remove('ai-typing');
+  document.getElementById('apaReferencesCard').style.display = 'none';
 
   document.getElementById('btnGenerate').disabled = true;
 
   try {
-    if (Array.isArray(pendingData)) {
+    if (pendingData && Array.isArray(pendingData)) {
       const cols = Object.keys(pendingData[0] || {});
       const numCols = cols.filter(k => typeof pendingData[0][k] === 'number');
 
@@ -569,60 +1007,120 @@ async function startAnalysis() {
 
       document.getElementById('badgeTopic').textContent = 'Sintesis Matriks Data';
       callGeminiAPI(summary);
-    } else {
+    } else if (pendingData) {
       document.getElementById('badgeTopic').textContent = 'Sintesis Literatur / Sekuens';
-      callGeminiAPI(String(pendingData).slice(0, 12000));
+      callGeminiAPI(String(pendingData).slice(0, 14000));
+    } else if (rawInput) {
+      document.getElementById('badgeTopic').textContent = 'Sintesis Data Manual';
+      callGeminiAPI(rawInput);
+    } else {
+      document.getElementById('badgeTopic').textContent = 'Generasi Draf Berbasis Instruksi';
+      callGeminiAPI("Tidak ada file lampiran data fisik. Susun naskah akademik secara komprehensif berdasarkan instruksi/topik peneliti di bawah ini.");
     }
   } catch (err) {
     console.error(err);
-    toast('Gagal menyusun ringkasan matriks data.', 'error');
-    document.getElementById('btnGenerate').disabled = false;
+    toast('Gagal menyusun ringkasan data riset.', 'error');
+    checkBtnState();
   }
 }
 
 async function callGeminiAPI(content) {
-  // PROMPT ENGINEERING KETAT BERDASARKAN MODE & BAHASA
+  const model = document.getElementById('prefModel').value;
+  const tone = document.getElementById('prefTone').value;
+  const citation = document.getElementById('prefCitation').value;
+  const length = document.getElementById('prefLength').value;
+  const temperature = parseFloat(document.getElementById('prefTemp').value);
+
+  const toneRules = {
+    formal: currentLang === 'id' 
+      ? 'Gunakan nada penulisan formal, objektif, dan kritis standar jurnal bereputasi internasional/nasional (Scopus / Sinta 1).' 
+      : 'Use a formal, objective, and critical writing tone aligned with reputable international/national journals.',
+    concise: currentLang === 'id' 
+      ? 'Gunakan nada penulisan yang sangat padat, lugas, direct, dan langsung menyoroti angka/temuan numerik utama.' 
+      : 'Use a highly concise, direct tone focusing immediately on key numeric findings.',
+    exploratory: currentLang === 'id' 
+      ? 'Gunakan nada penulisan analitis komparatif, memperluas diskusi implikasi fisiologis, ekologis, dan biologis.' 
+      : 'Use a comparative analytical tone, expanding on physiological, ecological, and biological implications.'
+  };
+
+  const citationRules = {
+    apa7: currentLang === 'id' 
+      ? `WAJIB menggunakan format sitasi in-text APA 7th Edition (contoh: Suryono et al., 2024 atau Boyd, 2020). Apabila Anda merujuk literatur, studi komparatif, atau teori pendukung, WAJIB sertakan bagian terpisah di akhir teks dengan header persis: "--- DAFTAR PUSTAKA (APA Style) ---" diikuti daftar pustaka lengkap berformat APA 7th Edition (Author, Year, Title, Journal, DOI/Publisher).` 
+      : `MUST use APA 7th Edition in-text citation format (e.g., Suryono et al., 2024 or Boyd, 2020). If you cite prior literature, comparative studies, or theoretical benchmarks, MUST provide a separate section at the end with the exact header: "--- DAFTAR PUSTAKA (APA Style) ---" followed by the complete reference entries formatted in APA 7th Edition.`,
+    ieee: currentLang === 'id' 
+      ? 'Jika menyebutkan acuan studi terdahulu, gunakan gaya sitasi numerik IEEE (contoh: [1], [2]) dan sertakan daftar referensi di akhir.' 
+      : 'If citing prior studies, use IEEE numerical citation style (e.g., [1], [2]) and append a numerical reference list.',
+    none: currentLang === 'id' 
+      ? 'Jangan sertakan contoh sitasi in-text maupun daftar pustaka tambahan.' 
+      : 'Do not include in-text citations or extra reference list.'
+  };
+
+  const lengthRules = {
+    standard: currentLang === 'id' 
+      ? 'Panjang naskah 2-3 paragraf proporsional dan komprehensif.' 
+      : 'Proportional 2-3 paragraph length.',
+    concise: currentLang === 'id' 
+      ? 'Panjang naskah ringkas (1-2 paragraf, ~150-200 kata).' 
+      : 'Concise text length (1-2 paragraphs, ~150-200 words).',
+    detailed: currentLang === 'id' 
+      ? 'Panjang naskah komprehensif dan rinci (4+ paragraf, >500 kata).' 
+      : 'Comprehensive detailed text length (4+ paragraphs, >500 words).'
+  };
+
   const sectionRules = {
     results: currentLang === 'id' 
-      ? 'Tulis 2-4 paragraf. Analisis data secara kritis, bandingkan antar variabel/perlakuan, dan jabarkan makna biologisnya secara mendalam.' 
-      : 'Write 2-4 paragraphs. Critically analyze the data, compare variables/treatments, and explain the deep biological meaning.',
-      
+      ? 'Analisis data secara kritis, bandingkan antar variabel/perlakuan, dan jabarkan makna biologisnya secara mendalam. Hubungkan dengan literatur yang relevan.' 
+      : 'Critically analyze the data, compare variables/treatments, explain biological meaning, and contextualize with relevant literature.',
     intro: currentLang === 'id' 
-      ? 'Tulis 2-3 paragraf. Susun latar belakang masalah yang kuat, kesenjangan penelitian (research gap), dan akhiri dengan tujuan utama dari data ini.' 
-      : 'Write 2-3 paragraphs. Build a strong background, highlight the research gap, and end with the main objective derived from this data.',
-      
+      ? 'Susun latar belakang masalah yang kuat, kesenjangan penelitian (research gap), telaah pustaka relevan, dan akhiri dengan tujuan utama dari riset ini.' 
+      : 'Build a strong background, highlight research gap, review literature, and state the core objective.',
+    methods: currentLang === 'id' 
+      ? 'Rancang alur metodologi penelitian, parameter uji laboratorium/lapang, analisis statistik yang digunakan, dan prosedur operasional secara sistematis.' 
+      : 'Detail research methodology, laboratory/field parameters, statistical tests, and operational procedures systematically.',
     conclusion: currentLang === 'id' 
-      ? 'Tulis HANYA 1 paragraf singkat dan tegas (maksimal 4-6 kalimat). Rangkum temuan utama yang menjawab tujuan, tanpa basa-basi, tanpa poin-poin.' 
-      : 'Write EXACTLY 1 concise and definitive paragraph (max 4-6 sentences). Summarize the main findings that answer the objective, no fluff, no bullet points.',
-      
+      ? 'Rangkum temuan utama yang menjawab tujuan penelitian, implikasi terapan, tanpa basa-basi, tanpa poin-poin.' 
+      : 'Summarize key findings directly answering the objective, explain practical implications, no fluff.',
     abstract: currentLang === 'id' 
-      ? 'Tulis HANYA 1 paragraf (150-250 kata). Format terstruktur: 1 kalimat latar belakang, 1 kalimat tujuan, ringkasan metode/data, hasil utama beserta angka penting, dan 1 kalimat kesimpulan akhir.' 
-      : 'Write EXACTLY 1 paragraph (150-250 words). Structured format: 1 sentence background, 1 sentence objective, brief methods/data, key results with numbers, and 1 concluding sentence.'
+      ? 'Format terstruktur: 1 kalimat latar belakang, 1 kalimat tujuan, ringkasan metode/data, hasil utama beserta angka penting, dan 1 kalimat kesimpulan akhir.' 
+      : 'Structured format: 1 sentence background, 1 sentence objective, brief methods/data, key results with numbers, and 1 concluding sentence.'
   };
 
   const sectionMap = {
     results:    currentLang === 'id' ? 'Hasil dan Pembahasan' : 'Results and Discussion',
     intro:      currentLang === 'id' ? 'Pendahuluan' : 'Introduction',
+    methods:    currentLang === 'id' ? 'Metodologi' : 'Materials and Methods',
     conclusion: currentLang === 'id' ? 'Kesimpulan' : 'Conclusion',
     abstract:   currentLang === 'id' ? 'Abstrak' : 'Abstract'
   };
 
-  const langInstruction = currentLang === 'id' ? 'berbahasa Indonesia yang sangat formal dan saintifik' : 'in highly formal and scientific English';
+  const langInstruction = currentLang === 'id' ? 'berbahasa Indonesia yang sangat formal, bernas, dan saintifik' : 'in highly formal, rigorous, and scientific English';
+
+  const systemInstruction = `Anda adalah asisten AI peneliti senior spesialis naskah publikasi ilmiah akuakultur, bioteknologi, biosains, dan manajemen sumberdaya perairan bereputasi tinggi yang terintegrasi dengan Google Gemini Engine.`;
 
   const instruction = document.getElementById('customPrompt').value.trim();
   const extra = instruction
     ? `\n\nINSTRUKSI KHUSUS DARI PENELITI:\n"${instruction}"\n(Patuhi instruksi khusus ini secara mutlak).`
     : '';
 
-  const prompt = `Anda adalah asisten peneliti senior di bidang Akuakultur, Bioteknologi, dan Ekologi Perairan.
-Tugas Anda adalah menulis draf bab "${sectionMap[selectedMode]}" untuk naskah jurnal akademik ${langInstruction}.
+  const prompt = `Tugas Anda adalah menulis draf bab "${sectionMap[selectedMode]}" untuk naskah jurnal akademik ${langInstruction}.
 
-ATURAN STRUKTUR (WAJIB DIPATUHI):
-${sectionRules[selectedMode]}
+ATURAN DAN PREFERENSI PENULISAN (WAJIB DIPATUHI):
+- TUGAS UTAMA BAB: ${sectionRules[selectedMode]}
+- NADA PENULISAN: ${toneRules[tone]}
+- SITASI DAN DAFTAR PUSTAKA (APA 7th EDITION): ${citationRules[citation]}
+- PANJANG NASKAH: ${lengthRules[length]}
 
-TIDAK PERLU menuliskan judul bab (misal: "Kesimpulan:" atau "Abstract:"). Langsung tulis isi paragrafnya. Jangan pernah menyebutkan proses "ekstraksi data web" atau "berdasarkan data di atas".${extra}
+ATURAN TIPOGRAFI & NOTASI SAINTIFIK (SANGAT KRUSIAL):
+- DILARANG KERAS menggunakan sintaks rumus LaTeX (jangan gunakan tanda dolar '$...$', '\\text{...}', '\\pm', '_{...}', '^{...}', '\\times', dll).
+- Tuliskan satuan, notasi eksponen, dan angka secara langsung dalam teks biasa/standar tipografi (contoh: tulis 'LOG10 CFU/mL' atau 'LOG₁₀ CFU/mL', 'p < 0.05', '± 0.25', 'mg/L', '°C', '3.5 × 10⁶', bukan rumus LaTeX '$\\text{LOG}_{10}\\text{ CFU}$').
+- JANGAN sertakan tanda format markdown seperti '**tebal**' atau '*miring*' di tengah kalimat teks naskah. Tulis naskah dalam format teks paragraf akademik murni yang bersih, mengalir, dan siap cetak.
 
-DATA/RINGKASAN DATA:
+SANGAT PENTING:
+- TIDAK PERLU menuliskan judul bab (misal: "Kesimpulan:" atau "Abstract:"). Langsung tulis isi paragrafnya.
+- Jangan pernah menyebutkan proses "ekstraksi data web" atau "berdasarkan file di atas".
+- Jika menyertakan sitasi, pisahkan bagian daftar pustaka di bagian paling bawah dengan pembatas jelas "--- DAFTAR PUSTAKA (APA Style) ---".${extra}
+
+SUMBER DATA / KONTEKS RISET:
 """
 ${content}
 """`;
@@ -631,7 +1129,12 @@ ${content}
     const response = await fetch('/api/gemini', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({
+        prompt,
+        model,
+        systemInstruction,
+        temperature
+      })
     });
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -639,19 +1142,67 @@ ${content}
     const data = await response.json();
     if (data.error) throw new Error(data.error);
 
-    document.getElementById('btnGenerate').disabled = false;
+    checkBtnState();
 
-    // Menghilangkan format Bintang (Markdown Bold) agar bersih saat disalin ke Microsoft Word
-    const cleanText = data.result.replace(/\*\*/g, '');
-    typeEffect('aiManuskripArea', cleanText, 5);
-    toast('Sintesis selesai!');
+    // Parse hasil untuk memisahkan naskah utama dan daftar pustaka APA jika ada
+    const rawResult = data.result || '';
+    
+    let rawMain = rawResult;
+    let rawRef = '';
+
+    const refSeparators = [
+      '--- DAFTAR PUSTAKA (APA Style) ---',
+      '--- DAFTAR PUSTAKA (APA 7th Edition) ---',
+      '--- DAFTAR PUSTAKA ---',
+      'DAFTAR PUSTAKA (APA Style):',
+      'DAFTAR PUSTAKA (APA 7th Edition):',
+      'DAFTAR PUSTAKA:',
+      '--- REFERENCES (APA Style) ---',
+      '--- REFERENCES ---',
+      'REFERENCES (APA Style):',
+      'REFERENCES (APA 7th Edition):',
+      'REFERENCES:'
+    ];
+
+    for (const sep of refSeparators) {
+      if (rawResult.includes(sep)) {
+        const parts = rawResult.split(sep);
+        rawMain = parts[0].trim();
+        rawRef = parts.slice(1).join('\n').trim();
+        break;
+      }
+    }
+
+    // Bersihkan seluruh format LaTeX math dan Markdown dari naskah & daftar pustaka
+    const mainManuscript = formatScientificManuscript(rawMain);
+    const apaReferences = formatScientificManuscript(rawRef);
+
+    generatedManuscriptText = mainManuscript;
+    generatedApaRefText = apaReferences;
+
+    updateManuscriptStats(mainManuscript);
+
+    typeEffect('aiManuskripArea', mainManuscript, 3, () => {
+      const apaCard = document.getElementById('apaReferencesCard');
+      const apaListEl = document.getElementById('apaRefListContent');
+      if (apaReferences && apaCard && apaListEl) {
+        apaCard.style.display = 'block';
+        const lines = apaReferences.split('\n').filter(l => l.trim().length > 0);
+        apaListEl.innerHTML = lines.map(l => `<div class="apa-ref-item">${l.trim()}</div>`).join('');
+      } else if (apaCard) {
+        apaCard.style.display = 'none';
+      }
+    });
+
+    toast('Sintesis Gemini AI selesai!');
 
   } catch (err) {
     console.error(err);
-    document.getElementById('btnGenerate').disabled = false;
+    checkBtnState();
     document.getElementById('aiManuskripArea').textContent =
-      `⚠️ Gagal menghubungi server AI: ${err.message}\n\nPastikan Vercel proxy aktif dan API key sudah dikonfigurasi.`;
-    toast('Gagal terhubung ke server AI.', 'error');
+      `⚠️ Gagal menghubungi server Gemini AI: ${err.message}\n\nPastikan API key Gemini telah dikonfigurasi di menu Settings > Secrets.`;
+    document.getElementById('apaReferencesCard').style.display = 'none';
+    toast('Gagal terhubung ke server Gemini AI.', 'error');
   }
 }
 </script>

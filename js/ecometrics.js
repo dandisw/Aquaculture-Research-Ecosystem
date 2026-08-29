@@ -91,7 +91,9 @@ function switchView(id, el) {
 }
 function toggleTheme() {
     const html = document.documentElement;
-    html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('ares_theme', next);
     Chart.helpers.each(Chart.instances, function(instance){ instance.update(); });
 }
 function parseMatrix(text, hasGroup=false) {
@@ -108,7 +110,11 @@ function parseMatrix(text, hasGroup=false) {
 }
 function getChartColors() {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    return { txt: isDark ? '#94A3B8' : '#475569', grid: isDark ? '#334155' : '#E2E8F0', pal: ['#A855F7', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899'] };
+    return { 
+        txt: isDark ? '#E2E8F0' : '#1E293B', 
+        grid: isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)', 
+        pal: ['#A855F7', '#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#EC4899'] 
+    };
 }
 function openDialog(id) { document.getElementById(id).classList.add('active'); }
 function closeDialog(id) { document.getElementById(id).classList.remove('active'); }

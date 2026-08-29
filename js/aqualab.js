@@ -15,7 +15,9 @@ function openSub(btn, id, grp) {
   btn.classList.add('active'); document.getElementById(id).classList.add('active');
 }
 function toggleTheme() { 
-    document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); 
+    const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', cur); 
+    localStorage.setItem('ares_theme', cur);
     updateChartInvivo(); updateChartHealth(); updateChartGonad(); updateChartHatchery(); updateChartWQ(); 
 }
 function toggleChart(containerId, btnId, updateFn) {
@@ -37,23 +39,47 @@ function toast(msg) {
   document.getElementById('toastContainer').appendChild(t);
   setTimeout(() => { t.classList.add('hide'); setTimeout(() => t.remove(), 300); }, 2000);
 }
-function makeDel(fn) { const b = document.createElement('button'); b.className = 'btn-icon'; b.innerHTML = '×'; b.onclick = fn; return b; }
+function makeDel(fn) {
+  const b = document.createElement('button');
+  b.className = 'btn-icon';
+  b.setAttribute('type', 'button');
+  b.setAttribute('title', 'Hapus baris');
+  b.innerHTML = '×';
+  b.onclick = function(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (typeof fn === 'function') {
+      fn.call(this, e);
+    } else {
+      const tr = this.closest('tr');
+      if (tr) tr.remove();
+    }
+  };
+  return b;
+}
 
 // ===================================================================
 // CHARTS RENDERER HELPER
 // ===================================================================
 function renderChart(dict, id, type, label, labels, data, color) {
     if(dict[id]) dict[id].destroy();
-    const ctx = document.getElementById(id).getContext('2d');
+    const el = document.getElementById(id);
+    if (!el) return;
+    const ctx = el.getContext('2d');
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const txtColor = isDark ? '#E2E8F0' : '#1E293B';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)';
     dict[id] = new Chart(ctx, {
         type: type,
         data: { labels: labels, datasets: [{ label: label, data: data, backgroundColor: color, borderColor: color, tension: 0.3 }] },
         options: { 
             responsive: true, maintainAspectRatio: false, 
-            plugins: { legend: { display: true, labels: { color: '#94A3B8' } } }, 
+            plugins: { legend: { display: true, labels: { color: txtColor, font: { family: "'DM Sans', sans-serif", weight: '600' } } } }, 
             scales: { 
-                x: { ticks: { color: '#94A3B8', font: {size: 10} }, grid: { display: false } }, 
-                y: { ticks: { color: '#94A3B8', font: {size: 10} }, grid: { color: '#334155' } } 
+                x: { ticks: { color: txtColor, font: { size: 10, family: "'DM Sans', sans-serif" } }, grid: { display: false } }, 
+                y: { ticks: { color: txtColor, font: { size: 10, family: "'DM Sans', sans-serif" } }, grid: { color: gridColor } } 
             } 
         }
     });
@@ -85,7 +111,7 @@ function updateChartInvivo() {
 function addInvivoRow() {
   const tb = document.getElementById('invivoBody'); const isFirst = tb.rows.length === 0; const tr = tb.insertRow();
   tr.innerHTML = `<td><input class="cell-input text-left v-trt" value="${isFirst?'P1 (Kontrol)':''}" oninput="updateChartInvivo()"></td><td><input class="cell-input v-wad" value="${isFirst?'U-1':''}"></td><td><input type="number" class="cell-input v-w0" value="${isFirst?'15.5':''}" oninput="calcInvivo(this)"></td><td><input type="number" class="cell-input v-wt" value="${isFirst?'45.2':''}" oninput="calcInvivo(this)"></td><td><input type="number" class="cell-input v-n0" value="${isFirst?'100':''}" oninput="calcInvivo(this)"></td><td><input type="number" class="cell-input v-nt" value="${isFirst?'95':''}" oninput="calcInvivo(this)"></td><td><input type="number" class="cell-input v-f" value="${isFirst?'3500':''}" oninput="calcInvivo(this)"></td><td><input type="number" class="cell-input v-t" value="${isFirst?'30':''}" oninput="calcInvivo(this)"></td><td class="res-sr val-dim">—</td><td class="res-adg val-dim">—</td><td class="res-sgr val-dim">—</td><td class="res-fcr val-dim">—</td><td class="res-ep val-dim">—</td><td></td>`;
-  tr.cells[tr.cells.length-1].appendChild(makeDel(() => { if(confirm('Hapus baris?')) { tr.remove(); updateChartInvivo(); } })); if(isFirst) calcInvivo(tr.querySelector('.v-w0'));
+  tr.cells[tr.cells.length-1].appendChild(makeDel(function() { (this.closest('tr') || tr).remove(); updateChartInvivo(); })); if(isFirst) calcInvivo(tr.querySelector('.v-w0'));
 }
 function calcInvivo(i) {
   const r = i.closest('tr'), w0 = parseFloat(r.querySelector('.v-w0').value)||0, wt = parseFloat(r.querySelector('.v-wt').value)||0, n0 = parseFloat(r.querySelector('.v-n0').value)||0, nt = parseFloat(r.querySelector('.v-nt').value)||0, f  = parseFloat(r.querySelector('.v-f').value)||0, t  = parseFloat(r.querySelector('.v-t').value)||0;
@@ -450,14 +476,18 @@ function updateChartWQ() {
 
 function toggleWaterColumns() {
     const list = {'col-temp':'chkTemp','col-ph':'chkPh','col-do':'chkDo','col-tan':'chkTan', 'col-alk':'chkAlk', 'col-tds':'chkTds','col-kecerahan':'chkKecerahan','col-nitrit':'chkNitrit','col-nitrat':'chkNitrat','col-bod':'chkBod','col-tom':'chkTom'};
-    for(let c in list) { document.querySelectorAll('.'+c).forEach(el=>el.style.display=document.getElementById(list[c]).checked?'':'none'); }
+    for(let c in list) { 
+        const chk = document.getElementById(list[c]);
+        const isShow = chk ? chk.checked : true;
+        document.querySelectorAll('.'+c).forEach(el => el.style.display = isShow ? '' : 'none'); 
+    }
     evalWater();
 }
 function addWaterRow() {
   const tb = document.getElementById('waterBody'); const isFirst = tb.rows.length === 0; const tr = tb.insertRow();
-  const c = id => document.getElementById(id).checked ? '' : 'none';
+  const c = id => (document.getElementById(id) && document.getElementById(id).checked) ? '' : 'none';
   tr.innerHTML = `
-    <td><input type="number" class="cell-input w-day" value="${tb.rows.length+1}" oninput="updateChartWQ()"></td>
+    <td><input type="number" class="cell-input w-day" value="${tb.rows.length}" oninput="updateChartWQ()"></td>
     <td style="min-width:120px;"><input type="text" class="cell-input text-left w-ket" placeholder="${isFirst ? 'Cth: Pagi / Wadah 1' : ''}" oninput="updateChartWQ()"></td>
     <td class="col-temp" style="display:${c('chkTemp')}"><input type="number" class="cell-input w-temp" step="0.1" value="${isFirst ? '28.5' : ''}" oninput="evalWater()"></td>
     <td class="col-ph" style="display:${c('chkPh')}"><input type="number" class="cell-input w-ph" step="0.1" value="${isFirst ? '7.5' : ''}" oninput="evalWater()"></td>
@@ -729,31 +759,310 @@ function addGelRow() {
 }
 
 // ===================================================================
+// CONFIRMATION DIALOG MODAL & SNAPSHOT EXPORT
+// ===================================================================
+let _aquaConfirmCallback = null;
+
+function openAquaConfirm({ title, bodyHtml, confirmText = 'Ya, Lanjutkan', confirmClass = 'btn-danger', onConfirm }) {
+  const overlay = document.getElementById('dlgAquaConfirm');
+  const titleEl = document.getElementById('aquaConfirmTitle');
+  const bodyEl = document.getElementById('aquaConfirmBody');
+  const actionBtn = document.getElementById('aquaConfirmActionBtn');
+
+  if (titleEl) titleEl.innerHTML = `${title} <button class="btn-icon" onclick="closeAquaConfirm()" style="font-size:18px;">×</button>`;
+  if (bodyEl) bodyEl.innerHTML = bodyHtml;
+  if (actionBtn) {
+    actionBtn.textContent = confirmText;
+    actionBtn.className = `btn ${confirmClass}`;
+    actionBtn.onclick = function(e) {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      const cb = _aquaConfirmCallback;
+      closeAquaConfirm();
+      if (typeof cb === 'function') cb();
+    };
+  }
+
+  _aquaConfirmCallback = onConfirm;
+  if (overlay) {
+    overlay.classList.add('active');
+  } else {
+    if (confirm(title.replace(/<[^>]*>/g, ''))) {
+      if (typeof onConfirm === 'function') onConfirm();
+    }
+  }
+}
+
+function closeAquaConfirm() {
+  const overlay = document.getElementById('dlgAquaConfirm');
+  if (overlay) overlay.classList.remove('active');
+  _aquaConfirmCallback = null;
+}
+
+function downloadJsonSnapshot(type) {
+  let dataToExport = null;
+  let filename = '';
+  const now = new Date();
+  const timestamp = now.toISOString().replace(/[:.]/g, '-').slice(0, 19);
+
+  if (type === 'logbook') {
+    if (typeof saveLog === 'function') saveLog();
+    const records = JSON.parse(localStorage.getItem('al_log')) || [];
+    dataToExport = {
+      app: 'AquaLab-Workspace',
+      dataset: 'Logbook Penelitian',
+      schemaVersion: '1.0',
+      exportedAt: now.toISOString(),
+      formattedDate: now.toLocaleString('id-ID'),
+      totalRecords: records.length,
+      columns: ['Tanggal (d)', 'Waktu (t)', 'Aktivitas (a)', 'Observasi/Hasil (o)', 'Catatan Khusus (n)'],
+      records: records
+    };
+    filename = `AquaLab_Logbook_Snapshot_${timestamp}.json`;
+  } else if (type === 'inv' || type === 'inventory') {
+    if (typeof saveInv === 'function') saveInv();
+    const items = JSON.parse(localStorage.getItem('al_inv')) || [];
+    dataToExport = {
+      app: 'AquaLab-Workspace',
+      dataset: 'Inventaris Laboratorium',
+      schemaVersion: '1.0',
+      exportedAt: now.toISOString(),
+      formattedDate: now.toLocaleString('id-ID'),
+      totalItems: items.length,
+      columns: ['Nama Item (name)', 'Kategori (cat)', 'Stok/Kuantitas (qty)', 'Satuan (unit)', 'Suhu Simpan (temp)'],
+      items: items
+    };
+    filename = `AquaLab_Inventaris_Snapshot_${timestamp}.json`;
+  } else {
+    return;
+  }
+
+  try {
+    const jsonStr = JSON.stringify(dataToExport, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+    if (typeof toast === 'function') toast(`Snapshot ${filename} berhasil diunduh.`);
+  } catch (err) {
+    console.error('Download snapshot failed:', err);
+  }
+}
+
+// ===================================================================
 // DATA RETRIEVAL (LOCAL STORAGE SYSTEMS)
 // ===================================================================
-function loadLogbook() {
-  const b=document.getElementById('logbookBody'); b.innerHTML='';
-  const data=JSON.parse(localStorage.getItem('al_log'))||[{d: new Date().toISOString().split('T')[0], t: '08:00', a: 'Persiapan Ekstraksi', o: 'Alat steril, sampel siap', n: 'Gunakan kit spesifik'}];
-  data.forEach((item,idx)=>{
-    b.insertRow().innerHTML=`<td style="text-align:center;">${idx+1}</td><td><input type="date" class="cell-input l-d" value="${item.d}" onchange="saveLog()"></td><td><input type="time" class="cell-input l-t" value="${item.t}" onchange="saveLog()"></td><td><input type="text" class="cell-input text-left l-a" value="${item.a}" onchange="saveLog()"></td><td><input type="text" class="cell-input text-left l-o" value="${item.o}" onchange="saveLog()"></td><td><input type="text" class="cell-input text-left l-n" value="${item.n}" onchange="saveLog()"></td><td></td>`;
-    b.rows[b.rows.length-1].cells[6].appendChild(makeDel(()=>{ data.splice(idx,1); localStorage.setItem('al_log',JSON.stringify(data)); loadLogbook(); }));
+function confirmDeleteLogRow(idx) {
+  saveLog();
+  const data = JSON.parse(localStorage.getItem('al_log')) || [];
+  if (!data[idx]) return;
+  const item = data[idx];
+  const act = item.a ? `"${item.a}"` : `Baris #${idx + 1}`;
+  
+  openAquaConfirm({
+    title: `<span class="dsw-icon-styled">🗑️</span> Hapus Catatan Logbook`,
+    bodyHtml: `
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <p style="margin:0; font-size:13.5px; color:var(--text); line-height:1.5;">
+          Apakah Anda yakin ingin menghapus catatan aktivitas <strong>${act}</strong>?
+        </p>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-size:12.5px; line-height:1.6;">
+          <div>• <strong>Tanggal:</strong> ${item.d || '—'} ${item.t ? `(${item.t})` : ''}</div>
+          <div>• <strong>Aktivitas:</strong> ${item.a || '—'}</div>
+          <div>• <strong>Observasi:</strong> ${item.o || '—'}</div>
+          <div>• <strong>Catatan:</strong> ${item.n || '—'}</div>
+        </div>
+      </div>
+    `,
+    confirmText: 'Ya, Hapus Catatan',
+    confirmClass: 'btn-danger',
+    onConfirm: () => {
+      data.splice(idx, 1);
+      localStorage.setItem('al_log', JSON.stringify(data));
+      loadLogbook();
+      if (typeof toast === 'function') toast(`Catatan #${idx + 1} telah dihapus.`);
+    }
   });
 }
-function addLogbookRow(){ const data=JSON.parse(localStorage.getItem('al_log'))||[]; data.push({d:new Date().toISOString().split('T')[0],t:'',a:'',o:'',n:''}); localStorage.setItem('al_log',JSON.stringify(data)); loadLogbook(); }
-function saveLog(){ let d=[]; document.querySelectorAll('#logbookBody tr').forEach(r=>{ d.push({d:r.querySelector('.l-d').value,t:r.querySelector('.l-t').value,a:r.querySelector('.l-a').value,o:r.querySelector('.l-o').value,n:r.querySelector('.l-n').value}); }); localStorage.setItem('al_log',JSON.stringify(d)); }
-function clearLogbook(){ if(confirm('Hapus logbook?')){ localStorage.removeItem('al_log'); loadLogbook(); } }
+
+function loadLogbook() {
+  const b = document.getElementById('logbookBody'); 
+  if (!b) return;
+  b.innerHTML = '';
+  const data = JSON.parse(localStorage.getItem('al_log')) || [{ d: new Date().toISOString().split('T')[0], t: '08:00', a: 'Persiapan Ekstraksi', o: 'Alat steril, sampel siap', n: 'Gunakan kit spesifik' }];
+  data.forEach((item, idx) => {
+    const tr = b.insertRow();
+    tr.innerHTML = `<td style="text-align:center;">${idx + 1}</td><td><input type="date" class="cell-input l-d" value="${item.d || ''}" onchange="saveLog()"></td><td><input type="time" class="cell-input l-t" value="${item.t || ''}" onchange="saveLog()"></td><td><input type="text" class="cell-input text-left l-a" value="${item.a || ''}" onchange="saveLog()"></td><td><input type="text" class="cell-input text-left l-o" value="${item.o || ''}" onchange="saveLog()"></td><td><input type="text" class="cell-input text-left l-n" value="${item.n || ''}" onchange="saveLog()"></td><td></td>`;
+    tr.cells[6].appendChild(makeDel(function(e) {
+      confirmDeleteLogRow(idx);
+    }));
+  });
+}
+
+function addLogbookRow() { 
+  const data = JSON.parse(localStorage.getItem('al_log')) || []; 
+  data.push({ d: new Date().toISOString().split('T')[0], t: '', a: '', o: '', n: '' }); 
+  localStorage.setItem('al_log', JSON.stringify(data)); 
+  loadLogbook(); 
+}
+
+function saveLog() { 
+  let d = []; 
+  document.querySelectorAll('#logbookBody tr').forEach(r => { 
+    d.push({
+      d: r.querySelector('.l-d')?.value || '',
+      t: r.querySelector('.l-t')?.value || '',
+      a: r.querySelector('.l-a')?.value || '',
+      o: r.querySelector('.l-o')?.value || '',
+      n: r.querySelector('.l-n')?.value || ''
+    }); 
+  }); 
+  localStorage.setItem('al_log', JSON.stringify(d)); 
+}
+
+function clearLogbook() {
+  saveLog();
+  const currentData = JSON.parse(localStorage.getItem('al_log')) || [];
+  const count = currentData.length;
+
+  openAquaConfirm({
+    title: `<span class="dsw-icon-styled">🗑️</span> Konfirmasi Reset Logbook`,
+    bodyHtml: `
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <p style="margin:0; font-size:13.5px; color:var(--text); line-height:1.5;">
+          Apakah Anda yakin ingin <strong>mereset seluruh data Logbook Penelitian</strong>?
+        </p>
+        
+        <div style="background:var(--bg); border:1px solid var(--border); border-left:4px solid var(--warning); border-radius:8px; padding:12px; font-size:12.5px; line-height:1.6;">
+          <div style="font-weight:700; color:var(--warning); margin-bottom:4px;">Ringkasan Data Logbook:</div>
+          <div>• <strong>Total Catatan:</strong> ${count} baris aktivitas eksperimen</div>
+          <div>• <strong>Penyimpanan:</strong> Memori Lokal Browser (localStorage)</div>
+        </div>
+
+        <p style="color:var(--danger); font-size:12px; font-weight:600; margin:0; display:flex; align-items:center; gap:6px;">
+          <span>⚠️</span> Tindakan reset akan mengosongkan seluruh riwayat catatan dan tidak dapat dibatalkan.
+        </p>
+      </div>
+    `,
+    confirmText: 'Ya, Reset Logbook',
+    confirmClass: 'btn-danger',
+    onConfirm: () => {
+      localStorage.removeItem('al_log');
+      loadLogbook();
+      if (typeof toast === 'function') toast('Logbook berhasil direset.');
+    }
+  });
+}
+
+function confirmDeleteInvRow(idx) {
+  saveInv();
+  const data = JSON.parse(localStorage.getItem('al_inv')) || [];
+  if (!data[idx]) return;
+  const item = data[idx];
+  const name = item.name ? `"${item.name}"` : `Item #${idx + 1}`;
+  
+  openAquaConfirm({
+    title: `<span class="dsw-icon-styled">🗑️</span> Hapus Item Inventaris`,
+    bodyHtml: `
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <p style="margin:0; font-size:13.5px; color:var(--text); line-height:1.5;">
+          Apakah Anda yakin ingin menghapus item <strong>${name}</strong> dari inventaris?
+        </p>
+        <div style="background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-size:12.5px; line-height:1.6;">
+          <div>• <strong>Nama Item:</strong> ${item.name || '—'}</div>
+          <div>• <strong>Kategori:</strong> ${item.cat || '—'}</div>
+          <div>• <strong>Stok:</strong> ${item.qty !== undefined ? item.qty : '0'} ${item.unit || ''}</div>
+          <div>• <strong>Suhu Simpan:</strong> ${item.temp || '—'}</div>
+        </div>
+      </div>
+    `,
+    confirmText: 'Ya, Hapus Item',
+    confirmClass: 'btn-danger',
+    onConfirm: () => {
+      data.splice(idx, 1);
+      localStorage.setItem('al_inv', JSON.stringify(data));
+      loadInventory();
+      if (typeof toast === 'function') toast(`Item ${name} telah dihapus.`);
+    }
+  });
+}
 
 function loadInventory() {
-  const b=document.getElementById('invBody'); b.innerHTML='';
-  const data=JSON.parse(localStorage.getItem('al_inv'))||[{name:'GoTaq Green Mix',cat:'Reagen PCR',qty:1000,unit:'µL',temp:'-20°C'}];
-  data.forEach((item,idx)=>{
-    b.insertRow().innerHTML=`<td style="text-align:center;">${idx+1}</td><td><input type="text" class="cell-input text-left i-n" value="${item.name}" onchange="saveInv()"></td><td><input type="text" class="cell-input i-c" value="${item.cat}" onchange="saveInv()"></td><td><input type="number" class="cell-input i-q" value="${item.qty}" onchange="saveInv()" style="font-weight:bold; color:${item.qty<=10?'var(--danger)':'var(--success)'}"></td><td><input type="text" class="cell-input i-u" value="${item.unit}" onchange="saveInv()"></td><td><input type="text" class="cell-input i-t" value="${item.temp}" onchange="saveInv()"></td><td></td>`;
-    b.rows[b.rows.length-1].cells[6].appendChild(makeDel(()=>{ data.splice(idx,1); localStorage.setItem('al_inv',JSON.stringify(data)); loadInventory(); }));
+  const b = document.getElementById('invBody'); 
+  if (!b) return;
+  b.innerHTML = '';
+  const data = JSON.parse(localStorage.getItem('al_inv')) || [{ name: 'GoTaq Green Mix', cat: 'Reagen PCR', qty: 1000, unit: 'µL', temp: '-20°C' }];
+  data.forEach((item, idx) => {
+    const tr = b.insertRow();
+    const qtyVal = item.qty !== undefined ? item.qty : '';
+    tr.innerHTML = `<td style="text-align:center;">${idx + 1}</td><td><input type="text" class="cell-input text-left i-n" value="${item.name || ''}" onchange="saveInv()"></td><td><input type="text" class="cell-input i-c" value="${item.cat || ''}" onchange="saveInv()"></td><td><input type="number" class="cell-input i-q" value="${qtyVal}" onchange="saveInv()" style="font-weight:bold; color:${parseFloat(qtyVal) <= 10 ? 'var(--danger)' : 'var(--success)'}"></td><td><input type="text" class="cell-input i-u" value="${item.unit || ''}" onchange="saveInv()"></td><td><input type="text" class="cell-input i-t" value="${item.temp || ''}" onchange="saveInv()"></td><td></td>`;
+    tr.cells[6].appendChild(makeDel(function(e) {
+      confirmDeleteInvRow(idx);
+    }));
   });
 }
-function addInvRow(){ const d=JSON.parse(localStorage.getItem('al_inv'))||[]; d.push({name:'',cat:'',qty:'',unit:'',temp:''}); localStorage.setItem('al_inv',JSON.stringify(d)); loadInventory(); }
-function saveInv(){ let d=[]; document.querySelectorAll('#invBody tr').forEach(r=>{ d.push({name:r.querySelector('.i-n').value,cat:r.querySelector('.i-c').value,qty:r.querySelector('.i-qty').value,unit:r.querySelector('.i-u').value,temp:r.querySelector('.i-t').value}); }); localStorage.setItem('al_inv',JSON.stringify(d)); }
-function clearInventory(){ if(confirm('Reset stok?')){ localStorage.removeItem('al_inv'); loadInventory(); } }
+
+function addInvRow() { 
+  const d = JSON.parse(localStorage.getItem('al_inv')) || []; 
+  d.push({ name: '', cat: '', qty: '', unit: '', temp: '' }); 
+  localStorage.setItem('al_inv', JSON.stringify(d)); 
+  loadInventory(); 
+}
+
+function saveInv() { 
+  let d = []; 
+  document.querySelectorAll('#invBody tr').forEach(r => { 
+    const qInp = r.querySelector('.i-q') || r.querySelector('.i-qty'); 
+    d.push({
+      name: r.querySelector('.i-n')?.value || '',
+      cat: r.querySelector('.i-c')?.value || '',
+      qty: qInp ? qInp.value : '',
+      unit: r.querySelector('.i-u')?.value || '',
+      temp: r.querySelector('.i-t')?.value || ''
+    }); 
+  }); 
+  localStorage.setItem('al_inv', JSON.stringify(d)); 
+}
+
+function clearInventory() {
+  saveInv();
+  const currentData = JSON.parse(localStorage.getItem('al_inv')) || [];
+  const count = currentData.length;
+
+  openAquaConfirm({
+    title: `<span class="dsw-icon-styled">🗑️</span> Konfirmasi Reset Inventaris Lab`,
+    bodyHtml: `
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <p style="margin:0; font-size:13.5px; color:var(--text); line-height:1.5;">
+          Apakah Anda yakin ingin <strong>mereset seluruh data Inventaris Laboratorium</strong>?
+        </p>
+        
+        <div style="background:var(--bg); border:1px solid var(--border); border-left:4px solid var(--warning); border-radius:8px; padding:12px; font-size:12.5px; line-height:1.6;">
+          <div style="font-weight:700; color:var(--warning); margin-bottom:4px;">Ringkasan Stok Inventaris:</div>
+          <div>• <strong>Total Item:</strong> ${count} jenis reagen/bahan/peralatan</div>
+          <div>• <strong>Penyimpanan:</strong> Memori Lokal Browser (localStorage)</div>
+        </div>
+
+        <p style="color:var(--danger); font-size:12px; font-weight:600; margin:0; display:flex; align-items:center; gap:6px;">
+          <span>⚠️</span> Seluruh item inventaris akan direset kembali ke data awal sistem.
+        </p>
+      </div>
+    `,
+    confirmText: 'Ya, Reset Inventaris',
+    confirmClass: 'btn-danger',
+    onConfirm: () => {
+      localStorage.removeItem('al_inv');
+      loadInventory();
+      if (typeof toast === 'function') toast('Inventaris berhasil direset.');
+    }
+  });
+}
 
 function loadNeeds() {
   const rb=document.getElementById('reqBody'); rb.innerHTML='';
@@ -778,26 +1087,596 @@ function saveN(){
 }
 
 // ===================================================================
-// EXPORTING
+// EXPORTING & GLOBAL BACKUP
 // ===================================================================
-function exportCSV(tId, fn) {
-  const table=document.getElementById(tId); if(!table) return; let csv=[];
-  for(let r of table.rows) {
-    if(r.style.display==='none'||!r.cells.length) continue; let row=[];
-    for(let c of r.cells) {
-      if(c.querySelector('button.btn-icon') || c.style.display==='none') continue;
-      let val=c.querySelector('input')?c.querySelector('input').value:c.querySelector('select')?c.querySelector('select').value:c.innerText.trim().replace(/[,\n]/g,' ');
-      row.push('"'+val+'"');
+function getTableCSVString(tId, title) {
+  let table = document.getElementById(tId);
+  if (!table) {
+    const aliasMap = {
+      't-water': 'waterTable',
+      't-invivo': 'invivoTable',
+      't-health': 'healthTable',
+      't-gonad': 'gonadTable',
+      't-hatchery': 'hatcheryTable',
+      't-pakan': 'feedTable',
+      't-proksimat': 'proxTable',
+      't-plk-dens': 'plkDensTable',
+      't-eco': 'ecoTable',
+      't-od': 'odTable',
+      't-tpc': 'tpcTable',
+      't-zona': 'zonaTable',
+      't-gel': 'gelTable'
+    };
+    if (aliasMap[tId]) {
+      table = document.getElementById(aliasMap[tId]);
     }
-    csv.push(row.join(','));
   }
-  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv.join('\n')],{type:'text/csv;charset=utf-8;'}));
-  a.download=fn; a.click(); toast(`${fn} berhasil diunduh.`);
+  if (!table) return null;
+  let csv = [];
+  if (title) csv.push(`"# AREs Module: ${title}"`);
+  csv.push(`"# Generated: ${new Date().toISOString()}"`);
+  csv.push('');
+  for (let r of table.rows) {
+    if (r.style.display === 'none' || !r.cells.length) continue;
+    let row = [];
+    for (let c of r.cells) {
+      if (c.querySelector('button.btn-icon') || c.style.display === 'none') continue;
+      let inputEl = c.querySelector('input');
+      let selectEl = c.querySelector('select');
+      let val = inputEl ? inputEl.value : selectEl ? selectEl.value : c.innerText.trim();
+      val = val.replace(/\r?\n|\r/g, ' ').replace(/"/g, '""');
+      row.push(`"${val}"`);
+    }
+    if (row.length > 0) csv.push(row.join(','));
+  }
+  return csv.join('\r\n');
 }
 
+function exportCSV(tId, fn) {
+  const csvContent = getTableCSVString(tId);
+  if (!csvContent) {
+    toast('Tabel tidak ditemukan.');
+    return;
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csvContent], { type: 'text/csv;charset=utf-8;' }));
+  a.download = fn || `export_${tId}.csv`;
+  a.click();
+  toast(`${fn || 'File'} berhasil diunduh.`);
+}
+
+function exportActiveTableCSV() {
+  const activePane = document.querySelector('.tab-pane.active');
+  if (!activePane) {
+    exportCSV('invivoTable', '01_AquaLab_Performa_InVivo.csv');
+    return;
+  }
+  const pid = activePane.id;
+  if (pid === 'v-dashboard') {
+    exportAllModulesZip();
+  } else if (pid === 'v-invivo') {
+    exportCSV('invivoTable', '01_AquaLab_Performa_InVivo.csv');
+  } else if (pid === 'v-kesehatan') {
+    exportCSV('healthTable', '02_AquaLab_Kesehatan_Ikan.csv');
+  } else if (pid === 'v-gonad') {
+    const subActive = activePane.querySelector('.tab-pane.active');
+    if (subActive && subActive.id === 'gonad-hatchery') {
+      exportCSV('hatcheryTable', '03b_AquaLab_Pembenihan_Hatchery.csv');
+    } else {
+      exportCSV('gonadTable', '03a_AquaLab_Kematangan_Gonad.csv');
+    }
+  } else if (pid === 'v-pakan') {
+    const subActive = activePane.querySelector('.tab-pane.active');
+    if (subActive && subActive.id === 'pakan-nutrisi') {
+      exportCSV('proxTable', '04b_AquaLab_Analisis_Proksimat.csv');
+    } else {
+      exportCSV('feedTable', '04a_AquaLab_Formulasi_Pakan.csv');
+    }
+  } else if (pid === 'v-water') {
+    exportCSV('waterTable', '05_AquaLab_Kualitas_Air.csv');
+  } else if (pid === 'v-plankton') {
+    const subActive = activePane.querySelector('.tab-pane.active');
+    if (subActive && subActive.id === 'plk-eco') {
+      exportCSV('ecoTable', '06b_AquaLab_Ekologi_Akuatik.csv');
+    } else {
+      exportCSV('plkDensTable', '06a_AquaLab_Plankton_Densitas.csv');
+    }
+  } else if (pid === 'v-microbio') {
+    const subActive = activePane.querySelector('.tab-pane.active');
+    if (subActive && subActive.id === 'mb-tpc') {
+      exportCSV('tpcTable', '07b_AquaLab_Mikrobiologi_TPC.csv');
+    } else if (subActive && subActive.id === 'mb-zona') {
+      exportCSV('zonaTable', '07c_AquaLab_Zona_Hambat.csv');
+    } else {
+      exportCSV('odTable', '07a_AquaLab_Spektro_OD600.csv');
+    }
+  } else if (pid === 'v-invitro') {
+    exportCSV('gelTable', '08_AquaLab_Elektroforesis_Gel_DNA.csv');
+  } else if (pid === 'v-logbook') {
+    exportCSV('logTable', '09_AquaLab_Logbook_Harian.csv');
+  } else if (pid === 'v-inv') {
+    exportCSV('invTable', '10_AquaLab_Inventaris_Bahan.csv');
+  } else if (pid === 'v-needs') {
+    const subActive = activePane.querySelector('.tab-pane.active');
+    if (subActive && subActive.id === 'nd-book') {
+      exportCSV('bookTable', '11b_AquaLab_Jadwal_Penggunaan_Alat.csv');
+    } else {
+      exportCSV('reqTable', '11a_AquaLab_Permintaan_Bahan.csv');
+    }
+  } else {
+    exportCSV('invivoTable', 'AquaLab_Data_Aktif.csv');
+  }
+}
+
+function addActiveRow() {
+  const activePane = document.querySelector('.tab-pane.active');
+  if (!activePane) {
+    addInvivoRow();
+    return;
+  }
+  const pid = activePane.id;
+  if (pid === 'v-invivo') {
+    addInvivoRow();
+  } else if (pid === 'v-kesehatan') {
+    addHealthRow();
+  } else if (pid === 'v-gonad') {
+    const subActive = activePane.querySelector('.tab-pane.active');
+    if (subActive && subActive.id === 'gonad-hatchery') {
+      addHatcheryRow();
+    } else {
+      addGonadRow();
+    }
+  } else if (pid === 'v-pakan') {
+    const subActive = activePane.querySelector('.tab-pane.active');
+    if (subActive && subActive.id === 'pakan-nutrisi') {
+      addProksimatRow();
+    } else {
+      addPakanRow();
+    }
+  } else if (pid === 'v-water') {
+    addWaterRow();
+  } else if (pid === 'v-plankton') {
+    const subActive = activePane.querySelector('.tab-pane.active');
+    if (subActive && subActive.id === 'plk-eco') {
+      addEcoRow();
+    } else {
+      addPlkDensRow();
+    }
+  } else if (pid === 'v-microbio') {
+    const subActive = activePane.querySelector('.tab-pane.active');
+    if (subActive && subActive.id === 'mb-tpc') {
+      addTpcRow();
+    } else if (subActive && subActive.id === 'mb-zona') {
+      addZonaRow();
+    } else {
+      addOdRow();
+    }
+  } else if (pid === 'v-invitro') {
+    addGelRow();
+  } else if (pid === 'v-logbook') {
+    const input = document.getElementById('logNotes');
+    if (input) input.focus();
+  } else {
+    addInvivoRow();
+  }
+}
+
+function saveAquaLabWorkspaceSnapshot() {
+  try {
+    const tableConfigs = [
+      { id: 'invivoTable', bodyId: 'invivoBody' },
+      { id: 'healthTable', bodyId: 'healthBody' },
+      { id: 'gonadTable', bodyId: 'gonadBody' },
+      { id: 'hatcheryTable', bodyId: 'hatcheryBody' },
+      { id: 'feedTable', bodyId: 'feedBody' },
+      { id: 'proxTable', bodyId: 'proxBody' },
+      { id: 'waterTable', bodyId: 'waterBody' },
+      { id: 'plkDensTable', bodyId: 'plkDensBody' },
+      { id: 'ecoTable', bodyId: 'ecoBody' },
+      { id: 'odTable', bodyId: 'odBody' },
+      { id: 'tpcTable', bodyId: 'tpcBody' },
+      { id: 'zonaTable', bodyId: 'zonaBody' },
+      { id: 'gelTable', bodyId: 'gelBody' }
+    ];
+
+    const snapshot = {
+      timestamp: new Date().toISOString(),
+      tables: {},
+      formFields: {}
+    };
+
+    tableConfigs.forEach(cfg => {
+      const tbody = document.getElementById(cfg.bodyId);
+      if (!tbody) return;
+      const rowsData = [];
+      for (let r of tbody.rows) {
+        const rowInputs = [];
+        for (let cell of r.cells) {
+          const inp = cell.querySelector('input');
+          const sel = cell.querySelector('select');
+          if (inp) {
+            rowInputs.push(inp.value);
+          } else if (sel) {
+            rowInputs.push(sel.value);
+          }
+        }
+        if (rowInputs.length > 0) {
+          rowsData.push(rowInputs);
+        }
+      }
+      snapshot.tables[cfg.id] = rowsData;
+    });
+
+    const formIds = ['seqFwd', 'seqRev', 'seqTemplate', 'pcrSamples', 'vWater', 'vMix', 'vFwd', 'vRev'];
+    formIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) snapshot.formFields[id] = el.value;
+    });
+
+    localStorage.setItem('aqualab_tables_snapshot', JSON.stringify(snapshot));
+
+    if (typeof saveLog === 'function') saveLog();
+    if (typeof saveInv === 'function') saveInv();
+    if (typeof saveN === 'function') saveN();
+
+    if (window.ARESStorageSync && typeof window.ARESStorageSync.notifyChange === 'function') {
+      window.ARESStorageSync.notifyChange('aqualab_tables_snapshot');
+    }
+
+    return true;
+  } catch (err) {
+    console.error('Error saving AquaLab snapshot:', err);
+    return false;
+  }
+}
+
+function loadAquaLabWorkspaceSnapshot() {
+  try {
+    const raw = localStorage.getItem('aqualab_tables_snapshot');
+    if (!raw) return false;
+    const snapshot = JSON.parse(raw);
+    if (!snapshot || !snapshot.tables) return false;
+
+    const tableAddFns = {
+      'invivoTable': { addFn: addInvivoRow, bodyId: 'invivoBody' },
+      'healthTable': { addFn: addHealthRow, bodyId: 'healthBody' },
+      'gonadTable': { addFn: addGonadRow, bodyId: 'gonadBody' },
+      'hatcheryTable': { addFn: addHatcheryRow, bodyId: 'hatcheryBody' },
+      'feedTable': { addFn: addPakanRow, bodyId: 'feedBody' },
+      'proxTable': { addFn: addProksimatRow, bodyId: 'proxBody' },
+      'waterTable': { addFn: addWaterRow, bodyId: 'waterBody' },
+      'plkDensTable': { addFn: addPlkDensRow, bodyId: 'plkDensBody' },
+      'ecoTable': { addFn: addEcoRow, bodyId: 'ecoBody' },
+      'odTable': { addFn: addOdRow, bodyId: 'odBody' },
+      'tpcTable': { addFn: addTpcRow, bodyId: 'tpcBody' },
+      'zonaTable': { addFn: addZonaRow, bodyId: 'zonaBody' },
+      'gelTable': { addFn: addGelRow, bodyId: 'gelBody' }
+    };
+
+    let hasRestored = false;
+    Object.keys(snapshot.tables).forEach(tId => {
+      const rowsData = snapshot.tables[tId];
+      const cfg = tableAddFns[tId];
+      if (!cfg || !Array.isArray(rowsData) || rowsData.length === 0) return;
+
+      const tbody = document.getElementById(cfg.bodyId);
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+      rowsData.forEach(vals => {
+        cfg.addFn();
+        const lastRow = tbody.rows[tbody.rows.length - 1];
+        if (lastRow) {
+          let valIdx = 0;
+          for (let cell of lastRow.cells) {
+            const inp = cell.querySelector('input');
+            const sel = cell.querySelector('select');
+            if (inp && valIdx < vals.length) {
+              inp.value = vals[valIdx++];
+              inp.dispatchEvent(new Event('input', { bubbles: true }));
+            } else if (sel && valIdx < vals.length) {
+              sel.value = vals[valIdx++];
+              sel.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          }
+        }
+      });
+      hasRestored = true;
+    });
+
+    if (snapshot.formFields) {
+      Object.keys(snapshot.formFields).forEach(fId => {
+        const el = document.getElementById(fId);
+        if (el) {
+          el.value = snapshot.formFields[fId];
+          el.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+    }
+
+    return hasRestored;
+  } catch (err) {
+    console.warn('Could not restore AquaLab snapshot:', err);
+    return false;
+  }
+}
+
+/**
+ * Global 'Export All Modules' Button - triggers a zipped CSV download of all current research tables
+ */
+async function exportAllModulesZip() {
+  const now = new Date();
+  const dateStr = now.toISOString().split('T')[0];
+  const zipFileName = `AREs_Research_Database_Backup_${dateStr}.zip`;
+
+  const tablesToExport = [
+    { id: 't-water', filename: '01_AquaLab_Kualitas_Air.csv', title: 'Kualitas Air & Monitoring Fisika-Kimia' },
+    { id: 't-invivo', filename: '02_AquaLab_Performa_InVivo.csv', title: 'Performa In Vivo & Biomassa (SR, SGR, FCR, EP)' },
+    { id: 't-health', filename: '03_AquaLab_Kesehatan_Ikan.csv', title: 'Parameter Darah & Kesehatan Ikan' },
+    { id: 't-gonad', filename: '04_AquaLab_Reproduksi_Gonad.csv', title: 'Kematangan Gonad & Fekunditas' },
+    { id: 't-hatchery', filename: '05_AquaLab_Pembenihan_Hatchery.csv', title: 'Pembenihan & Fekunditas Telur' },
+    { id: 't-pakan', filename: '06_AquaLab_Formulasi_Pakan.csv', title: 'Formulasi Pakan & Kebutuhan Nutrisi' },
+    { id: 't-proksimat', filename: '07_AquaLab_Analisis_Proksimat.csv', title: 'Analisis Proksimat Pakan & Daging' },
+    { id: 't-plk-dens', filename: '08_AquaLab_Plankton_Densitas.csv', title: 'Kepadatan & Diversitas Plankton' },
+    { id: 't-eco', filename: '09_AquaLab_Ekologi_Akuatik.csv', title: 'Ekologi Akuatik & Kualitas Habitat' },
+    { id: 't-od', filename: '10_AquaLab_Spektro_OD.csv', title: 'Kepadatan Optik & Spektrofotometri (OD600)' },
+    { id: 't-tpc', filename: '11_AquaLab_Mikrobiologi_TPC.csv', title: 'Total Plate Count (TPC) Mikrobiologi' },
+    { id: 't-zona', filename: '12_AquaLab_Uji_Antibakteri_Zona.csv', title: 'Uji Zona Hambat Antibakterial' },
+    { id: 't-gel', filename: '13_AquaLab_Elektroforesis_Gel_DNA.csv', title: 'Elektroforesis Gel & Analisis Pita DNA' },
+    { id: 'logTable', filename: '14_AquaLab_Logbook_Harian.csv', title: 'Logbook Harian Riset Laboratorium' },
+    { id: 'invTable', filename: '15_AquaLab_Inventaris_Stok.csv', title: 'Inventaris Stok Bahan & Reagen Lab' },
+    { id: 'reqTable', filename: '16_AquaLab_Permintaan_Bahan.csv', title: 'Daftar Kebutuhan & Permintaan Bahan' },
+    { id: 'bookTable', filename: '17_AquaLab_Jadwal_Penggunaan_Alat.csv', title: 'Jadwal Pemesanan & Penggunaan Fasilitas' }
+  ];
+
+  let exportedCount = 0;
+  const files = {};
+
+  tablesToExport.forEach(item => {
+    const content = getTableCSVString(item.id, item.title);
+    if (content && content.length > 30) {
+      files[item.filename] = content;
+      exportedCount++;
+    }
+  });
+
+  // Also include StatWise and EcoMetrics stored data if present in localStorage
+  try {
+    const swData = localStorage.getItem('sw_data');
+    if (swData) {
+      files['18_StatWise_Biometrika_Dataset.json'] = swData;
+      exportedCount++;
+    }
+    const ecoData = localStorage.getItem('ecometrics_data') || localStorage.getItem('eco_matrix');
+    if (ecoData) {
+      files['19_EcoMetrics_Multivariat_Dataset.json'] = ecoData;
+      exportedCount++;
+    }
+  } catch (e) {
+    console.warn('Could not read external module localStorage', e);
+  }
+
+  // Add README manifest
+  files['README_AREs_Backup.txt'] = `=================================================================
+AQUACULTURE RESEARCH ECOSYSTEM (AREs)
+Global Research Database & Multi-Module Offline Backup
+=================================================================
+Tanggal Ekspor : ${now.toLocaleString('id-ID')}
+Total Tabel    : ${exportedCount} Modul Riset Terkompilasi
+Peneliti Utama : Dandi Setio Wibowo
+Afiliasi       : FPIK Universitas Jenderal Soedirman (UNSOED)
+Sitasi DOI     : 10.5281/zenodo.20729217
+
+DAFTAR FILE DALAM PAKET CADANGAN INI:
+${Object.keys(files).map((f, i) => `  ${i + 1}. ${f}`).join('\r\n')}
+
+PANDUAN PENGGUNAAN:
+1. File .csv dapat dibuka langsung di Microsoft Excel, Google Sheets, R, Python (Pandas), SPSS, atau diimpor kembali ke ekosistem AREs.
+2. Karakter encoding yang digunakan adalah UTF-8 standar internasional.
+3. Seluruh komputasi data dieksekusi 100% offline di peramban (client-side).
+=================================================================
+`;
+
+  try {
+    if (typeof JSZip !== 'undefined') {
+      const zip = new JSZip();
+      for (const [filename, content] of Object.entries(files)) {
+        zip.file(filename, content);
+      }
+      const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(zipBlob);
+      a.download = zipFileName;
+      a.click();
+      toast(`📦 Berhasil mengekspor ${exportedCount} tabel ke dalam ${zipFileName}`);
+      return;
+    }
+  } catch (err) {
+    console.error('JSZip generation failed, falling back to pure-JS zip builder', err);
+  }
+
+  // Standalone Pure JavaScript Stored ZIP Generator Fallback
+  try {
+    const zipBlob = createStoredZipBlob(files);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(zipBlob);
+    a.download = zipFileName;
+    a.click();
+    toast(`📦 Berhasil mengekspor ${exportedCount} tabel ke dalam ${zipFileName}`);
+  } catch (e) {
+    console.error('ZIP generation failed', e);
+    // If ZIP fails completely, download individual core CSVs as fallback
+    let delay = 0;
+    for (const [fn, content] of Object.entries(files)) {
+      if (fn.endsWith('.csv')) {
+        setTimeout(() => {
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(new Blob([content], { type: 'text/csv;charset=utf-8;' }));
+          a.download = fn;
+          a.click();
+        }, delay);
+        delay += 250;
+      }
+    }
+    toast(`Mengekspor ${exportedCount} file CSV secara berurutan...`);
+  }
+}
+
+// Pure JavaScript ZIP creator (Store compression, no external dependencies needed)
+function createStoredZipBlob(filesObj) {
+  const enc = new TextEncoder();
+  const fileEntries = [];
+  let offset = 0;
+
+  for (const [name, content] of Object.entries(filesObj)) {
+    const nameBytes = enc.encode(name);
+    const contentBytes = enc.encode(content);
+    const crc = crc32(contentBytes);
+    const size = contentBytes.length;
+
+    // Local file header (30 bytes + name + content)
+    const header = new Uint8Array(30 + nameBytes.length);
+    const view = new DataView(header.buffer);
+    view.setUint32(0, 0x04034b50, true); // Local header signature
+    view.setUint16(4, 20, true);         // Version needed
+    view.setUint16(6, 0, true);          // General purpose flags
+    view.setUint16(8, 0, true);          // Compression (0 = store)
+    view.setUint16(10, 0, true);         // Time
+    view.setUint16(12, 0, true);         // Date
+    view.setUint32(14, crc, true);        // CRC32
+    view.setUint32(18, size, true);       // Compressed size
+    view.setUint32(22, size, true);       // Uncompressed size
+    view.setUint16(26, nameBytes.length, true); // Filename length
+    view.setUint16(28, 0, true);         // Extra field length
+    header.set(nameBytes, 30);
+
+    fileEntries.push({
+      header,
+      contentBytes,
+      nameBytes,
+      crc,
+      size,
+      offset
+    });
+
+    offset += header.length + contentBytes.length;
+  }
+
+  // Central directory entries
+  const cdEntries = [];
+  let cdSize = 0;
+
+  for (const f of fileEntries) {
+    const cdHeader = new Uint8Array(46 + f.nameBytes.length);
+    const view = new DataView(cdHeader.buffer);
+    view.setUint32(0, 0x02014b50, true); // Central header signature
+    view.setUint16(4, 20, true);         // Version made by
+    view.setUint16(6, 20, true);         // Version needed
+    view.setUint16(8, 0, true);          // Flags
+    view.setUint16(10, 0, true);         // Compression
+    view.setUint16(12, 0, true);         // Time
+    view.setUint16(14, 0, true);         // Date
+    view.setUint32(16, f.crc, true);     // CRC32
+    view.setUint32(20, f.size, true);    // Compressed size
+    view.setUint32(24, f.size, true);    // Uncompressed size
+    view.setUint16(28, f.nameBytes.length, true); // Name len
+    view.setUint16(30, 0, true);         // Extra len
+    view.setUint16(32, 0, true);         // Comment len
+    view.setUint16(34, 0, true);         // Disk start
+    view.setUint16(36, 0, true);         // Internal attr
+    view.setUint32(38, 0, true);         // External attr
+    view.setUint32(42, f.offset, true);  // Local header relative offset
+    cdHeader.set(f.nameBytes, 46);
+
+    cdEntries.push(cdHeader);
+    cdSize += cdHeader.length;
+  }
+
+  // End of central directory record (22 bytes)
+  const eocd = new Uint8Array(22);
+  const eocdView = new DataView(eocd.buffer);
+  eocdView.setUint32(0, 0x06054b50, true); // EOCD signature
+  eocdView.setUint16(4, 0, true);          // Disk number
+  eocdView.setUint16(6, 0, true);          // Disk with CD
+  eocdView.setUint16(8, fileEntries.length, true);  // Entries on disk
+  eocdView.setUint16(10, fileEntries.length, true); // Total entries
+  eocdView.setUint32(12, cdSize, true);             // CD size
+  eocdView.setUint32(16, offset, true);             // CD offset
+  eocdView.setUint16(20, 0, true);                  // Comment len
+
+  const parts = [];
+  for (const f of fileEntries) {
+    parts.push(f.header);
+    parts.push(f.contentBytes);
+  }
+  for (const cd of cdEntries) {
+    parts.push(cd);
+  }
+  parts.push(eocd);
+
+  return new Blob(parts, { type: 'application/zip' });
+}
+
+// Simple fast CRC32 table calculator
+const crcTable = (() => {
+  let c;
+  const table = [];
+  for (let n = 0; n < 256; n++) {
+    c = n;
+    for (let k = 0; k < 8; k++) {
+      c = ((c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1));
+    }
+    table[n] = c;
+  }
+  return table;
+})();
+
+function crc32(buf) {
+  let crc = 0 ^ (-1);
+  for (let i = 0; i < buf.length; i++) {
+    crc = (crc >>> 8) ^ crcTable[(crc ^ buf[i]) & 0xFF];
+  }
+  return (crc ^ (-1)) >>> 0;
+}
+
+window.saveAquaLabWorkspaceSnapshot = saveAquaLabWorkspaceSnapshot;
+window.loadAquaLabWorkspaceSnapshot = loadAquaLabWorkspaceSnapshot;
+window.exportActiveTableCSV = exportActiveTableCSV;
+window.addActiveRow = addActiveRow;
+window.exportAllModulesZip = exportAllModulesZip;
+
 window.onload = function() {
-  toggleWaterColumns(); toggleHealthColumns(); addInvivoRow(); addHealthRow(); addGonadRow(); addHatcheryRow(); addPakanRow(); addProksimatRow(); addPlkDensRow(); addEcoRow(); addWaterRow(); addOdRow(); addTpcRow(); addZonaRow(); addGelRow(); loadLogbook(); loadInventory(); loadNeeds();
+  toggleWaterColumns(); 
+  toggleHealthColumns(); 
   
-  document.getElementById('seqFwd').value = 'ATGCGTACGTAGCTAGCTA'; document.getElementById('seqRev').value = 'CGATGCTAGCTAGCTAGCT'; document.getElementById('seqTemplate').value = 'ATGCGTACGTAGCTAGCTATTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAGCTAGCTAGCTAGCATCG';
-  analyzePrimer(); document.getElementById('pcrSamples').value = '10'; document.getElementById('vWater').value = '8.5'; document.getElementById('vMix').value = '12.5'; document.getElementById('vFwd').value = '1'; document.getElementById('vRev').value = '1'; calcPCR(); updateTemplateVol();
+  const restored = loadAquaLabWorkspaceSnapshot();
+  if (!restored) {
+    addInvivoRow(); addHealthRow(); addGonadRow(); addHatcheryRow(); addPakanRow(); addProksimatRow(); addPlkDensRow(); addEcoRow(); addWaterRow(); addOdRow(); addTpcRow(); addZonaRow(); addGelRow();
+    const fwd = document.getElementById('seqFwd'); if (fwd) fwd.value = 'ATGCGTACGTAGCTAGCTA';
+    const rev = document.getElementById('seqRev'); if (rev) rev.value = 'CGATGCTAGCTAGCTAGCT';
+    const tpl = document.getElementById('seqTemplate'); if (tpl) tpl.value = 'ATGCGTACGTAGCTAGCTATTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAGCTAGCTAGCTAGCATCG';
+    analyzePrimer();
+    const ps = document.getElementById('pcrSamples'); if (ps) ps.value = '10';
+    const vw = document.getElementById('vWater'); if (vw) vw.value = '8.5';
+    const vm = document.getElementById('vMix'); if (vm) vm.value = '12.5';
+    const vf = document.getElementById('vFwd'); if (vf) vf.value = '1';
+    const vr = document.getElementById('vRev'); if (vr) vr.value = '1';
+    calcPCR();
+    updateTemplateVol();
+  } else {
+    analyzePrimer();
+    calcPCR();
+    updateTemplateVol();
+  }
+
+  loadLogbook(); loadInventory(); loadNeeds();
+
+  // Register with ARES Keyboard Shortcuts
+  if (window.ARESShortcuts) {
+    window.ARESShortcuts.on('save', saveAquaLabWorkspaceSnapshot);
+    window.ARESShortcuts.on('export', exportActiveTableCSV);
+    window.ARESShortcuts.on('exportAll', exportAllModulesZip);
+    window.ARESShortcuts.on('newRow', addActiveRow);
+  }
 };
+

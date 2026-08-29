@@ -37,6 +37,9 @@ function loadSampleBioTools(type) {
         case 'primer-auto':
             document.getElementById('targetGen').value = 'ATGCGTACGTAGCTAGCTATTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAGCTAGCTAGCTAGCATCGATGCGTACGTAGCTAGCTATTCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGATCGAGCTAGCTAGCTAGCATCG';
             break;
+        case 'mol3d':
+            if (typeof loadMol3DPreset === 'function') loadMol3DPreset('1CRN');
+            break;
     }
     toast("Data sampel berhasil dimuat. Silakan klik tombol analisis.");
 }
@@ -55,6 +58,12 @@ function switchView(viewId, el) {
   document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
   document.getElementById(viewId).classList.add('active');
   el.classList.add('active');
+  if (viewId === 'v-mol3d' && typeof Mol3DState !== 'undefined') {
+    setTimeout(() => {
+      if (Mol3DState.glViewer) { Mol3DState.glViewer.resize(); Mol3DState.glViewer.render(); }
+      if (Mol3DState.fallbackCanvas && typeof resizeMol3DFallbackCanvas === 'function') resizeMol3DFallbackCanvas();
+    }, 120);
+  }
 }
 function openSub(btn, id, grp) {
   const pane = btn.closest('.tab-pane');
@@ -65,7 +74,9 @@ function openSub(btn, id, grp) {
 }
 function toggleTheme() {
   const h = document.documentElement;
-  h.setAttribute('data-theme', h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  const next = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  h.setAttribute('data-theme', next);
+  localStorage.setItem('ares_theme', next);
 }
 function copyText(elementId) {
   const text = document.getElementById(elementId);
@@ -529,8 +540,43 @@ function revCompForORF(seq) {
     const m = {'A':'T','T':'A','C':'G','G':'C'};
     return seq.split('').reverse().map(b=>m[b]||b).join('');
 }
-function runORFFinder() {
-    const seq = cleanDNA(document.getElementById('orfInput').value);
+function proceedORFFinder(bypassConfirm = true) {
+    runORFFinder(bypassConfirm);
+}
+function runORFFinder(bypassConfirm = false) {
+    const rawVal = document.getElementById('orfInput').value;
+    if (!rawVal.trim()) return alert("Masukkan sekuens DNA mentah terlebih dahulu.");
+
+    const lines = rawVal.split(/\r?\n/).filter(line => !line.trim().startsWith('>'));
+    const seqOnly = lines.join('').replace(/\s+/g, '');
+    if (!seqOnly) return alert("Sekuens DNA tidak ditemukan dalam input.");
+
+    const nonNucleotides = seqOnly.toUpperCase().match(/[^ATCGN]/g) || [];
+
+    if (!bypassConfirm && nonNucleotides.length > 0) {
+        const uniqueChars = Array.from(new Set(nonNucleotides.map(c => c.toUpperCase())));
+        const count = nonNucleotides.length;
+
+        const dlgEl = document.getElementById('dlgOrfConfirm');
+        const countEl = document.getElementById('orfNonNucCount');
+        const charsEl = document.getElementById('orfNonNucChars');
+
+        if (dlgEl && countEl && charsEl) {
+            countEl.textContent = `${count}`;
+            charsEl.textContent = uniqueChars.join(', ');
+            openDialog('dlgOrfConfirm');
+            return;
+        } else {
+            const isConfirmed = confirm(`Sekuens yang Anda masukkan mengandung ${count} karakter non-nukleotida selain ATCGN (karakter: ${uniqueChars.join(', ')}).\n\nApakah Anda yakin ingin melanjutkan analisis ORF? (Karakter non-ATCGN akan diabaikan)`);
+            if (!isConfirmed) return;
+        }
+    }
+
+    if (document.getElementById('dlgOrfConfirm')) {
+        closeDialog('dlgOrfConfirm');
+    }
+
+    const seq = seqOnly.toUpperCase().replace(/[^ATCGN]/g, '');
     if(seq.length < 90) return alert("Sekuens DNA terlalu pendek (Min. 90 bp untuk kandidat protein fungsional).");
     const revSeq = revCompForORF(seq); const stops = ['TAA', 'TAG', 'TGA']; let orfs = [];
 

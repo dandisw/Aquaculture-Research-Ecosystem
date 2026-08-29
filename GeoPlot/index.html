@@ -5,11 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#D97706">
 <title>GeoPlot — Cartographic Workspace by DSW</title>
+<script src="../js/theme-manager.js"></script>
+<script src="../js/storage-sync.js"></script>
+<script src="../js/i18n.js"></script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%23FCD34D%22>📍</text></svg>">
 <link rel="manifest" href="./manifest.json">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Times+New+Roman&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=MuseoModerno:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet-minimap@3.6.1/dist/Control.MiniMap.min.css" />
@@ -24,7 +28,9 @@
   --text: #0F172A; --text2: #475569; --text3: #94A3B8;
   --primary: #D97706; --primary-light: #FEF3C7; --primary-dark: #B45309; 
   --success: #16A34A; --danger: #DC2626; --warning: #F59E0B; --info: #3B82F6;
-  --font-sans: 'DM Sans', sans-serif; --font-mono: 'DM Mono', monospace; --font-serif: 'Fraunces', serif;
+  --font-sans: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-serif: 'MuseoModerno', 'Syne', 'Fraunces', sans-serif;
   --radius: 8px;
   --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
 }
@@ -45,7 +51,11 @@ body { font-family: var(--font-sans); background: var(--bg); color: var(--text);
 [data-theme="dark"] .dsw-icon-styled { filter: grayscale(100%) brightness(1.3) sepia(1) hue-rotate(35deg) saturate(5); }
 [data-theme="light"] .dsw-icon-styled { filter: grayscale(100%) brightness(0.8) sepia(1) hue-rotate(35deg) saturate(4); }
 
+.ares-logo-header { height: 30px; width: auto; display: block; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.ares-logo-header:hover { transform: scale(1.05) rotate(-2deg); }
+
 header { background: var(--surface); padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 50; box-shadow: var(--shadow); }
+.header-left { display: flex; align-items: center; gap: 14px; }
 .brand { display: flex; align-items: center; gap: 6px; }
 .brand-text { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
 .brand-text span { color: var(--primary); }
@@ -288,12 +298,21 @@ input[type="color"].tbl-input::-webkit-color-swatch { border: none; }
 <body>
 
 <header>
-  <div class="brand">
-    <span class="brand-icon dsw-icon-styled">📍</span>
-    <span class="brand-text">Geo<span class="accent">Plot</span></span>
-    <span class="brand-sub">by DSW</span>
+  <div class="header-left">
+    <a href="../index.html" title="Kembali ke Ekosistem AREs">
+      <img src="../AREs%20Logo%20Acronim.png" alt="AREs Logo" class="ares-logo-header">
+    </a>
+    <div class="brand">
+      <span class="brand-icon dsw-icon-styled">📍</span>
+      <span class="brand-text">Geo<span class="accent">Plot</span></span>
+      <span class="brand-sub">by DSW</span>
+    </div>
   </div>
   <div class="header-actions">
+    <div id="aresDataSyncIndicator" class="ares-sync-indicator" title="Status Sinkronisasi & Penyimpanan Lokal Data Riset AREs (Klik untuk melihat rincian)"></div>
+    <a href="../index.html" class="btn btn-outline btn-sm" style="text-decoration: none;" title="Kembali ke Beranda AREs">
+      <span class="dsw-icon-styled">🏠</span> <span class="btn-text">Home AREs</span>
+    </a>
     <button class="btn btn-outline btn-sm" onclick="openGuide()"><span class="dsw-icon-styled">📖</span> <span data-i18n="btnGuide">Panduan</span></button>
     <button class="btn btn-outline btn-sm" onclick="toggleLanguage()"><span class="dsw-icon-styled">🌐</span> <span id="langIndicator">ID</span></button>
     <button class="btn btn-outline btn-sm" onclick="toggleTheme()"><span class="dsw-icon-styled">🌗</span> <span data-i18n="theme">Tema</span></button>
@@ -724,7 +743,9 @@ input[type="color"].tbl-input::-webkit-color-swatch { border: none; }
 
     function toggleTheme() {
         const html = document.documentElement;
-        html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('ares_theme', next);
         generateMap(false); 
     }
 
@@ -1451,6 +1472,43 @@ input[type="color"].tbl-input::-webkit-color-swatch { border: none; }
                 console.error(err); toast("Export failed. Network error.", "err"); btnNode.innerHTML = originalHtml; btnNode.disabled = false;
             });
         }, 800);
+    }
+
+    // ── PERSISTENCE & SHORTCUTS INTEGRATION ──
+    function saveGeoPlotData() {
+        try {
+            localStorage.setItem('geoplot_stations', JSON.stringify(mapData));
+            toast("Data koordinat stasiun GeoPlot berhasil disimpan!", "success");
+            if (window.ARESStorageSync) window.ARESStorageSync.notifyChange('geoplot_stations');
+            return true;
+        } catch(e) {
+            console.error(e);
+            return false;
+        }
+    }
+
+    function exportGeoPlotData() {
+        if (!mapData || mapData.length === 0) {
+            toast("Tidak ada data titik stasiun untuk diekspor.", "warn");
+            return false;
+        }
+        let csv = "Nama,Lintang (Lat),Bujur (Lng),Kategori,Keterangan,Warna,Bentuk,Ukuran,Buffer(m)\n";
+        mapData.forEach(d => {
+            csv += `"${d.name}","${d.lat}","${d.lng}","${d.cat||''}","${d.desc||''}","${d.color||''}","${d.shape||''}","${d.size||''}","${d.buffer||''}"\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `GeoPlot_Stasiun_${new Date().toISOString().slice(0,10)}.csv`;
+        link.click();
+        toast("Data CSV stasiun berhasil diunduh!", "success");
+        return true;
+    }
+
+    if (window.ARESShortcuts) {
+        window.ARESShortcuts.on('save', saveGeoPlotData);
+        window.ARESShortcuts.on('export', exportGeoPlotData);
+        window.ARESShortcuts.on('print', exportToPNG);
     }
 
     // ── EVENT ONLOAD KESELURUHAN ──

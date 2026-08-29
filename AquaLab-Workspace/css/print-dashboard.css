@@ -1,0 +1,461 @@
+/* ── AQUACULTURE RESEARCH ECOSYSTEM (AREs) ── */
+/* PRINTER-FRIENDLY STYLESHEET FOR EXECUTIVE PDF REPORTS (A4 FORMAT) */
+/* INCLUDES DYNAMIC PAGE NUMBERING & AUTO-GENERATED TABLE OF CONTENTS (TOC) */
+
+.print-only-header,
+.print-only-notes,
+.print-only-footer,
+.print-toc-container {
+  display: none;
+}
+
+@media print {
+  /* Page Setup & Dynamic Running Page Margins / Numbers */
+  @page {
+    size: A4 portrait;
+    margin: 14mm 14mm 16mm 14mm;
+    @bottom-left {
+      content: "AREs Executive Research Report · Platform Research Ecosystem";
+      font-size: 7.5pt;
+      color: #64748b;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    @bottom-right {
+      content: "Halaman " counter(page) " dari " counter(pages);
+      font-size: 8pt;
+      font-weight: 700;
+      color: #0f172a;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    @top-right {
+      content: "Dokumen Resmi Riset Akuakultur (FPIK UNSOED)";
+      font-size: 7pt;
+      color: #94a3b8;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+  }
+
+  /* Universal Reset for Print Canvas */
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 9pt !important;
+    line-height: 1.4 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide Non-Essential UI Elements */
+  header,
+  nav,
+  .sidebar,
+  .toolbar,
+  .sidebar-footer,
+  .sub-nav,
+  button,
+  .btn,
+  a.btn,
+  .header-actions,
+  .page-header,
+  .dialog,
+  .dialog-overlay,
+  .overlay,
+  .toast,
+  .toast-container,
+  #toast,
+  #gsi_async_events,
+  .v-dash-controls-bar,
+  .v-dash-controls-group,
+  .dash-action-btn,
+  .dash-drag-handle {
+    display: none !important;
+  }
+
+  /* Reset Layout Containers */
+  .main-container,
+  .content-area,
+  #app {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Tab Pane Management - Show Only v-dashboard */
+  .tab-pane {
+    display: none !important;
+  }
+
+  #v-dashboard.tab-pane {
+    display: block !important;
+    width: 100% !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Executive Print Header */
+  .print-only-header {
+    display: block !important;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    position: relative;
+    page-break-inside: avoid !important;
+  }
+
+  .print-top-bar {
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, #0284c7 0%, #0d9488 50%, #6366f1 100%) !important;
+    border-radius: 2px;
+    margin-bottom: 12px;
+  }
+
+  .print-header-main {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    border-bottom: 2px solid #0284c7;
+    padding-bottom: 10px;
+  }
+
+  .print-brand-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+
+  .print-logo-img {
+    height: 46px !important;
+    width: auto !important;
+    display: block !important;
+  }
+
+  .print-institution {
+    font-size: 7.5pt !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    color: #0284c7 !important;
+    margin-bottom: 2px !important;
+  }
+
+  .print-title {
+    font-family: 'Fraunces', Georgia, serif !important;
+    font-size: 16pt !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    margin: 0 0 2px 0 !important;
+    letter-spacing: -0.02em !important;
+    line-height: 1.1 !important;
+  }
+
+  .print-subtitle {
+    font-size: 8.5pt !important;
+    font-weight: 600 !important;
+    color: #334155 !important;
+    margin: 0 !important;
+  }
+
+  .print-meta-right {
+    text-align: right !important;
+    font-size: 7.5pt !important;
+    color: #334155 !important;
+    line-height: 1.35 !important;
+  }
+
+  .print-badge-tag {
+    display: inline-block !important;
+    background: #e0f2fe !important;
+    border: 1px solid #0284c7 !important;
+    color: #0369a1 !important;
+    font-weight: 700 !important;
+    font-size: 6.5pt !important;
+    padding: 2px 7px !important;
+    border-radius: 4px !important;
+    margin-bottom: 4px !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  .print-meta-item {
+    margin-bottom: 1px !important;
+  }
+
+  /* Auto-Generated Table of Contents (TOC) */
+  .print-toc-container {
+    display: block !important;
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    border-left: 4px solid #0284c7 !important;
+    border-radius: 6px !important;
+    padding: 10px 14px !important;
+    margin-bottom: 16px !important;
+    page-break-inside: avoid !important;
+  }
+
+  .print-toc-title {
+    font-size: 8.5pt !important;
+    font-weight: 700 !important;
+    color: #0284c7 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 8px !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding-bottom: 4px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+
+  .print-toc-list {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 5px 16px !important;
+    font-size: 7.8pt !important;
+    color: #334155 !important;
+  }
+
+  .print-toc-item {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    line-height: 1.35 !important;
+  }
+
+  .print-toc-label {
+    font-weight: 600 !important;
+    color: #0f172a !important;
+    white-space: nowrap !important;
+  }
+
+  .print-toc-dots {
+    flex: 1 !important;
+    border-bottom: 1px dotted #94a3b8 !important;
+    margin: 0 6px !important;
+    height: 1px !important;
+  }
+
+  .print-toc-badge {
+    font-family: monospace !important;
+    font-size: 6.8pt !important;
+    background: #e2e8f0 !important;
+    color: #0f172a !important;
+    padding: 1px 5px !important;
+    border-radius: 3px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Printable Custom Executive Notes Box */
+  .print-only-notes {
+    display: block !important;
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+    border-left: 4px solid #0284c7 !important;
+    border-radius: 6px !important;
+    padding: 10px 14px !important;
+    margin-bottom: 16px !important;
+    page-break-inside: avoid !important;
+  }
+
+  .print-notes-title {
+    font-weight: 700 !important;
+    font-size: 8.5pt !important;
+    color: #0284c7 !important;
+    margin-bottom: 4px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.03em !important;
+  }
+
+  .print-notes-body {
+    font-size: 8.5pt !important;
+    color: #1e293b !important;
+    line-height: 1.5 !important;
+    white-space: pre-line !important;
+  }
+
+  /* Printable PDF Report Footer */
+  .print-only-footer {
+    display: block !important;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px dashed #cbd5e1;
+    page-break-inside: avoid !important;
+  }
+
+  .print-footer-grid {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
+    font-size: 7.5pt !important;
+    color: #475569 !important;
+  }
+
+  .print-footer-left {
+    max-width: 60% !important;
+  }
+
+  .print-footer-brand {
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    font-size: 8pt !important;
+  }
+
+  .print-footer-sub {
+    color: #475569 !important;
+    margin-top: 1px !important;
+  }
+
+  .print-footer-hash {
+    font-family: monospace !important;
+    font-size: 7pt !important;
+    color: #0284c7 !important;
+    margin-top: 2px !important;
+  }
+
+  .print-footer-copyright {
+    font-size: 6.8pt !important;
+    color: #94a3b8 !important;
+    margin-top: 3px !important;
+  }
+
+  .print-footer-right {
+    text-align: right !important;
+    min-width: 170px !important;
+  }
+
+  .print-sign-loc {
+    font-size: 7.5pt !important;
+    color: #334155 !important;
+    margin-bottom: 2px !important;
+  }
+
+  .print-sign-title {
+    font-size: 7.5pt !important;
+    color: #475569 !important;
+    margin-bottom: 30px !important;
+  }
+
+  .print-sign-space {
+    border-bottom: 1px solid #0f172a !important;
+    width: 150px !important;
+    margin-left: auto !important;
+  }
+
+  .print-sign-name {
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    font-size: 8pt !important;
+    margin-top: 2px !important;
+  }
+
+  .print-sign-nip {
+    font-size: 7pt !important;
+    color: #64748b !important;
+  }
+
+  /* KPI Cards Grid Layout */
+  .kpi-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Multi-Module Dashboard Grid Layout */
+  .dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Card Styling for Clean A4 Output */
+  .kpi-card,
+  .dash-card,
+  .card {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 10px 12px !important;
+    page-break-inside: avoid !important;
+    box-shadow: none !important;
+  }
+
+  .kpi-title,
+  .dash-card-title,
+  .card-title {
+    color: #1e293b !important;
+    font-size: 9pt !important;
+    font-weight: 700 !important;
+    margin-bottom: 6px !important;
+  }
+
+  .dash-metric-val,
+  .kpi-value {
+    color: #0284c7 !important;
+    font-size: 14pt !important;
+    font-weight: 700 !important;
+  }
+
+  .kpi-sub,
+  .dash-metric-label,
+  #dbSynthesisContent {
+    color: #334155 !important;
+    font-size: 8pt !important;
+  }
+
+  /* Badges & Tags */
+  .badge,
+  .dash-badge,
+  .badge-info,
+  .badge-success,
+  .badge-purple,
+  .badge-warning {
+    display: inline-block !important;
+    border: 1px solid #94a3b8 !important;
+    color: #0f172a !important;
+    background: #f1f5f9 !important;
+    padding: 1px 5px !important;
+    border-radius: 4px !important;
+    font-size: 7pt !important;
+    font-weight: 600 !important;
+  }
+
+  /* Chart Canvas Sizing & Page Break Avoidance */
+  canvas {
+    max-width: 100% !important;
+    max-height: 160px !important;
+    height: auto !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Synthesis Callout Container */
+  .synthesis-card,
+  .dash-synthesis {
+    background: #f8fafc !important;
+    border: 1px solid #94a3b8 !important;
+    border-left: 4px solid #0284c7 !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    margin-top: 12px !important;
+    page-break-inside: avoid !important;
+  }
+}

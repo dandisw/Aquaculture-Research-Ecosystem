@@ -4,12 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mendeley Style FPIK UNSOED — DSW Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="../js/theme-manager.js"></script>
+<script src="../js/storage-sync.js"></script>
+<script src="../js/i18n.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=MuseoModerno:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         /* ===== DESIGN TOKENS (DSW Research Ecosystem Aligned) ===== */
         :root {
+            --font-sans: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'DM Mono', monospace;
+            --font-serif: 'MuseoModerno', 'Syne', 'Fraunces', sans-serif;
+            
             --bg: #0b0f14; 
             --bg-card: #111620; 
             --bg-hover: #161c26;
@@ -24,10 +33,24 @@
             --radius: 12px;
         }
 
+        [data-theme="light"] {
+            --bg: #f8fafc; 
+            --bg-card: #ffffff; 
+            --bg-hover: #f1f5f9;
+            --border: #cbd5e1;
+            --border-focus: #94a3b8;
+            --text-main: #0f172a; 
+            --text-muted: #334155;
+            --text-dim: #64748b;
+        }
+        [data-theme="light"] body {
+            background-image: radial-gradient(circle at top, #e2e8f0 0%, var(--bg) 60%);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            font-family: 'DM Sans', sans-serif;
+            font-family: var(--font-sans);
             background-color: var(--bg);
             color: var(--text-main);
             line-height: 1.6;
@@ -64,7 +87,7 @@
         }
 
         .hero-title {
-            font-family: 'Syne', sans-serif;
+            font-family: var(--font-serif);
             font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 15px;
@@ -80,7 +103,7 @@
             color: var(--text-muted);
             max-width: 600px;
             margin: 0 auto;
-            font-weight: 300;
+            font-weight: 400;
         }
 
         /* ===== MAIN CARDS ===== */
@@ -94,7 +117,7 @@
         }
 
         .card-title {
-            font-family: 'Syne', sans-serif;
+            font-family: var(--font-serif);
             font-size: 1.3rem;
             font-weight: 700;
             margin-bottom: 18px;
@@ -136,7 +159,7 @@
             background: transparent;
             border: none;
             color: var(--blue);
-            font-family: 'DM Mono', monospace;
+            font-family: var(--font-mono);
             font-size: 0.85rem;
             outline: none;
             overflow: hidden;
@@ -305,8 +328,19 @@
     <div class="container">
         
         <header>
-            <div class="hero-badge">
-                <i class="fas fa-graduation-cap"></i> FPIK UNSOED Style Guide
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 10px;">
+                <a href="../index.html" style="background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 7px 16px; border-radius: 50px; font-size: 0.82rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;">
+                    <span class="dsw-icon-styled">🏠</span> <span data-i18n="nav_back">Home AREs</span>
+                </a>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div id="aresDataSyncIndicator" class="ares-sync-indicator" title="Status Sinkronisasi & Penyimpanan Lokal Data Riset AREs (Klik untuk melihat rincian)"></div>
+                    <div class="hero-badge" style="margin-bottom: 0;">
+                        <i class="fas fa-graduation-cap"></i> FPIK UNSOED
+                    </div>
+                    <button onclick="toggleTheme()" style="background: var(--bg-card); border: 1px solid var(--border); color: var(--text-main); padding: 7px 14px; border-radius: 50px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-moon" id="mendeleyThemeIcon"></i> <span id="mendeleyThemeText">Tema</span>
+                    </button>
+                </div>
             </div>
             <h1 class="hero-title">Mendeley Citation Portal</h1>
             <p class="hero-subtitle">Repositori distribusi digital CSL Style Tugas Akhir FPIK 2018 Resmi Universitas Jenderal Soedirman.</p>
@@ -316,7 +350,7 @@
             <h2 class="card-title"><i class="fas fa-link"></i> Salin URL Citation Style</h2>
             
             <div class="link-wrapper">
-                <label class="link-label">1. Format FPIK Standar (Tanpa Tautan DOI)</label>
+                <label class="link-label">1. Format FPIK</label>
                 <div class="copy-group">
                     <input type="text" class="copy-input" id="linkTanpaDoi" value="https://gist.githubusercontent.com/dandisw/80c9e79e0c2867621efbb8e1bc6a8b85/raw/" readonly>
                     <button class="btn-copy" onclick="copyLink('linkTanpaDoi', this)">
@@ -326,7 +360,7 @@
             </div>
 
             <div class="link-wrapper" style="margin-bottom: 0;">
-                <label class="link-label">2. Format FPIK Premium (Dengan Tautan DOI Terintegrasi)</label>
+                <label class="link-label">2. Format FPIK + DOI</label>
                 <div class="copy-group">
                     <input type="text" class="copy-input" id="linkDenganDoi" value="https://gist.githubusercontent.com/dandisw/a1c886b82de9c20ff6fdb8796e330f2e/raw/" readonly>
                     <button class="btn-copy" onclick="copyLink('linkDenganDoi', this)">
@@ -392,6 +426,27 @@
     </div>
 
     <script>
+        function toggleTheme() {
+            const h = document.documentElement;
+            const next = h.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            h.setAttribute('data-theme', next);
+            localStorage.setItem('ares_theme', next);
+            updateThemeUI(next);
+        }
+
+        function updateThemeUI(theme) {
+            const icon = document.getElementById('mendeleyThemeIcon');
+            const text = document.getElementById('mendeleyThemeText');
+            if (icon) icon.className = theme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+            if (text) text.textContent = theme === 'light' ? 'Mode Terang' : 'Mode Gelap';
+        }
+
+        (function() {
+            const saved = localStorage.getItem('ares_theme') || localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+            updateThemeUI(saved);
+        })();
+
         function copyLink(inputId, button) {
             const inputEl = document.getElementById(inputId);
             inputEl.select();
