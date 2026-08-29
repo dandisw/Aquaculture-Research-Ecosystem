@@ -1,5 +1,4 @@
 
-```markdown
 # Aquaculture Research Ecosystem (AREs)
 
 > An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping — running entirely in your browser with zero server dependencies.
