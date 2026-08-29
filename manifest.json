@@ -1,12 +1,14 @@
 {
-  "name": "Aquaculture Research Ecosystem",
-  "short_name": "AREs",
-  "description": "Platform komputasi terintegrasi berbasis client-side untuk analisis statistika, bioinformatika, dan manajemen akuakultur.",
+  "name": "Aquaculture Research Ecosystem (AREs) - AquaLab Workspace",
+  "short_name": "AREs AquaLab",
+  "description": "Platform komputasi terintegrasi & buku catatan laboratorium digital (e-LN) akuakultur offline-first untuk analisis statistika, bioinformatika, dan manajemen riset.",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#030914",
-  "theme_color": "#0052c9",
-  "orientation": "portrait-primary",
+  "background_color": "#0F172A",
+  "theme_color": "#0284c7",
+  "orientation": "any",
+  "categories": ["education", "productivity", "utilities", "science"],
   "icons": [
     {
       "src": "AREs Logo Outline.png",
@@ -20,5 +22,29 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "AquaLab Workspace",
+      "short_name": "AquaLab",
+      "description": "Akses offline logbook laboratorium, stok reagen, & kalkulator akuakultur",
+      "url": "./AquaLab-Workspace/index.html",
+      "icons": [{ "src": "AREs Logo Outline.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "StatWise Computing",
+      "short_name": "StatWise",
+      "description": "Analisis Statistik Parametrik & Non-Parametrik",
+      "url": "./StatWise/index.html",
+      "icons": [{ "src": "AREs Logo Outline.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "EcoMetrics Multivariat",
+      "short_name": "EcoMetrics",
+      "description": "Analisis Multivariat Rapfish, Ordination & MDS",
+      "url": "./EcoMetrics-Multivariat/index.html",
+      "icons": [{ "src": "AREs Logo Outline.png", "sizes": "192x192" }]
+    }
   ]
 }
+

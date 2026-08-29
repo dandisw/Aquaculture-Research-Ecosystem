@@ -1,7 +1,7 @@
-// Naikkan versi menjadi v5 agar pengguna otomatis mengunduh modul baru (FishCareer)
-const CACHE_NAME = 'ares-portal-v5';
+// Naikkan versi menjadi v6 untuk mendukung offline caching penuh AquaLab Workspace
+const CACHE_NAME = 'ares-aqualab-v6';
 
-// Daftar file inti yang wajib didownload saat pertama kali instal (Pre-cache)
+// Daftar file inti yang diklasifikasikan untuk pre-cache offline
 const urlsToCache = [
   './',
   './index.html',
@@ -9,8 +9,17 @@ const urlsToCache = [
   './AREs%20Logo%20Outline.png',
   './AREs%20Logo%20Acronim.png',
   
-  // Daftarkan halaman utama masing-masing alat (Tools)
+  // Modul Utama AquaLab Workspace & Modul Terkait
   './AquaLab-Workspace/index.html',
+  './AquaLab-Workspace/css/print-dashboard.css',
+  './js/aqualab.js',
+  './js/theme-manager.js',
+  './js/i18n.js',
+  './js/statwise.js',
+  './js/biotools.js',
+  './js/ecometrics.js',
+  
+  // Daftarkan modul alat pendukung (AREs Ecosystem Tools)
   './StatWise/index.html',
   './BioTools/index.html',
   './EcoMetrics-Multivariat/index.html',
@@ -18,11 +27,12 @@ const urlsToCache = [
   './ShifterAI/index.html',
   './GeoPlot/index.html',
   './Mendeley-Citation-Portal-FPIK-Unsoed-2018/index.html',
-  
-  // --- FISHCAREER PORTAL DITAMBAHKAN DI SINI ---
-  './Career-Map/',
   './Career-Map/index.html',
-  './logo%20FishCareer.png'
+  './logo%20FishCareer.png',
+
+  // Pustaka CDN Utama untuk Grafik & Tipografi Offline
+  'https://cdn.jsdelivr.net/npm/chart.js',
+  'https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap'
 ];
 
 // EVENT 1: INSTALASI (Menyimpan file ke dalam Cache)
@@ -31,8 +41,10 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('AREs Service Worker v5: Cache inti berhasil disimpan.');
-        return cache.addAll(urlsToCache);
+        console.log('AREs Service Worker v6: Pre-cache AquaLab Workspace & ekosistem berhasil.');
+        return Promise.allSettled(
+          urlsToCache.map(url => cache.add(url).catch(err => console.warn('PWA Pre-cache skipped for:', url, err)))
+        );
       })
   );
 });
@@ -55,23 +67,37 @@ self.addEventListener('activate', event => {
   return self.clients.claim();
 });
 
-// EVENT 3: FETCHING (Strategi "Network First, Fallback to Cache")
+// EVENT 3: FETCHING (Network-First dengan Fallback Offline Cache & Opaque Response Support)
 self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
-        }
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME)
-          .then(cache => {
+        // Validasi response valid (termasuk opaque CDN)
+        if (response && (response.status === 200 || response.type === 'opaque' || response.type === 'cors')) {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
             cache.put(event.request, responseToCache);
           });
-        return response; 
+        }
+        return response;
       })
       .catch(() => {
-        return caches.match(event.request);
+        // Jika jaringan mati / offline, cari dari cache
+        return caches.match(event.request).then(cachedResponse => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // Jika navigasi HTML halaman, fallback ke index AquaLab jika request berada di bawah AquaLab-Workspace
+          if (event.request.mode === 'navigate') {
+            if (event.request.url.includes('AquaLab-Workspace')) {
+              return caches.match('./AquaLab-Workspace/index.html');
+            }
+            return caches.match('./index.html');
+          }
+        });
       })
   );
 });
+

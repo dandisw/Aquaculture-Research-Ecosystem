@@ -1,0 +1,6 @@
+{
+  "name": "AREs: Digital Aquaculture Dry Lab",
+  "description": "Comprehensive digital aquaculture research ecosystem with integrated computational dry lab tools and AI-assisted scientific manuscript generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -73,15 +73,19 @@ Modern aquaculture research is highly complex, often requiring researchers to co
 
 ## Ecosystem Modules
 
-### 1. AquaLab Workspace (v5.0)
+### 1. AquaLab Workspace (v5.2)
 
-A comprehensive digital laboratory notebook for aquaculture field and lab management:
+A comprehensive digital laboratory notebook and calculator for aquaculture field and lab management:
 
+* **Executive v-Dashboard Customization:** Interactive multi-module dashboard supporting flexible layout orientation (1-Column Vertical / 2-Column / 3-Column Horizontal), smooth drag-and-drop card reordering, individual card minimization, and responsive chart scale presets (Compact, Standard, and Expanded).
 * **In Vivo Performance:** Multi-treatment calculator for Survival Rate (SR), ADG, Specific Growth Rate (SGR), FCR, and Feed Efficiency (EP).
 * **Water Quality EWS:** Early Warning System for pond equilibrium, calculating free un-ionized ammonia (NH₃) fractions (Emerson et al., 1975) and Biofloc C/N ratio management.
 * **Health & Hematology:** Neubauer Haemocytometer calculations for fish/shrimp blood cells and an expert immunological diagnostic dashboard.
 * **Reproduction:** GSI, HSI, fecundity, fertilization rate, and hatching rate calculators.
-* **Microbiology & Genetics:** PCR Master Mix calculator, OD600 to CFU converter, and empirical TPC logs.
+* **Microbiology & Genetics:** PCR Master Mix calculator with real-time volume alert warnings, gel electrophoresis lane logger, OD600 to CFU converter, and empirical TPC logs.
+* **Logbook & Inventory Management:** Structured chronological logs and reagent/chemical tracking with **interactive confirmation dialogs** to prevent accidental data loss.
+* **Data Export & Reporting:** Direct CSV spreadsheet downloads for laboratory tables alongside synthesized multi-module findings summary copying.
+* **Print-Ready PDF Personalization:** Customizable executive lab reports complete with institutional letterhead, researcher legitimacy signatures, and managerial recommendations.
 
 ### 2. StatWise (v10.0)
 
@@ -94,12 +98,13 @@ An inferential statistics engine featuring an IBM SPSS-style *Data View / Variab
 
 ### 3. BioTools Suite (v8.2)
 
-A serverless molecular bioinformatics pipeline optimized for amplicon and targeted gene analyses:
+A serverless molecular bioinformatics pipeline optimized for amplicon, targeted gene analyses, and structural biology:
 
+* **3D Protein & Macromolecule Visualizer:** Interactive 3D molecular visualization powered by WebGL/3Dmol with multiple render styles (Cartoon/Ribbon, Stick, Sphere/CPK, Surface, Wireframe), color schemes (Secondary Structure, Rainbow Spectrum, Polarity, B-Factor), RCSB PDB live retrieval, residue-level sequence track navigation, and local `.pdb` file parser.
 * **Microsatellite (SSR) Finder:** *In silico* mining of mono- to hexa-nucleotide repeats with canonical motif standardization and automated flanking sequence extraction for primer design.
 * **Alignment:** Smith-Waterman local alignment and Center-Star Heuristic Multiple Sequence Alignment (MSA) with nucleotide color-coding.
 * **Phylogenetics:** Distance matrix-based UPGMA clustering fortified with **Felsenstein Bootstrap** (up to 1,000 iterations) and high-resolution, unclipped PNG export.
-* **Sequence Utilities:** ProtParam-equivalent physicochemical protein analysis (MW & pI), ORF Finder, NEB Restriction Mapper, and thermodynamic Primer Design.
+* **Sequence Utilities:** ProtParam-equivalent physicochemical protein analysis (MW & pI), ORF Finder, NEB Restriction Mapper, Sanger Trace Chromatogram Viewer (.ab1), and thermodynamic Primer Design.
 
 ### 4. EcoMetrics Multivariat (v2.0)
 
@@ -178,7 +183,7 @@ AREs is built exclusively with HTML5, CSS3, and vanilla ES6+ JavaScript. It bypa
 
 Simply open the platform in any modern web browser (Chrome, Firefox, Edge, Safari):
 
-👉 **[Launch AREs Web App](https://www.google.com/url?sa=E&source=gmail&q=https://dandisw.github.io/Aquaculture-Research-Ecosystem/)**
+👉 **[Launch AREs Web App](https://dandisw.github.io/Aquaculture-Research-Ecosystem/)**
 
 ### Option 2: Install as Desktop/Mobile App (PWA)
 
@@ -189,11 +194,10 @@ Simply open the platform in any modern web browser (Chrome, Firefox, Edge, Safar
 ### Option 3: Self-Hosting
 
 ```bash
-git clone [https://github.com/dandisw/Aquaculture-Research-Ecosystem.git](https://github.com/dandisw/Aquaculture-Research-Ecosystem.git)
+git clone https://github.com/dandisw/Aquaculture-Research-Ecosystem.git
 cd Aquaculture-Research-Ecosystem
 python3 -m http.server 8000
 # Open http://localhost:8000 in your browser
-
 ```
 
 ---
@@ -225,29 +229,23 @@ If you use AREs in your research, thesis, or publications, please cite the softw
   year         = {2026},
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.20729217},
-  url          = {[https://doi.org/10.5281/zenodo.20729217](https://doi.org/10.5281/zenodo.20729217)}
+  url          = {https://doi.org/10.5281/zenodo.20729217}
 }
-
 ```
 
 ---
 
 ## Author
 
-**Dandi Setio Wibowo** Faculty of Fisheries and Marine Sciences (FPIK)
+**Dandi Setio Wibowo**  
+Faculty of Fisheries and Marine Sciences (FPIK), Universitas Jenderal Soedirman, Purwokerto, Indonesia
 
-Universitas Jenderal Soedirman, Purwokerto, Indonesia
-
-* GitHub: [@dandisw](https://www.google.com/search?q=https%3A%2F%2Fgithub.com%2Fdandisw)
-* ORCID: [0009-0002-5337-499X](https://www.google.com/search?q=https%3A%2F%2Forcid.org%2F0009-0002-5337-499X)
-* Instagram: [@aquaculture.research](https://www.google.com/search?q=https%3A%2F%2Finstagram.com%2Faquaculture.research)
+* GitHub: [@dandisw](https://github.com/dandisw)
+* ORCID: [0009-0002-5337-499X](https://orcid.org/0009-0002-5337-499X)
+* Instagram: [@aquaculture.research](https://instagram.com/aquaculture.research)
 
 ---
 
 ## License
 
-This project is licensed under the [MIT License](https://www.google.com/search?q=LICENSE). You are free to use, modify, and distribute this software for academic and commercial purposes, provided the original copyright notice is included.
-
-```
-
-```
+This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this software for academic and commercial purposes, provided the original copyright notice is included.

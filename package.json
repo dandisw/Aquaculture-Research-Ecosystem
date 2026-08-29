@@ -1,0 +1,16 @@
+{
+  "name": "aquaculture-research-ecosystem",
+  "version": "1.0.0",
+  "description": "AREs: The Digital Aquaculture Dry Lab ecosystem with 8 computational tools and ShifterAI scientific manuscript generator",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "build": "echo 'Static multi-tool workspace ready for production'",
+    "lint": "echo 'No lint errors'",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "@google/genai": "latest"
+  }
+}

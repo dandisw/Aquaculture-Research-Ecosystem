@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -16,38 +16,91 @@
     <meta property="og:image" content="https://dandisw.github.io/Aquaculture-Research-Ecosystem/AREs%20Logo%20Outline.png?v=2">
     <meta name="twitter:card" content="summary_large_image">
 
-    <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@400;600;700;800;900&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="js/theme-manager.js"></script>
+    <script src="js/storage-sync.js"></script>
+
+    <!-- Refined Typography System -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=MuseoModerno:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
+        /* ═══════════════════════════════════════════════════════════
+           AREs DESIGN SYSTEM v3.0 — ULTRA-MODERN DRY LAB & SCIENTIFIC WORKSPACE
+           ═══════════════════════════════════════════════════════════ */
         :root {
-            /* Tema Deep Sea Modern */
-            --sea-abyss:    #00070f;
-            --sea-darkest:  #020c1b;
-            --sea-dark:     #071828;
-            --sea-mid:      #0a2340;
-            --sea-light:    #0d2d4a;
-            --sea-surface:  #1a3a5c;
+            --sea-abyss:    #070d19;
+            --sea-darkest:  #0b1329;
+            --sea-dark:     #0f1c3a;
+            --sea-mid:      #1a2b52;
+            --sea-light:    #2d4474;
+            --sea-surface:  #111c38;
             
-            /* Glassmorphism */
-            --glass-bg:           rgba(255, 255, 255, 0.03);
-            --glass-hover:        rgba(255, 255, 255, 0.07);
-            --glass-border:       rgba(100, 200, 255, 0.12);
-            --glass-border-hover: rgba(100, 230, 255, 0.4);
+            /* Glassmorphism & Borders */
+            --glass-bg:           rgba(15, 28, 58, 0.72);
+            --glass-card:         rgba(17, 30, 60, 0.65);
+            --glass-card-hover:   rgba(24, 42, 82, 0.85);
+            --glass-border:       rgba(148, 163, 184, 0.16);
+            --glass-border-hover: rgba(56, 189, 248, 0.5);
             
-            /* Tipografi Premium */
-            --text-main:  #c8dff0;
-            --text-title: #e8f4ff;
-            --text-muted: #6a8aac;
+            /* Typography */
+            --font-sans:  'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-brand: 'MuseoModerno', 'Syne', sans-serif;
+            --font-mono:  'DM Mono', monospace;
 
-            /* Accent */
-            --accent-ocean:    #4de8c4;
-            --accent-glow:     #00c9ff;
-            --accent-biolum:   rgba(77, 232, 196, 0.15);
-            --privacy-green:   #2ecc71;
-            --privacy-dark:    rgba(0, 20, 10, 0.7);
+            --text-title: #f8fafc;
+            --text-main:  #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-dim:   #64748b;
+
+            /* Accents */
+            --accent-ocean:    #38bdf8;
+            --accent-teal:     #2dd4bf;
+            --accent-emerald:  #34d399;
+            --accent-purple:   #c084fc;
+            --accent-amber:    #fbbf24;
+            --accent-glow:     rgba(56, 189, 248, 0.18);
+            --privacy-green:   #10b981;
+            --privacy-bg:      rgba(16, 185, 129, 0.14);
+
+            --shadow-subtle:   0 4px 20px -2px rgba(0, 0, 0, 0.35);
+            --shadow-hover:    0 16px 36px -4px rgba(0, 0, 0, 0.5);
         }
-        
+
+        /* ── LIGHT THEME OVERRIDES (CRISP, ERGONOMIC & LUXURIOUS) ── */
+        [data-theme="light"] {
+            --sea-abyss:    #f8fafc;
+            --sea-darkest:  #ffffff;
+            --sea-dark:     #f1f5f9;
+            --sea-mid:      #e2e8f0;
+            --sea-light:    #cbd5e1;
+            --sea-surface:  #ffffff;
+            
+            --glass-bg:           rgba(255, 255, 255, 0.96);
+            --glass-card:         #ffffff;
+            --glass-card-hover:   #ffffff;
+            --glass-border:       #cbd5e1;
+            --glass-border-hover: #0284c7;
+            
+            --text-title: #0f172a;
+            --text-main:  #334155;
+            --text-muted: #64748b;
+            --text-dim:   #94a3b8;
+
+            --accent-ocean:    #0284c7;
+            --accent-teal:     #0d9488;
+            --accent-emerald:  #059669;
+            --accent-purple:   #7c3aed;
+            --accent-amber:    #d97706;
+            --accent-glow:     rgba(2, 132, 199, 0.12);
+            --privacy-green:   #059669;
+            --privacy-bg:      rgba(220, 252, 231, 0.95);
+
+            --shadow-subtle:   0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 4px 14px -2px rgba(15, 23, 42, 0.05);
+            --shadow-hover:    0 12px 28px -4px rgba(15, 23, 42, 0.09), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         html, body { 
@@ -58,7 +111,7 @@
         }
 
         body {
-            font-family: 'DM Sans', sans-serif; 
+            font-family: var(--font-sans); 
             background-color: var(--sea-abyss);
             color: var(--text-main); 
             line-height: 1.6; 
@@ -66,356 +119,591 @@
             flex-direction: column; 
             min-height: 100vh; 
             position: relative;
+            font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* ══════════════════════════════════════
-           DEEP SEA ANIMATED BACKGROUND SYSTEM
-        ══════════════════════════════════════ */
-
+        /* ── BACKGROUND LAYER ── */
         .deep-sea-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -10; pointer-events: none;
             overflow: hidden;
         }
 
-        /* Base ocean gradient */
         .deep-sea-bg::before {
             content: '';
             position: absolute; inset: 0;
             background:
-                radial-gradient(ellipse 60% 30% at 20% 100%, #001a0a 0%, transparent 50%),
-                radial-gradient(ellipse 60% 30% at 80% 100%, #00100a 0%, transparent 50%),
-                linear-gradient(180deg,
-                    #041525 0%,
-                    #030e1c 20%,
-                    #020b18 45%,
-                    #010810 70%,
-                    #00060e 100%);
+                radial-gradient(ellipse 70% 40% at 20% 0%, rgba(2, 132, 199, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 30% at 80% 100%, rgba(13, 148, 136, 0.08) 0%, transparent 50%),
+                linear-gradient(180deg, #030712 0%, #060d1b 40%, #030712 100%);
         }
 
-        /* Underwater particle canvas layer */
+        [data-theme="light"] .deep-sea-bg::before {
+            background:
+                radial-gradient(ellipse 70% 40% at 20% 0%, rgba(2, 132, 199, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 30% at 80% 100%, rgba(13, 148, 136, 0.04) 0%, transparent 50%),
+                linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%);
+        }
+
         #deepSeaCanvas {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             z-index: -8; pointer-events: none;
-            opacity: 0.7;
+            opacity: 0.6;
+        }
+
+        [data-theme="light"] #deepSeaCanvas {
+            opacity: 0.2;
         }
 
         /* Seafloor silhouette */
         .seafloor {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            height: 160px; z-index: -6; pointer-events: none;
+            height: 140px; z-index: -6; pointer-events: none;
+            opacity: 0.85;
+            transition: opacity 0.3s ease;
         }
         .seafloor svg { width: 100%; height: 100%; }
 
-        /* ── HEADER / HERO SECTION ── */
+        [data-theme="light"] .seafloor {
+            display: none !important;
+        }
+
+        /* ── HEADER / TOP NAVIGATION ── */
         header {
-            position: relative; text-align: center; padding: 35px 20px 55px;
+            position: relative; text-align: center; padding: 24px 20px 48px;
             border-bottom: 1px solid var(--glass-border); 
-            background: linear-gradient(180deg,
-                rgba(0, 15, 35, 0.88) 0%,
-                rgba(2, 10, 25, 0.78) 100%);
-            backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            z-index: 10;
-            box-shadow: 0 4px 60px rgba(0, 50, 120, 0.12);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 20;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+            transition: background 0.3s, border-color 0.3s;
         }
         
         .header-top-bar {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            width: 100%; max-width: 1400px; margin: 0 auto; position: relative; z-index: 20;
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; max-width: 1280px; margin: 0 auto 28px; position: relative; z-index: 20;
+            gap: 16px;
         }
 
-        .brand-logo { display: flex; align-items: center; }
-        .acronim-logo { height: 85px; width: auto; display: block; transition: transform 0.3s ease; opacity: 0.9; }
-        .acronim-logo:hover { transform: scale(1.05); opacity: 1; }
+        .brand-logo { display: flex; align-items: center; gap: 12px; }
+        .acronim-logo { height: 46px; width: auto; display: block; transition: transform 0.3s ease; }
+        .acronim-logo:hover { transform: scale(1.04); }
+
+        .brand-badge-text {
+            display: flex; flex-direction: column; text-align: left;
+        }
+        .brand-name {
+            font-family: var(--font-brand); font-weight: 800; font-size: 1.15rem;
+            color: var(--text-title); letter-spacing: -0.3px; line-height: 1.1;
+        }
+        .brand-tagline {
+            font-size: 0.72rem; color: var(--text-muted); font-weight: 500; letter-spacing: 0.2px;
+        }
 
         .header-actions-row {
-            display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end;
-            max-width: 70%;
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
         }
 
-        /* Tombol Glassmorphism */
+        /* Modern Action Buttons */
         .header-btn {
-            display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+            display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px;
             background: var(--glass-bg); 
             border: 1px solid var(--glass-border);
             border-radius: 8px; 
-            font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 500;
-            color: var(--text-muted); text-decoration: none; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-family: var(--font-sans); font-size: 0.76rem; font-weight: 600;
+            color: var(--text-main); text-decoration: none; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            white-space: nowrap;
         }
         .header-btn:hover { 
             color: var(--text-title); 
-            background: var(--glass-hover); 
+            background: var(--glass-card-hover); 
             border-color: var(--glass-border-hover);
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); 
+            transform: translateY(-1.5px); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
         }
 
-        .hero-title { font-family: 'MuseoModerno', sans-serif; font-size: 3rem; font-weight: 800; margin-bottom: 15px; letter-spacing: -0.5px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; margin-top: 25px; }
-        .title-text { 
-            color: var(--text-title);
-            position: relative; z-index: 5; text-align: center; padding: 0 10px; 
+        /* Hero presentation */
+        .hero-title-container {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin: 10px auto 16px;
+            max-width: 900px;
         }
 
-        .logo-link { display: flex; align-items: center; justify-content: center; transition: transform 0.4s ease; position: relative; z-index: 5; }
-        .main-logo-img { display: block; width: 190px; height: auto; object-fit: contain; opacity: 0.95; }
-        .logo-link:hover { transform: scale(1.05) translateY(-5px); opacity: 1; }
+        .hero-logo-wrap {
+            margin-bottom: 12px;
+            transition: transform 0.3s ease;
+        }
+        .hero-logo-wrap:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+        .main-logo-img {
+            width: 140px; height: auto; object-fit: contain;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+        }
 
-        .hero-subtitle { font-size: 1.05rem; color: var(--text-muted); max-width: 700px; margin: 0 auto; font-weight: 400; line-height: 1.6; padding: 0 15px; }
-        .hero-subtitle strong { color: var(--text-main); font-weight: 600; }
+        .hero-title {
+            font-family: var(--font-brand); font-size: 2.5rem; font-weight: 800;
+            color: var(--text-title); letter-spacing: -0.6px; line-height: 1.15;
+            margin-bottom: 10px;
+        }
 
-        /* ══════════════════════════════════════
-           PRIVACY BADGE
-        ══════════════════════════════════════ */
+        .hero-subtitle {
+            font-size: 1.02rem; color: var(--text-muted); max-width: 720px;
+            margin: 0 auto 20px; font-weight: 400; line-height: 1.6;
+        }
+        .hero-subtitle strong { color: var(--text-title); font-weight: 600; }
+
+        /* Privacy Badge */
         .privacy-badge-wrap {
-            display: flex;
-            justify-content: center;
-            margin: 22px auto 0;
+            display: flex; justify-content: center; margin: 0 auto;
         }
 
         .privacy-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0;
-            background: rgba(0, 20, 12, 0.65);
-            border: 1px solid rgba(46, 204, 113, 0.35);
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--privacy-bg);
+            border: 1px solid rgba(16, 185, 129, 0.3);
             border-radius: 100px;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            overflow: hidden;
-            box-shadow:
-                0 0 0 1px rgba(46, 204, 113, 0.08),
-                0 4px 20px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
+            padding: 6px 18px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
         }
-
         .privacy-badge:hover {
-            border-color: rgba(46, 204, 113, 0.6);
-            box-shadow:
-                0 0 0 1px rgba(46, 204, 113, 0.15),
-                0 6px 24px rgba(0, 0, 0, 0.5);
+            border-color: rgba(16, 185, 129, 0.6);
             transform: translateY(-1px);
         }
-
-        .privacy-badge-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 9px 14px 9px 16px;
-            gap: 8px;
-        }
-
         .privacy-shield {
-            width: 18px; height: 18px;
-            color: #2ecc71;
-            flex-shrink: 0;
+            width: 16px; height: 16px; color: var(--privacy-green); flex-shrink: 0;
         }
-
         .privacy-pulse {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            background: #2ecc71;
-            flex-shrink: 0;
-            animation: badgePulse 2.4s ease-in-out infinite;
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--privacy-green);
+            animation: badgePulse 2s ease-in-out infinite;
         }
-
-        @keyframes badgePulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .privacy-badge-divider {
-            width: 1px;
-            height: 32px;
-            background: rgba(46, 204, 113, 0.25);
-            flex-shrink: 0;
-        }
+        @keyframes badgePulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
 
         .privacy-badge-text {
-            padding: 9px 18px 9px 14px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.72rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            color: rgba(180, 240, 200, 0.9);
-            white-space: nowrap;
-            text-transform: uppercase;
+            font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em;
+            color: var(--text-title);
         }
-
         .privacy-badge-text span {
-            color: #2ecc71;
-            font-weight: 700;
+            color: var(--privacy-green); font-weight: 700;
         }
 
-        /* ── MAIN CONTENT & SEARCH ── */
-        main { flex: 1; padding: 40px 20px 60px; max-width: 1240px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; z-index: 10; position: relative;}
-        
-        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; width: 100%; gap: 15px; flex-wrap: wrap;}
-        
-        /* Kolom Pencarian Glass */
-        .search-box { position: relative; flex: 1; max-width: 450px; }
-        .search-box i { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; transition: color 0.3s; }
-        .search-input { 
-            width: 100%; padding: 14px 20px 14px 45px; 
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border); 
-            border-radius: 8px; 
-            color: var(--text-title); 
-            font-family: 'Inter', sans-serif; font-size: 0.9rem; 
-            outline: none; transition: all 0.3s; 
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        /* ── VALUE PROPOSITIONS STRIP ── */
+        .props-strip {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px; width: 100%; max-width: 1280px; margin: 28px auto 0;
+            padding: 0 20px;
         }
-        .search-input:focus { border-color: rgba(77, 232, 196, 0.5); background: rgba(255,255,255,0.06); box-shadow: 0 0 0 3px rgba(77, 232, 196, 0.06); }
-        .search-input:focus + i { color: var(--text-title); }
-        .search-input::placeholder { color: var(--text-muted); opacity: 0.7; }
+        .prop-item {
+            background: var(--glass-card); border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 14px 16px; text-align: left;
+            display: flex; align-items: flex-start; gap: 12px;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(12px);
+        }
+        .prop-item:hover {
+            border-color: var(--glass-border-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        .prop-icon {
+            font-size: 1.25rem; width: 34px; height: 34px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            flex-shrink: 0;
+        }
+        .prop-content h3 {
+            font-size: 0.85rem; font-weight: 700; color: var(--text-title); margin-bottom: 2px;
+        }
+        .prop-content p {
+            font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;
+        }
+
+        /* ── MAIN CONTENT ── */
+        main { 
+            flex: 1; padding: 36px 20px 60px; max-width: 1280px; margin: 0 auto; width: 100%; 
+            display: flex; flex-direction: column; z-index: 10; position: relative;
+        }
+        
+        /* ── TOOLBAR & CATEGORY FILTER ── */
+        .toolbar-container {
+            display: flex; flex-direction: column; gap: 18px; margin-bottom: 32px; width: 100%;
+        }
+
+        .toolbar-top {
+            display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+        }
+
+        /* Search Input */
+        .search-box { 
+            position: relative; flex: 1; min-width: 280px; max-width: 520px; 
+        }
+        .search-box i.search-icon { 
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%); 
+            color: var(--text-muted); font-size: 14px; transition: color 0.2s; pointer-events: none;
+        }
+        .search-input { 
+            width: 100%; padding: 12px 75px 12px 42px; 
+            background: var(--glass-card);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border); 
+            border-radius: 10px; 
+            color: var(--text-title); 
+            font-family: var(--font-sans); font-size: 0.88rem; font-weight: 500;
+            outline: none; transition: all 0.25s ease; 
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+        .search-input:focus { 
+            border-color: var(--accent-ocean); 
+            background: var(--sea-surface); 
+            box-shadow: 0 0 0 3px var(--accent-glow); 
+        }
+        .search-input::placeholder { color: var(--text-dim); }
+
+        .search-shortcut {
+            position: absolute; right: 34px; top: 50%; transform: translateY(-50%);
+            font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600;
+            padding: 2px 6px; border-radius: 4px; background: var(--glass-bg);
+            border: 1px solid var(--glass-border); color: var(--text-dim); pointer-events: none;
+        }
+        .search-clear-btn {
+            position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+            background: transparent; border: none; color: var(--text-muted);
+            width: 22px; height: 22px; border-radius: 50%; display: none;
+            align-items: center; justify-content: center; cursor: pointer; font-size: 12px;
+        }
+        .search-clear-btn:hover { color: var(--text-title); background: var(--glass-bg); }
 
         .system-status {
-            font-size: 0.8rem; color: var(--text-muted); font-family: 'Inter', sans-serif; font-weight: 500;
+            font-size: 0.78rem; color: var(--text-muted); font-weight: 600;
             display: flex; align-items: center; gap: 8px;
-            background: var(--glass-bg); padding: 8px 16px; border-radius: 8px;
+            background: var(--glass-card); padding: 8px 14px; border-radius: 10px;
             border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         }
-        .status-dot { width: 8px; height: 8px; background-color: var(--accent-ocean); border-radius: 50%; }
+        .status-dot { 
+            width: 8px; height: 8px; background-color: var(--accent-teal); 
+            border-radius: 50%; box-shadow: 0 0 8px var(--accent-teal);
+        }
 
-        /* ── PURE GLASSMORPHISM BENTO GRID ── */
-        .app-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 24px; width: 100%; margin-bottom: 50px; }
+        /* Category Filter Chips */
+        .category-chips {
+            display: flex; align-items: center; gap: 8px; overflow-x: auto;
+            padding-bottom: 4px; scrollbar-width: none;
+        }
+        .category-chips::-webkit-scrollbar { display: none; }
+
+        .cat-chip {
+            padding: 7px 14px; border-radius: 50px; font-size: 0.78rem; font-weight: 600;
+            background: var(--glass-card); border: 1px solid var(--glass-border);
+            color: var(--text-muted); cursor: pointer; transition: all 0.2s ease;
+            white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .cat-chip:hover {
+            color: var(--text-title); border-color: var(--glass-border-hover);
+            background: var(--glass-card-hover); transform: translateY(-1px);
+        }
+        .cat-chip.active {
+            background: var(--accent-ocean); color: #ffffff; border-color: var(--accent-ocean);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+        [data-theme="dark"] .cat-chip.active {
+            color: #030712; font-weight: 700;
+        }
+
+        /* ── BENTO APP GRID ── */
+        .app-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); 
+            gap: 22px; width: 100%; margin-bottom: 48px; 
+        }
 
         .app-card { 
-            background: var(--glass-bg); 
+            background: var(--glass-card); 
             border: 1px solid var(--glass-border); 
-            border-radius: 12px; padding: 30px 25px; 
+            border-radius: 16px; padding: 26px 24px; 
             text-decoration: none; color: inherit; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
             display: flex; flex-direction: column; position: relative; overflow: hidden; 
             backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); 
+            box-shadow: var(--shadow-subtle); 
         }
-        
+
         .app-card:hover { 
-            transform: translateY(-6px); 
-            border-color: rgba(77, 232, 196, 0.3); 
-            background: rgba(255, 255, 255, 0.055); 
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6); 
+            transform: translateY(-5px); 
+            background: var(--glass-card-hover); 
+            box-shadow: var(--shadow-hover); 
         }
+
+        /* Card Top Header */
+        .card-top-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-badge {
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+            padding: 4px 10px; border-radius: 6px; text-transform: uppercase;
+            border: 1px solid transparent; display: inline-flex; align-items: center; gap: 5px;
+        }
+
+        .app-card.aqualab .card-badge { background: rgba(13, 148, 136, 0.16); color: #2dd4bf; border-color: rgba(45, 212, 191, 0.3); }
+        .app-card.statwise .card-badge { background: rgba(2, 132, 199, 0.16); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); }
+        .app-card.biotools .card-badge { background: rgba(16, 185, 129, 0.16); color: #34d399; border-color: rgba(52, 211, 153, 0.3); }
+        .app-card.ecometrics .card-badge { background: rgba(168, 85, 247, 0.16); color: #c084fc; border-color: rgba(192, 132, 252, 0.3); }
+        .app-card.geoplot .card-badge { background: rgba(37, 99, 235, 0.16); color: #60a5fa; border-color: rgba(96, 165, 250, 0.3); }
+        .app-card.citeshift .card-badge { background: rgba(217, 119, 6, 0.16); color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); }
+        .app-card.shifterai .card-badge { background: rgba(99, 102, 241, 0.16); color: #818cf8; border-color: rgba(129, 140, 248, 0.3); }
+        .app-card.mendeley .card-badge { background: rgba(30, 64, 175, 0.16); color: #93c5fd; border-color: rgba(147, 197, 253, 0.3); }
+        .app-card.fishcareer .card-badge { background: rgba(234, 179, 8, 0.16); color: #fde047; border-color: rgba(253, 224, 71, 0.3); }
+        
+        [data-theme="light"] .app-card.aqualab .card-badge { color: #0f766e; background: #ccfbf1; }
+        [data-theme="light"] .app-card.statwise .card-badge { color: #0369a1; background: #e0f2fe; }
+        [data-theme="light"] .app-card.biotools .card-badge { color: #047857; background: #d1fae5; }
+        [data-theme="light"] .app-card.ecometrics .card-badge { color: #6b21a8; background: #f3e8ff; }
+        [data-theme="light"] .app-card.geoplot .card-badge { color: #1d4ed8; background: #dbeafe; }
+        [data-theme="light"] .app-card.citeshift .card-badge { color: #b45309; background: #fef3c7; }
+        [data-theme="light"] .app-card.shifterai .card-badge { color: #4338ca; background: #e0e7ff; }
+        [data-theme="light"] .app-card.mendeley .card-badge { color: #1e40af; background: #dbeafe; }
+        [data-theme="light"] .app-card.fishcareer .card-badge { color: #854d0e; background: #fef9c3; }
+
+        .app-card.aqualab:hover { border-color: rgba(45, 212, 191, 0.5); }
+        .app-card.statwise:hover { border-color: rgba(56, 189, 248, 0.5); }
+        .app-card.biotools:hover { border-color: rgba(52, 211, 153, 0.5); }
+        .app-card.ecometrics:hover { border-color: rgba(192, 132, 252, 0.5); }
+        .app-card.geoplot:hover { border-color: rgba(96, 165, 250, 0.5); }
+        .app-card.citeshift:hover { border-color: rgba(251, 191, 36, 0.5); }
+        .app-card.shifterai:hover { border-color: rgba(129, 140, 248, 0.5); }
+        .app-card.mendeley:hover { border-color: rgba(147, 197, 253, 0.5); }
+        .app-card.fishcareer:hover { border-color: rgba(253, 224, 71, 0.5); }
 
         .app-icon { 
-            width: 50px; height: 50px; border-radius: 8px; 
+            width: 44px; height: 44px; border-radius: 10px; 
             display: flex; align-items: center; justify-content: center; 
-            font-size: 24px; margin-bottom: 20px; transition: all 0.3s ease; 
-            background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border); 
+            font-size: 20px; transition: transform 0.2s ease; 
+            background: var(--glass-bg); border: 1px solid var(--glass-border); 
+        }
+        .app-card:hover .app-icon { transform: scale(1.08); }
+
+        .app-card.fishcareer .app-icon { background: #ffffff; padding: 4px; }
+        .app-card.fishcareer .app-icon img { width: 100%; height: 100%; object-fit: contain; }
+
+        .app-title { 
+            font-family: var(--font-brand); font-size: 1.32rem; font-weight: 700; 
+            margin: 12px 0 8px; color: var(--text-title); letter-spacing: -0.3px; 
+            transition: color 0.2s ease;
+        }
+        .app-card:hover .app-title { color: var(--accent-ocean); }
+
+        .app-desc { 
+            color: var(--text-muted); font-size: 0.88rem; flex: 1; line-height: 1.55; 
+            margin-bottom: 18px; 
         }
 
-        .emoji-filter { display: inline-block; transition: transform 0.3s ease; filter: grayscale(20%); }
-        .app-card:hover .emoji-filter { transform: scale(1.1); filter: grayscale(0%); }
-
-        .app-card.fishcareer .app-icon { background: #fff; padding: 4px; }
-        .app-card.fishcareer .app-icon img { width: 100%; height: 100%; object-fit: contain; filter: none; }
-
-        .app-title { font-family: 'MuseoModerno', sans-serif; font-size: 1.35rem; font-weight: 700; margin-bottom: 10px; color: var(--text-title); letter-spacing: 0.5px; }
-        .app-desc { color: var(--text-muted); font-size: 0.9rem; flex: 1; line-height: 1.6; font-weight: 400; }
-        
-        .app-link-text { margin-top: 25px; font-size: 0.8rem; font-family: 'Inter', sans-serif; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: color 0.2s; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);}
-        .app-card:hover .app-link-text { transform: translateX(4px); color: var(--text-title); }
-
-        /* ── CITATION BOX (GLASSMORPHISM) ── */
-        .citation-section {
+        /* Micro Feature Tags */
+        .card-feature-tags {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px;
+        }
+        .feat-tag {
+            font-size: 0.72rem; font-weight: 500; font-family: var(--font-mono);
+            padding: 3px 8px; border-radius: 4px;
             background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: 12px; padding: 35px; width: 100%; max-width: 900px;
-            margin: 0 auto 40px auto; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            scroll-margin-top: 40px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            color: var(--text-muted);
         }
-        
-        .citation-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-        .citation-icon { font-size: 20px; color: var(--text-title); }
-        .citation-title { font-family: 'MuseoModerno', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--text-title); letter-spacing: 0.5px;}
-        .citation-subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
-        
-        .apa-box {
-            background: rgba(0, 0, 0, 0.2); border: 1px solid var(--glass-border);
-            border-radius: 8px; padding: 20px 25px; font-family: 'Times New Roman', Times, serif;
-            font-size: 1.1rem; color: var(--text-main); line-height: 1.6;
-            margin-bottom: 25px; position: relative; padding-right: 60px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .copy-btn {
-            position: absolute; right: 15px; top: 15px; background: var(--glass-bg);
-            border: 1px solid var(--glass-border); border-radius: 6px; color: var(--text-muted); width: 36px; height: 36px;
-            display: flex; align-items: center; justify-content: center; cursor: pointer;
-            transition: all 0.2s; font-size: 1rem;
-        }
-        .copy-btn:hover { background: var(--glass-hover); color: var(--text-title); border-color: var(--glass-border-hover); }
 
-        .citation-actions { display: flex; gap: 15px; flex-wrap: wrap; }
+        /* Tactile CTA link button */
+        .app-link-row { 
+            display: flex; align-items: center; justify-content: space-between; 
+            padding-top: 14px; border-top: 1px solid var(--glass-border); 
+        }
+        .app-link-text { 
+            font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; 
+            gap: 6px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-ocean);
+            transition: transform 0.2s ease;
+        }
+        .app-card:hover .app-link-text { transform: translateX(3px); }
+
+        /* Zero Results */
+        .zero-results {
+            grid-column: 1 / -1; text-align: center; padding: 50px 20px;
+            background: var(--glass-card); border: 1px dashed var(--glass-border);
+            border-radius: 16px; display: none; flex-direction: column; align-items: center;
+        }
+        .zero-results i { font-size: 2.5rem; color: var(--text-dim); margin-bottom: 12px; }
+        .zero-results h3 { font-size: 1.1rem; color: var(--text-title); margin-bottom: 6px; }
+        .zero-results p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 18px; }
+
+        /* ── CITATION HUB (PROFESSIONAL MULTI-FORMAT WORKSPACE) ── */
+        .citation-section {
+            background: var(--glass-card); border: 1px solid var(--glass-border);
+            border-radius: 16px; padding: 36px 30px; width: 100%; max-width: 1000px;
+            margin: 0 auto 40px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            scroll-margin-top: 40px; box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+        }
+        
+        .citation-header { 
+            display: flex; align-items: center; justify-content: space-between; 
+            margin-bottom: 10px; flex-wrap: wrap; gap: 12px;
+        }
+        .citation-title-wrap { display: flex; align-items: center; gap: 12px; }
+        .citation-icon { 
+            font-size: 18px; width: 36px; height: 36px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(56, 189, 248, 0.15); color: var(--accent-ocean);
+        }
+        .citation-title { 
+            font-family: var(--font-brand); font-size: 1.35rem; font-weight: 700; 
+            color: var(--text-title); letter-spacing: -0.2px;
+        }
+        .citation-doi-badge {
+            font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+            padding: 4px 10px; border-radius: 6px; background: var(--glass-bg);
+            border: 1px solid var(--glass-border); color: var(--text-muted);
+        }
+
+        .citation-subtitle { color: var(--text-muted); font-size: 0.92rem; margin-bottom: 22px; line-height: 1.5; }
+        
+        /* Citation Format Switcher Tabs */
+        .cite-tabs {
+            display: flex; gap: 8px; margin-bottom: 14px; border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px; overflow-x: auto;
+        }
+        .cite-tab-btn {
+            padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 600;
+            background: transparent; border: 1px solid transparent; color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
+        }
+        .cite-tab-btn:hover { color: var(--text-title); background: var(--glass-bg); }
+        .cite-tab-btn.active { 
+            background: var(--glass-bg); border-color: var(--glass-border-hover); 
+            color: var(--accent-ocean); font-weight: 700;
+        }
+
+        .cite-code-box {
+            background: var(--sea-darkest); border: 1px solid var(--glass-border);
+            border-radius: 10px; padding: 20px 60px 20px 20px; font-family: var(--font-mono);
+            font-size: 0.88rem; color: var(--text-main); line-height: 1.6;
+            margin-bottom: 20px; position: relative; overflow-x: auto;
+            white-space: pre-wrap; word-break: break-word;
+        }
+        [data-theme="light"] .cite-code-box {
+            background: #f8fafc; color: #1e293b;
+        }
+        
+        .copy-float-btn {
+            position: absolute; right: 14px; top: 14px; background: var(--glass-bg);
+            border: 1px solid var(--glass-border); border-radius: 6px; color: var(--text-muted); 
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; transition: all 0.2s ease; font-size: 0.95rem;
+        }
+        .copy-float-btn:hover { 
+            background: var(--accent-ocean); color: #ffffff; border-color: var(--accent-ocean); 
+            transform: scale(1.05);
+        }
+        [data-theme="dark"] .copy-float-btn:hover { color: #030712; }
+
+        .citation-actions { display: flex; gap: 12px; flex-wrap: wrap; }
         .dl-btn {
             background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 8px;
-            color: var(--text-main); font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 500;
-            padding: 10px 20px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
-            transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: var(--text-title); font-family: var(--font-sans); font-size: 0.8rem; font-weight: 600;
+            padding: 9px 18px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s ease;
         }
-        .dl-btn:hover { background: var(--glass-hover); border-color: var(--glass-border-hover); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); }
+        .dl-btn:hover { 
+            background: var(--glass-card-hover); border-color: var(--glass-border-hover); 
+            transform: translateY(-1.5px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+        }
 
-        /* ── FOOTER SYSTEM ── */
-        footer { text-align: center; padding: 40px 20px 30px; border-top: 1px solid var(--glass-border); color: var(--text-muted); font-size: 0.85rem; flex-shrink: 0; background: linear-gradient(0deg, rgba(0,6,14,0.95) 0%, rgba(0,10,22,0.88) 100%); backdrop-filter: blur(16px); position: relative; z-index: 10;}
-        .footer-content-wrap { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .footer-socials { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        /* ── FOOTER ── */
+        footer { 
+            text-align: center; padding: 40px 20px 32px; border-top: 1px solid var(--glass-border); 
+            color: var(--text-muted); font-size: 0.84rem; flex-shrink: 0; 
+            background: var(--glass-bg); backdrop-filter: blur(16px); position: relative; z-index: 10;
+        }
+        .footer-content-wrap { display: flex; flex-direction: column; align-items: center; gap: 18px; max-width: 800px; margin: 0 auto; }
+        .footer-socials { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 
-        .footer-link { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 8px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-muted); font-size: 1.1rem; text-decoration: none; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
-        .footer-link:hover { transform: translateY(-3px); color: var(--text-title); border-color: var(--glass-border-hover); background: var(--glass-hover); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); }
+        .footer-link { 
+            display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; 
+            border-radius: 8px; background: var(--glass-card); border: 1px solid var(--glass-border); 
+            color: var(--text-muted); font-size: 1.05rem; text-decoration: none; transition: all 0.2s ease; 
+        }
+        .footer-link:hover { 
+            transform: translateY(-2px); color: var(--text-title); border-color: var(--glass-border-hover); 
+            background: var(--glass-card-hover); 
+        }
 
-        .feedback-text { font-size: 0.9rem; color: var(--text-muted); }
-        .feedback-text a { color: var(--text-main); text-decoration: none; border-bottom: 1px solid var(--glass-border); transition: all 0.2s; padding-bottom: 2px; }
-        .feedback-text a:hover { color: var(--text-title); border-color: var(--glass-border-hover); }
+        .feedback-text { font-size: 0.88rem; color: var(--text-muted); }
+        .feedback-text a { 
+            color: var(--accent-ocean); text-decoration: none; font-weight: 600;
+            border-bottom: 1px solid transparent; transition: all 0.2s;
+        }
+        .feedback-text a:hover { border-color: var(--accent-ocean); }
+
+        /* ── TOAST NOTIFICATION ── */
+        .ares-toast {
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--sea-darkest); color: var(--text-title);
+            border: 1px solid var(--glass-border-hover); border-radius: 50px;
+            padding: 10px 22px; font-size: 0.82rem; font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            z-index: 9999; opacity: 0; pointer-events: none;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+        }
+        .ares-toast.show {
+            transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto;
+        }
 
         /* ── PWA INSTALL BUTTON ── */
         .pwa-install-btn {
-            position: fixed; bottom: 30px; right: 30px;
-            background: var(--sea-surface); color: var(--text-title);
-            border: 1px solid var(--glass-border-hover); border-radius: 8px; padding: 12px 24px;
-            font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); cursor: pointer; z-index: 1000;
-            display: none; align-items: center; gap: 10px; transition: all 0.2s; backdrop-filter: blur(10px);
+            position: fixed; bottom: 24px; right: 24px;
+            background: var(--accent-ocean); color: #ffffff;
+            border: none; border-radius: 50px; padding: 11px 22px;
+            font-family: var(--font-sans); font-size: 0.82rem; font-weight: 700;
+            box-shadow: 0 10px 25px var(--accent-glow); cursor: pointer; z-index: 1000;
+            display: none; align-items: center; gap: 8px; transition: all 0.2s ease;
         }
-        .pwa-install-btn:hover { background: var(--sea-light); transform: translateY(-3px); }
+        [data-theme="dark"] .pwa-install-btn { color: #030712; }
+        .pwa-install-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-        /* ── RESPONSIVE CONTROL UNTUK HP ── */
+        /* ── RESPONSIVE MOBILE ── */
         @media (max-width: 768px) {
-            header { padding: 25px 15px 30px; } 
-            .header-top-bar { flex-direction: column; align-items: center; gap: 20px; }
-            .header-actions-row { justify-content: center; max-width: 100%; gap: 8px; }
-            .acronim-logo { height: 70px; } 
-            .header-btn { padding: 8px 12px; font-size: 0.65rem; }
+            header { padding: 20px 15px 36px; } 
+            .header-top-bar { flex-direction: column; align-items: stretch; gap: 14px; }
+            .brand-logo { justify-content: center; }
+            .header-actions-row { justify-content: center; width: 100%; gap: 6px; }
+            .header-btn { padding: 6px 10px; font-size: 0.72rem; }
             .btn-text-hide { display: none; }
             
-            .hero-title { font-size: 2.2rem; gap: 14px; margin-top: 20px; }
-            .main-logo-img { width: 160px; } 
+            .hero-title { font-size: 2rem; }
+            .hero-subtitle { font-size: 0.92rem; }
+            .main-logo-img { width: 120px; } 
+
+            .props-strip { grid-template-columns: 1fr 1fr; gap: 10px; }
             
-            main { padding: 25px 15px 30px; }
-            .toolbar { flex-direction: column; align-items: stretch; gap: 15px; } 
+            main { padding: 24px 15px 40px; }
+            .toolbar-top { flex-direction: column; align-items: stretch; gap: 12px; } 
             .search-box { max-width: 100%; width: 100%; }
-            .system-status { align-self: flex-start; }
-            .app-grid { grid-template-columns: 1fr; gap: 16px; margin-bottom: 30px; }
+            .system-status { justify-content: center; }
+            .app-grid { grid-template-columns: 1fr; gap: 16px; margin-bottom: 32px; }
             
-            .citation-section { padding: 25px 20px; }
-            .apa-box { font-size: 1rem; padding: 15px 15px 45px 15px; }
-            .copy-btn { top: auto; bottom: 10px; right: 10px; }
+            .citation-section { padding: 24px 18px; }
+            .cite-code-box { font-size: 0.8rem; padding: 15px 15px 15px 15px; }
+            .copy-float-btn { position: static; width: 100%; margin-top: 10px; }
             
-            .pwa-install-btn { bottom: 20px; right: 50%; transform: translateX(50%); width: max-content; }
-            .pwa-install-btn:hover { transform: translate(50%, -3px); }
+            .pwa-install-btn { bottom: 16px; right: 50%; transform: translateX(50%); width: max-content; }
         }
 
         @media (max-width: 480px) {
-            .hero-title { font-size: 1.8rem; }
-            .hero-subtitle { font-size: 0.9rem; padding: 0 5px; }
-            .title-text { line-height: 1.2; }
-            .app-card { padding: 25px 20px; }
-            .app-title { font-size: 1.25rem; }
+            .props-strip { grid-template-columns: 1fr; }
+            .hero-title { font-size: 1.65rem; }
         }
     </style>
 </head>
@@ -432,33 +720,46 @@
                     <stop offset="100%" style="stop-color:#00060e;stop-opacity:1"/>
                 </linearGradient>
             </defs>
-            <!-- Coral/rock silhouettes -->
             <path d="M0,160 L0,140 Q30,100 60,130 Q80,120 100,110 Q120,95 140,115 Q160,130 180,120 Q200,108 220,125 Q250,140 280,118 Q310,100 340,120 Q370,135 400,115 Q420,100 445,112 Q470,125 500,110 Q530,95 560,108 Q585,118 610,105 Q635,92 660,110 Q690,128 720,112 Q745,100 770,118 Q795,132 820,115 Q845,100 875,112 Q900,122 930,108 Q955,95 980,110 Q1010,128 1040,115 Q1065,105 1090,118 Q1110,128 1140,112 Q1165,100 1195,115 Q1220,128 1250,112 Q1275,100 1300,118 Q1325,130 1360,115 Q1395,100 1440,120 L1440,160 Z" fill="url(#floorGrad)"/>
-            <!-- Seaweed left -->
             <path d="M80,160 Q75,140 85,120 Q78,100 88,80 Q82,60 90,50" stroke="rgba(0,80,50,0.3)" stroke-width="3" fill="none" stroke-linecap="round"/>
             <path d="M88,80 Q100,75 105,65" stroke="rgba(0,80,50,0.25)" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <!-- Seaweed right -->
             <path d="M1360,160 Q1355,138 1365,118 Q1358,98 1368,78 Q1362,55 1372,42" stroke="rgba(0,80,50,0.25)" stroke-width="3" fill="none" stroke-linecap="round"/>
         </svg>
     </div>
 
+    <!-- ── TOAST NOTIFICATION CONTAINER ── -->
+    <div id="aresToast" class="ares-toast">
+        <i class="fas fa-check-circle" style="color: var(--accent-teal);"></i>
+        <span id="aresToastMsg">Tersalin ke clipboard</span>
+    </div>
+
     <header>
         <div class="header-top-bar">
-            <!-- ── LOGO ACRONIM KIRI/ATAS ── -->
+            <!-- Brand Chip -->
             <div class="brand-logo">
-                <a href="https://dandisw.github.io/Profil-Dandi/" target="_blank" title="Profil Dandi Setio Wibowo">
-                    <img src="AREs%20Logo%20Acronim.png" alt="AREs by DSW" class="acronim-logo">
+                <a href="https://dandisw.github.io/Profil-Dandi/" target="_blank" title="Profil Dandi Setio Wibowo" style="display:flex; align-items:center; gap:10px; text-decoration:none;">
+                    <img src="AREs%20Logo%20Acronim.png" alt="AREs Logo" class="acronim-logo">
+                    <div class="brand-badge-text">
+                        <span class="brand-name">AREs Dry Lab</span>
+                        <span class="brand-tagline">Integrated Research Hub · v1.0.0</span>
+                    </div>
                 </a>
             </div>
             
-            <!-- ── BARISAN TOMBOL AKSI KANAN/BAWAH ── -->
+            <!-- Quick Actions Navigation -->
             <div class="header-actions-row">
+                <button class="header-btn" onclick="openAresSuiteNavigator()" title="Buka AREs Suite Navigator (Pindah Cepat Antar Modul)" style="border-color: var(--accent-ocean); background: rgba(56, 189, 248, 0.1);">
+                    <i class="fas fa-bolt" style="color:var(--accent-ocean)"></i> <span>Modul AREs</span>
+                </button>
+
+                <div id="aresDataSyncIndicator" class="ares-sync-indicator" title="Status Sinkronisasi & Penyimpanan Lokal Data Riset AREs (Klik untuk melihat rincian)"></div>
+
                 <a href="#kotakSitasi" class="header-btn" title="Cara menyitir perangkat lunak ini">
-                    <i class="fas fa-quote-right"></i> <span class="btn-text-hide">Cite Us</span>
+                    <i class="fas fa-quote-right" style="color:var(--accent-ocean)"></i> <span class="btn-text-hide" data-i18n="nav_cite">Cite Us</span>
                 </a>
 
                 <a href="https://www.linkedin.com/company/ares-pwa/" class="header-btn" target="_blank" title="Halaman LinkedIn Resmi AREs">
-                    <i class="fab fa-linkedin"></i> <span class="btn-text-hide">AREs</span>
+                    <i class="fab fa-linkedin" style="color:#0a66c2;"></i> <span class="btn-text-hide">AREs</span>
                 </a>
 
                 <a href="https://www.linkedin.com/showcase/fishcareer-by-ares/" class="header-btn" target="_blank" title="Showcase LinkedIn FishCareer">
@@ -467,146 +768,344 @@
                 </a>
 
                 <a href="https://github.com/dandisw/Aquaculture-Research-Ecosystem" class="header-btn" target="_blank" title="Lihat Source Code di GitHub">
-                    <i class="fab fa-github"></i> <span class="btn-text-hide">Repository</span>
+                    <i class="fab fa-github"></i> <span class="btn-text-hide" data-i18n="nav_repository">Repository</span>
                 </a>
                 
                 <a href="https://www.instagram.com/aquaculture.research/" class="header-btn" target="_blank" title="Ikuti Instagram Resmi">
-                    <i class="fab fa-instagram"></i> <span class="btn-text-hide">@aquaculture.research</span>
+                    <i class="fab fa-instagram" style="color:#e1306c;"></i> <span class="btn-text-hide">@aquaculture.research</span>
                 </a>
+
+                <button class="header-btn" onclick="toggleTheme()" id="themeToggleBtn" title="Ganti Mode Tema (Terang / Gelap)">
+                    <i class="fas fa-moon" id="themeIcon"></i> <span id="themeBtnText" data-i18n="nav_theme_dark">Gelap</span>
+                </button>
             </div>
         </div>
 
-        <h1 class="hero-title">
-            <a href="https://dandisw.github.io/Profil-Dandi/" target="_blank" class="logo-link" title="Lihat Profil Dandi Setio Wibowo">
+        <!-- Hero Title -->
+        <div class="hero-title-container">
+            <a href="https://dandisw.github.io/Profil-Dandi/" target="_blank" class="hero-logo-wrap" title="Lihat Profil Dandi Setio Wibowo">
                 <img src="AREs%20Logo%20Outline.png" alt="Logo Aquaculture Research Ecosystem" class="main-logo-img">
             </a>
-            <span class="title-text">Aquaculture Research Ecosystem</span>
-        </h1>
-        <p class="hero-subtitle"><strong>The Digital Aquaculture Dry Lab.</strong> Ekosistem riset terintegrasi penuh yang dieksekusi secara lokal di peramban Anda dengan jaminan privasi data absolut.</p>
-        
-        <div class="privacy-badge-wrap">
-            <div class="privacy-badge" title="Semua komputasi berjalan di browser Anda. Tidak ada data yang dikirim ke server eksternal.">
-                <div class="privacy-badge-icon">
+            <h1 class="hero-title" data-i18n="hero_title">Aquaculture Research Ecosystem</h1>
+            <p class="hero-subtitle" data-i18n="hero_subtitle" data-i18n-html="true"><strong>The Digital Aquaculture Dry Lab.</strong> Ekosistem riset terintegrasi penuh yang dieksekusi secara lokal di peramban Anda dengan jaminan privasi data absolut.</p>
+            
+            <div class="privacy-badge-wrap">
+                <div class="privacy-badge" title="Semua komputasi berjalan di browser Anda. Tidak ada data yang dikirim ke server eksternal.">
                     <svg class="privacy-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                         <polyline points="9 12 11 14 15 10"/>
                     </svg>
                     <div class="privacy-pulse"></div>
+                    <div class="privacy-badge-text" data-i18n="hero_privacy_text">
+                        <span>100% Client-Side Executed</span>&nbsp;&nbsp;·&nbsp;&nbsp;No Data Uploaded
+                    </div>
                 </div>
-                <div class="privacy-badge-divider"></div>
-                <div class="privacy-badge-text">
-                    <span>100% Client-Side Executed</span>&nbsp;&nbsp;·&nbsp;&nbsp;No Data Uploaded
+            </div>
+        </div>
+
+        <!-- Value Propositions Strip -->
+        <div class="props-strip">
+            <div class="prop-item">
+                <div class="prop-icon">⚡</div>
+                <div class="prop-content">
+                    <h3 data-i18n="feat_compute_title">Komputasi In-Browser</h3>
+                    <p data-i18n="feat_compute_desc">Analisis kromatogram, PCA, ANOVA, dan GIS secepat kilat.</p>
+                </div>
+            </div>
+            <div class="prop-item">
+                <div class="prop-icon">🛡️</div>
+                <div class="prop-content">
+                    <h3 data-i18n="feat_privacy_title">Privasi Absolut</h3>
+                    <p data-i18n="feat_privacy_desc">100% data diproses di RAM lokal tanpa server perantara.</p>
+                </div>
+            </div>
+            <div class="prop-item">
+                <div class="prop-icon">📑</div>
+                <div class="prop-content">
+                    <h3 data-i18n="feat_export_title">Output Standar Publikasi</h3>
+                    <p data-i18n="feat_export_desc">Ekspor grafik vektor SVG, BibTeX, RIS, dan tabel riset.</p>
+                </div>
+            </div>
+            <div class="prop-item">
+                <div class="prop-icon">📱</div>
+                <div class="prop-content">
+                    <h3 data-i18n="feat_pwa_title">PWA Offline-Ready</h3>
+                    <p data-i18n="feat_pwa_desc">Dapat diinstal ke desktop/ponsel dengan sinkronisasi tema.</p>
                 </div>
             </div>
         </div>
     </header>
 
     <main>
-        <div class="toolbar">
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" class="search-input" placeholder="Cari modul (Cth: Statistik, Pemetaan)..." onkeyup="filterTools()">
+        <!-- ── TOOLBAR & CATEGORY FILTERS ── -->
+        <div class="toolbar-container">
+            <div class="toolbar-top">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Cari modul (Cth: Statistik, Pemetaan, DNA)..." data-i18n-placeholder="search_placeholder" oninput="handleSearchInput()">
+                    <span class="search-shortcut">/</span>
+                    <button id="searchClearBtn" class="search-clear-btn" onclick="clearSearch()" title="Hapus pencarian"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="system-status">
+                    <div class="status-dot"></div>
+                    <span data-i18n="system_status">SYSTEM ONLINE:</span> <span id="toolCount" style="color: var(--accent-ocean); font-weight: 800; margin-left: 2px;">9</span> <span data-i18n="mods_count">MODS</span>
+                </div>
             </div>
-            <div class="system-status">
-                <div class="status-dot"></div>
-                SYSTEM ONLINE: <span id="toolCount" style="color: var(--text-main); font-weight: bold; margin-left: 4px;">9</span> MODS
+
+            <!-- Category Filter Chips -->
+            <div class="category-chips" id="categoryChips">
+                <button class="cat-chip active" data-category="all" onclick="filterCategory('all', this)">
+                    <span data-i18n="filter_all">Semua Modul</span>
+                </button>
+                <button class="cat-chip" data-category="lab" onclick="filterCategory('lab', this)">
+                    <span data-i18n="filter_lab">🔬 Lab & In Vivo</span>
+                </button>
+                <button class="cat-chip" data-category="stat" onclick="filterCategory('stat', this)">
+                    <span data-i18n="filter_stat">📊 Statistik & Rapfish</span>
+                </button>
+                <button class="cat-chip" data-category="bio" onclick="filterCategory('bio', this)">
+                    <span data-i18n="filter_bio">⚗ Bioinformatika & GIS</span>
+                </button>
+                <button class="cat-chip" data-category="cite" onclick="filterCategory('cite', this)">
+                    <span data-i18n="filter_cite">📚 Sitasi & Karir</span>
+                </button>
             </div>
         </div>
 
+        <!-- ── BENTO APPS GRID ── -->
         <div class="app-grid" id="appGrid">
             
-            <a href="./AquaLab-Workspace/index.html" class="app-card aqualab" data-keywords="laboratorium kualitas air vivo mikrobiologi molekuler">
-                <div class="app-icon"><span class="emoji-filter">🔬</span></div>
-                <h2 class="app-title">AquaLab Workspace</h2>
-                <p class="app-desc">Buku catatan laboratorium digital komprehensif. Dilengkapi EWS Kualitas Air, kalkulator performa In Vivo, biokinetika mikrobiologi, dan dokumentasi molekuler.</p>
-                <div class="app-link-text">Execute Module &rarr;</div>
-            </a>
-
-            <a href="./StatWise/index.html" class="app-card statwise" data-keywords="statistik data uji normalitas anova korelasi plot">
-                <div class="app-icon"><span class="emoji-filter">📊</span></div>
-                <h2 class="app-title">StatWise</h2>
-                <p class="app-desc">Mesin komputasi statistik murni JavaScript. Mendukung uji Normalitas, ANOVA, Korelasi, hingga visualisasi Scatter Plot tanpa memerlukan server backend.</p>
-                <div class="app-link-text">Execute Module &rarr;</div>
-            </a>
-
-            <a href="./BioTools/index.html" class="app-card biotools" data-keywords="genetika dna rna protein filogenetik msa orf kromatogram ab1">
-                <div class="app-icon"><span class="emoji-filter">⚗</span></div>
-                <h2 class="app-title">BioTools Suite</h2>
-                <p class="app-desc">Perangkat bioinformatika <em>end-to-end</em>. Baca kromatogram .ab1, ekstraksi ORF, penjajaran sekuens, Fisikokimia Protein, dan pohon filogenetik beresolusi tinggi.</p>
-                <div class="app-link-text">Execute Module &rarr;</div>
-            </a>
-
-            <a href="./EcoMetrics-Multivariat/index.html" class="app-card ecometrics" data-keywords="ekologi lingkungan rapfish pca k-means mds">
-                <div class="app-icon"><span class="emoji-filter">🌿</span></div>
-                <h2 class="app-title">EcoMetrics Multivariat</h2>
-                <p class="app-desc">Pusat eksplorasi data multivariat. Mendukung kalkulasi Rapfish (MDS Keberlanjutan), Principal Component Analysis (PCA), K-Means, ANOSIM, dan LDA.</p>
-                <div class="app-link-text">Execute Module &rarr;</div>
-            </a>
-
-            <a href="./GeoPlot/index.html" class="app-card geoplot" data-keywords="peta spasial kartografi gis gps koordinat">
-                <div class="app-icon"><span class="emoji-filter">📍</span></div>
-                <h2 class="app-title">GeoPlot</h2>
-                <p class="app-desc">Platform pemetaan spasial dan kartografi interaktif. Dilengkapi fitur Geolocation GPS, pengukuran jarak/area, tata letak otomatis, dan ekspor vektor SVG.</p>
-                <div class="app-link-text">Execute Module &rarr;</div>
-            </a>
-
-            <a href="./CiteShift/index.html" class="app-card citeshift" data-keywords="sitasi daftar pustaka referensi mendeley zotero bibtex ris apa">
-                <div class="app-icon"><span class="emoji-filter">🗂️</span></div>
-                <h2 class="app-title">CiteShift</h2>
-                <p class="app-desc">Konverter sitasi ilmiah cerdas. Ubah teks daftar pustaka mentah menjadi format BibTeX, RIS, atau APA secara instan dilengkapi auto-complete metadata (Crossref).</p>
-                <div class="app-link-text">Execute Module &rarr;</div>
-            </a>
-
-            <a href="./ShifterAI/index.html" class="app-card shifterai" data-keywords="ai kecerdasan buatan naskah format teks paragraf gemini">
-                <div class="app-icon"><span class="emoji-filter">✨</span></div>
-                <h2 class="app-title">ShifterAI</h2>
-                <p class="app-desc">Asisten heuristik format teks. Otomatisasi restrukturisasi paragraf naskah, penghapusan karakter tersembunyi, dan penyesuaian gaya penulisan akademik yang presisi.</p>
-                <div class="app-link-text">Execute Module &rarr;</div>
-            </a>
-
-            <a href="./Mendeley-Citation-Portal-FPIK-Unsoed-2018/index.html" class="app-card mendeley" data-keywords="skripsi unsoed fpik style csl sitasi">
-                <div class="app-icon"><span class="emoji-filter">📚</span></div>
-                <h2 class="app-title">Mendeley FPIK Portal</h2>
-                <p class="app-desc">Repositori distribusi digital CSL Style Tugas Akhir FPIK 2018 Resmi Universitas Jenderal Soedirman untuk instalasi Mendeley Cite secara instan.</p>
-                <div class="app-link-text">Access Portal &rarr;</div>
-            </a>
-
-            <a href="./Career-Map/index.html" class="app-card fishcareer" data-keywords="karir beasiswa lpdp s2 s3 pekerjaan bioteknologi linkedin">
-                <div class="app-icon">
-                    <img src="logo%20FishCareer.png" alt="FishCareer Logo" class="emoji-filter">
+            <!-- 1. AquaLab Workspace -->
+            <a href="./AquaLab-Workspace/index.html" class="app-card aqualab" data-category="lab" data-keywords="laboratorium kualitas air vivo mikrobiologi molekuler ews biokinetika do ph salinitas suhu amonia">
+                <div class="card-top-meta">
+                    <div class="card-badge">Lab Workspace</div>
+                    <div class="app-icon">🔬</div>
                 </div>
-                <h2 class="app-title">FishCareer Portal</h2>
-                <p class="app-desc">Peta navigasi karir interaktif dari kolam ke laboratorium. Dapatkan wawasan spesialisasi riset, proyeksi industri bioteknologi, dan akses ke komunitas profesional.</p>
-                <div class="app-link-text">Initialize Map &rarr;</div>
+                <h2 class="app-title" data-i18n="card_aqualab_title">AquaLab Workspace</h2>
+                <p class="app-desc" data-i18n="card_aqualab_desc">Buku catatan laboratorium digital komprehensif. Dilengkapi EWS Kualitas Air, kalkulator performa In Vivo, biokinetika mikrobiologi, dan dokumentasi molekuler.</p>
+                <div class="card-feature-tags">
+                    <span class="feat-tag">EWS Kualitas Air</span>
+                    <span class="feat-tag">In Vivo Metrics</span>
+                    <span class="feat-tag">Biokinetika</span>
+                    <span class="feat-tag">Molekuler</span>
+                </div>
+                <div class="app-link-row">
+                    <span class="app-link-text" data-i18n="execute_module">Execute Module &rarr;</span>
+                    <i class="fas fa-arrow-right" style="color:var(--accent-ocean); font-size:12px;"></i>
+                </div>
             </a>
+
+            <!-- 2. StatWise -->
+            <a href="./StatWise/index.html" class="app-card statwise" data-category="stat" data-keywords="statistik data uji normalitas anova korelasi plot shapiro wilk mann whitney kruskal wallis d3">
+                <div class="card-top-meta">
+                    <div class="card-badge">Statistik & Hipotesis</div>
+                    <div class="app-icon">📊</div>
+                </div>
+                <h2 class="app-title" data-i18n="card_statwise_title">StatWise</h2>
+                <p class="app-desc" data-i18n="card_statwise_desc">Mesin komputasi statistik murni JavaScript. Mendukung uji Normalitas, ANOVA, Korelasi, hingga visualisasi Scatter Plot tanpa memerlukan server backend.</p>
+                <div class="card-feature-tags">
+                    <span class="feat-tag">Shapiro-Wilk</span>
+                    <span class="feat-tag">One-Way ANOVA</span>
+                    <span class="feat-tag">Regresi & Korelasi</span>
+                    <span class="feat-tag">D3 Visualizer</span>
+                </div>
+                <div class="app-link-row">
+                    <span class="app-link-text" data-i18n="execute_module">Execute Module &rarr;</span>
+                    <i class="fas fa-arrow-right" style="color:var(--accent-ocean); font-size:12px;"></i>
+                </div>
+            </a>
+
+            <!-- 3. BioTools Suite -->
+            <a href="./BioTools/index.html" class="app-card biotools" data-category="bio" data-keywords="genetika dna rna protein filogenetik msa orf kromatogram ab1 clustal blast transkripsi translasi">
+                <div class="card-top-meta">
+                    <div class="card-badge">Bioinformatika & DNA</div>
+                    <div class="app-icon">⚗</div>
+                </div>
+                <h2 class="app-title" data-i18n="card_biotools_title">BioTools Suite</h2>
+                <p class="app-desc" data-i18n="card_biotools_desc">Perangkat bioinformatika <em>end-to-end</em>. Baca kromatogram .ab1, ekstraksi ORF, penjajaran sekuens, Fisikokimia Protein, dan pohon filogenetik beresolusi tinggi.</p>
+                <div class="card-feature-tags">
+                    <span class="feat-tag">.ab1 Trace Viewer</span>
+                    <span class="feat-tag">ORF Finder</span>
+                    <span class="feat-tag">Multiple Sequence Alignment</span>
+                    <span class="feat-tag">Phylogeny Tree</span>
+                </div>
+                <div class="app-link-row">
+                    <span class="app-link-text" data-i18n="execute_module">Execute Module &rarr;</span>
+                    <i class="fas fa-arrow-right" style="color:var(--accent-ocean); font-size:12px;"></i>
+                </div>
+            </a>
+
+            <!-- 4. EcoMetrics Multivariat -->
+            <a href="./EcoMetrics-Multivariat/index.html" class="app-card ecometrics" data-category="stat" data-keywords="ekologi lingkungan rapfish pca k-means mds anosim lda ordinasi berkelanjutan monte carlo">
+                <div class="card-top-meta">
+                    <div class="card-badge">Rapfish & Multivariat</div>
+                    <div class="app-icon">🌿</div>
+                </div>
+                <h2 class="app-title" data-i18n="card_ecometrics_title">EcoMetrics Multivariat</h2>
+                <p class="app-desc" data-i18n="card_ecometrics_desc">Pusat eksplorasi data multivariat. Mendukung kalkulasi Rapfish (MDS Keberlanjutan), Principal Component Analysis (PCA), K-Means, ANOSIM, dan LDA.</p>
+                <div class="card-feature-tags">
+                    <span class="feat-tag">MDS Rapfish</span>
+                    <span class="feat-tag">PCA Biplot</span>
+                    <span class="feat-tag">K-Means Cluster</span>
+                    <span class="feat-tag">ANOSIM & LDA</span>
+                </div>
+                <div class="app-link-row">
+                    <span class="app-link-text" data-i18n="execute_module">Execute Module &rarr;</span>
+                    <i class="fas fa-arrow-right" style="color:var(--accent-ocean); font-size:12px;"></i>
+                </div>
+            </a>
+
+            <!-- 5. GeoPlot -->
+            <a href="./GeoPlot/index.html" class="app-card geoplot" data-category="bio" data-keywords="peta spasial kartografi gis gps koordinat leaflet jarak poligon osm polygon geojson">
+                <div class="card-top-meta">
+                    <div class="card-badge">Spasial & Kartografi</div>
+                    <div class="app-icon">📍</div>
+                </div>
+                <h2 class="app-title" data-i18n="card_geoplot_title">GeoPlot</h2>
+                <p class="app-desc" data-i18n="card_geoplot_desc">Platform pemetaan spasial dan kartografi interaktif. Dilengkapi fitur Geolocation GPS, pengukuran jarak/area, tata letak otomatis, dan ekspor vektor SVG.</p>
+                <div class="card-feature-tags">
+                    <span class="feat-tag">Leaflet Engine</span>
+                    <span class="feat-tag">GPS Geolocation</span>
+                    <span class="feat-tag">Area & Jarak</span>
+                    <span class="feat-tag">Vektor SVG Export</span>
+                </div>
+                <div class="app-link-row">
+                    <span class="app-link-text" data-i18n="execute_module">Execute Module &rarr;</span>
+                    <i class="fas fa-arrow-right" style="color:var(--accent-ocean); font-size:12px;"></i>
+                </div>
+            </a>
+
+            <!-- 6. CiteShift -->
+            <a href="./CiteShift/index.html" class="app-card citeshift" data-category="cite" data-keywords="sitasi daftar pustaka referensi mendeley zotero bibtex ris apa crossref metadata doi">
+                <div class="card-top-meta">
+                    <div class="card-badge">Konverter Sitasi</div>
+                    <div class="app-icon">🗂️</div>
+                </div>
+                <h2 class="app-title" data-i18n="card_citeshift_title">CiteShift</h2>
+                <p class="app-desc" data-i18n="card_citeshift_desc">Konverter sitasi ilmiah cerdas. Ubah teks daftar pustaka mentah menjadi format BibTeX, RIS, atau APA secara instan dilengkapi auto-complete metadata (Crossref).</p>
+                <div class="card-feature-tags">
+                    <span class="feat-tag">Crossref Lookup</span>
+                    <span class="feat-tag">BibTeX Export</span>
+                    <span class="feat-tag">RIS Generator</span>
+                    <span class="feat-tag">Clean APA 7th</span>
+                </div>
+                <div class="app-link-row">
+                    <span class="app-link-text" data-i18n="execute_module">Execute Module &rarr;</span>
+                    <i class="fas fa-arrow-right" style="color:var(--accent-ocean); font-size:12px;"></i>
+                </div>
+            </a>
+
+            <!-- 7. ShifterAI -->
+            <a href="./ShifterAI/index.html" class="app-card shifterai" data-category="cite" data-keywords="ai kecerdasan buatan naskah format teks paragraf gemini perapih spasi indentasi skripsi">
+                <div class="card-top-meta">
+                    <div class="card-badge">Gemini AI Naskah</div>
+                    <div class="app-icon">✨</div>
+                </div>
+                <h2 class="app-title" data-i18n="card_shifterai_title">ShifterAI</h2>
+                <p class="app-desc" data-i18n="card_shifterai_desc">Asisten heuristik format teks. Otomatisasi restrukturisasi paragraf naskah, penghapusan karakter tersembunyi, dan penyesuaian gaya penulisan akademik yang presisi.</p>
+                <div class="card-feature-tags">
+                    <span class="feat-tag">Heuristik Teks</span>
+                    <span class="feat-tag">Pembersih Karakter</span>
+                    <span class="feat-tag">Format Akademik</span>
+                    <span class="feat-tag">Restrukturisasi</span>
+                </div>
+                <div class="app-link-row">
+                    <span class="app-link-text" data-i18n="execute_module">Execute Module &rarr;</span>
+                    <i class="fas fa-arrow-right" style="color:var(--accent-ocean); font-size:12px;"></i>
+                </div>
+            </a>
+
+            <!-- 8. Mendeley FPIK Portal -->
+            <a href="./Mendeley-Citation-Portal-FPIK-Unsoed-2018/index.html" class="app-card mendeley" data-category="cite" data-keywords="skripsi unsoed fpik style csl sitasi mendeley cite format fpik doi">
+                <div class="card-top-meta">
+                    <div class="card-badge">CSL Portal</div>
+                    <div class="app-icon">📚</div>
+                </div>
+                <h2 class="app-title" data-i18n="card_mendeley_title">Mendeley FPIK Portal</h2>
+                <p class="app-desc" data-i18n="card_mendeley_desc">Repositori distribusi digital CSL Style Tugas Akhir FPIK 2018 Resmi Universitas Jenderal Soedirman untuk instalasi Mendeley Cite secara instan.</p>
+                <div class="card-feature-tags">
+                    <span class="feat-tag">Format FPIK</span>
+                    <span class="feat-tag">Format FPIK + DOI</span>
+                    <span class="feat-tag">Mendeley Cite Add-in</span>
+                    <span class="feat-tag">Updated 2026</span>
+                </div>
+                <div class="app-link-row">
+                    <span class="app-link-text" data-i18n="access_portal">Access Portal &rarr;</span>
+                    <i class="fas fa-arrow-right" style="color:var(--accent-ocean); font-size:12px;"></i>
+                </div>
+            </a>
+
+            <!-- 9. FishCareer Portal -->
+            <a href="./Career-Map/index.html" class="app-card fishcareer" data-category="cite" data-keywords="karir beasiswa lpdp s2 s3 pekerjaan bioteknologi linkedin roadmap akuakultur perikanan riset">
+                <div class="card-top-meta">
+                    <div class="card-badge">Navigasi Karir</div>
+                    <div class="app-icon">
+                        <img src="logo%20FishCareer.png" alt="FishCareer Logo">
+                    </div>
+                </div>
+                <h2 class="app-title" data-i18n="card_fishcareer_title">FishCareer Portal</h2>
+                <p class="app-desc" data-i18n="card_fishcareer_desc">Peta navigasi karir interaktif dari kolam ke laboratorium. Dapatkan wawasan spesialisasi riset, proyeksi industri bioteknologi, dan akses ke komunitas profesional.</p>
+                <div class="card-feature-tags">
+                    <span class="feat-tag">Career Roadmap</span>
+                    <span class="feat-tag">Bioteknologi Industri</span>
+                    <span class="feat-tag">Beasiswa LPDP</span>
+                    <span class="feat-tag">Komunitas LinkedIn</span>
+                </div>
+                <div class="app-link-row">
+                    <span class="app-link-text" data-i18n="initialize_map">Initialize Map &rarr;</span>
+                    <i class="fas fa-arrow-right" style="color:var(--accent-ocean); font-size:12px;"></i>
+                </div>
+            </a>
+
+            <!-- Zero Results Empty State -->
+            <div id="zeroResults" class="zero-results">
+                <i class="fas fa-compass"></i>
+                <h3 data-i18n="no_results_title">Modul tidak ditemukan</h3>
+                <p data-i18n="no_results_desc">Tidak ada modul yang cocok dengan kata kunci pencarian Anda.</p>
+                <button class="header-btn" onclick="clearSearch()" style="background:var(--accent-ocean); color:#ffffff; font-weight:700;">
+                    <i class="fas fa-redo-alt"></i> <span data-i18n="btn_clear_search">Reset Pencarian</span>
+                </button>
+            </div>
 
         </div>
 
-        <!-- ── CITATION SECTION ── -->
+        <!-- ── CITATION HUB SECTION ── -->
         <div class="citation-section" id="kotakSitasi">
             <div class="citation-header">
-                <i class="fas fa-book citation-icon"></i>
-                <div class="citation-title">Cite This Software</div>
-            </div>
-            <div class="citation-subtitle">
-                Jika Anda menggunakan ekosistem AREs untuk tugas akhir, tesis, atau publikasi jurnal, mohon sertakan sitasi resmi berikut:
+                <div class="citation-title-wrap">
+                    <div class="citation-icon"><i class="fas fa-book-bookmark"></i></div>
+                    <div class="citation-title" data-i18n="cite_title">Cite This Software</div>
+                </div>
+                <div class="citation-doi-badge">
+                    <i class="fas fa-fingerprint" style="color:var(--accent-ocean); margin-right:4px;"></i> DOI: 10.5281/zenodo.20729217
+                </div>
             </div>
             
-            <div class="apa-box" id="apaCitationText">
-                Wibowo, D. S. (2026). <i>AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0)</i>. Zenodo. https://doi.org/10.5281/zenodo.20729217
-                
-                <button class="copy-btn" onclick="copyApaCitation()" title="Copy APA format">
-                    <i class="far fa-copy" id="copyIcon"></i>
-                </button>
+            <div class="citation-subtitle" data-i18n="cite_subtitle">
+                Jika Anda menggunakan ekosistem AREs untuk tugas akhir, tesis, atau publikasi jurnal, mohon sertakan sitasi resmi berikut:
+            </div>
+
+            <!-- Citation Format Tabs -->
+            <div class="cite-tabs" id="citeTabs">
+                <button class="cite-tab-btn active" onclick="switchCiteTab('apa', this)" data-i18n="tab_apa">APA 7th Edition</button>
+                <button class="cite-tab-btn" onclick="switchCiteTab('bibtex', this)" data-i18n="tab_bib">BibTeX (.bib)</button>
+                <button class="cite-tab-btn" onclick="switchCiteTab('ris', this)" data-i18n="tab_ris">RIS Format</button>
+                <button class="cite-tab-btn" onclick="switchCiteTab('harvard', this)" data-i18n="tab_harvard">Harvard Format</button>
+            </div>
+            
+            <div class="cite-code-box" id="citePreviewBox">Wibowo, D. S. (2026). AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.20729217<button class="copy-float-btn" onclick="copyCurrentCitation()" title="Salin format ini ke clipboard"><i class="far fa-copy" id="copyIcon"></i></button>
             </div>
 
             <div class="citation-actions">
-                <button class="dl-btn" onclick="downloadBibTex()">
-                    <i class="fas fa-file-code"></i> Download .bib
+                <button class="dl-btn" onclick="downloadBibTex()" data-i18n="download_bib">
+                    <i class="fas fa-file-code" style="color:var(--accent-teal);"></i> Download .bib
                 </button>
-                <button class="dl-btn" onclick="downloadRIS()">
-                    <i class="fas fa-file-alt"></i> Download .ris
+                <button class="dl-btn" onclick="downloadRIS()" data-i18n="download_ris">
+                    <i class="fas fa-file-alt" style="color:var(--accent-ocean);"></i> Download .ris
                 </button>
+                <a href="https://doi.org/10.5281/zenodo.20729217" target="_blank" class="dl-btn" style="text-decoration:none;">
+                    <i class="fas fa-external-link-alt" style="color:var(--accent-purple);"></i> View on Zenodo
+                </a>
             </div>
         </div>
 
@@ -631,34 +1130,80 @@
                     <i class="fab fa-instagram"></i>
                 </a>
                 <a href="https://secreto.site/a8vwl7" class="footer-link secreto" target="_blank" title="Kirim Umpan Balik Anonim (Secreto)">
-                    <i class="fas fa-comment-alt"></i>
+                    <i class="fas fa-comment-dots"></i>
                 </a>
             </div>
             
-            <p class="feedback-text">
+            <p class="feedback-text" data-i18n="feedback_text" data-i18n-html="true">
                 Punya laporan bug atau saran fitur? <a href="https://secreto.site/a8vwl7" target="_blank">Kirimkan umpan balik secara anonim di sini</a>.
             </p>
-            <p style="opacity: 0.5; font-size: 0.75rem; margin-top: -10px;">&copy; 2026 Aquaculture Research Ecosystem. Executed purely client-side.</p>
+            <p style="opacity: 0.6; font-size: 0.76rem; font-family: var(--font-mono);" data-i18n="footer_copy">&copy; 2026 Aquaculture Research Ecosystem. Executed purely client-side · FPIK Universitas Jenderal Soedirman.</p>
         </div>
     </footer>
 
-    <button id="installPwaBtn" class="pwa-install-btn">
+    <button id="installPwaBtn" class="pwa-install-btn" data-i18n="install_pwa">
         <i class="fas fa-download"></i> INSTALL APP
     </button>
 
+    <!-- ── CORE INTERACTIVE SCRIPTS ── -->
     <script>
-        // ── FITUR PENCARIAN DINAMIS ──
-        function filterTools() {
-            const input = document.getElementById('searchInput').value.toLowerCase();
+        // ── TOAST HELPER ──
+        function showToast(msg) {
+            const toast = document.getElementById('aresToast');
+            const toastMsg = document.getElementById('aresToastMsg');
+            if (toast && toastMsg) {
+                toastMsg.textContent = msg;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2400);
+            }
+        }
+
+        // ── PENCARIAN DAN FILTER KATEGORI REAL-TIME ──
+        let currentCategory = 'all';
+
+        function handleSearchInput() {
+            const input = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('searchClearBtn');
+            if (clearBtn) {
+                clearBtn.style.display = input.value.trim() ? 'flex' : 'none';
+            }
+            applyFilters();
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('searchClearBtn');
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
+            if (clearBtn) clearBtn.style.display = 'none';
+            applyFilters();
+        }
+
+        function filterCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
             const cards = document.querySelectorAll('.app-card');
+            const zeroResults = document.getElementById('zeroResults');
             let visibleCount = 0;
 
             cards.forEach(card => {
-                const title = card.querySelector('.app-title').textContent.toLowerCase();
-                const desc = card.querySelector('.app-desc').textContent.toLowerCase();
-                const keywords = card.getAttribute('data-keywords') || "";
-                
-                if (title.includes(input) || desc.includes(input) || keywords.includes(input)) {
+                const title = card.querySelector('.app-title')?.textContent.toLowerCase() || '';
+                const desc = card.querySelector('.app-desc')?.textContent.toLowerCase() || '';
+                const keywords = card.getAttribute('data-keywords') || '';
+                const category = card.getAttribute('data-category') || '';
+
+                const matchesQuery = !query || title.includes(query) || desc.includes(query) || keywords.includes(query);
+                const matchesCategory = currentCategory === 'all' || category === currentCategory;
+
+                if (matchesQuery && matchesCategory) {
                     card.style.display = 'flex';
                     visibleCount++;
                 } else {
@@ -666,25 +1211,78 @@
                 }
             });
 
-            document.getElementById('toolCount').textContent = visibleCount;
+            const toolCountEl = document.getElementById('toolCount');
+            if (toolCountEl) toolCountEl.textContent = visibleCount;
+
+            if (zeroResults) {
+                zeroResults.style.display = visibleCount === 0 ? 'flex' : 'none';
+            }
         }
 
-        // ── CLIPBOARD COPY UTK APA DENGAN ZENODO DOI ──
-        function copyApaCitation() {
-            const textToCopy = `Wibowo, D. S. (2026). AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.20729217`;
-            
+        // Keyboard shortcut: '/' or 'Ctrl+K' focuses search
+        window.addEventListener('keydown', (e) => {
+            if ((e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k')) && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.focus();
+                    searchInput.select();
+                }
+            }
+        });
+
+        // ── CITATION DATA & FORMAT TABS ──
+        const CITATION_DATA = {
+            apa: `Wibowo, D. S. (2026). AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.20729217`,
+            bibtex: `@software{wibowo2026ares,
+  author       = {Wibowo, Dandi Setio},
+  title        = {AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0)},
+  year         = {2026},
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.20729217},
+  url          = {https://doi.org/10.5281/zenodo.20729217}
+}`,
+            ris: `TY  - COMP
+AU  - Wibowo, Dandi Setio
+TI  - AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0)
+PY  - 2026
+PB  - Zenodo
+DO  - 10.5281/zenodo.20729217
+UR  - https://doi.org/10.5281/zenodo.20729217
+ER  - `,
+            harvard: `Wibowo, D.S., 2026. AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0), Zenodo. Available at: https://doi.org/10.5281/zenodo.20729217.`
+        };
+
+        let currentCiteTab = 'apa';
+
+        function switchCiteTab(tab, btn) {
+            currentCiteTab = tab;
+            document.querySelectorAll('.cite-tab-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const preview = document.getElementById('citePreviewBox');
+            if (preview && CITATION_DATA[tab]) {
+                preview.innerHTML = `${escapeHtml(CITATION_DATA[tab])}<button class="copy-float-btn" onclick="copyCurrentCitation()" title="Salin format ini"><i class="far fa-copy" id="copyIcon"></i></button>`;
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function copyCurrentCitation() {
+            const textToCopy = CITATION_DATA[currentCiteTab] || CITATION_DATA.apa;
             navigator.clipboard.writeText(textToCopy).then(() => {
                 const icon = document.getElementById('copyIcon');
-                icon.className = 'fas fa-check';
-                icon.style.color = 'var(--accent-ocean)';
-                setTimeout(() => {
-                    icon.className = 'far fa-copy';
-                    icon.style.color = '';
-                }, 2000);
+                if (icon) {
+                    icon.className = 'fas fa-check';
+                    setTimeout(() => { icon.className = 'far fa-copy'; }, 2000);
+                }
+                const toastMsg = window.ARES_I18N ? window.ARES_I18N.t('toast_copied', 'Berhasil disalin ke clipboard!') : 'Berhasil disalin ke clipboard!';
+                showToast(toastMsg);
             });
         }
 
-        // Helper untuk download file
         function triggerDownload(content, filename) {
             const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -695,77 +1293,61 @@
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            showToast(`Mengunduh ${filename}...`);
         }
 
-        // Generator BibTeX Resmi dengan Data Publisher Zenodo & DOI
         function downloadBibTex() {
-            const bibtexContent = `@software{wibowo2026ares,
-  author       = {Wibowo, Dandi Setio},
-  title        = {AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0)},
-  year         = {2026},
-  publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.20729217},
-  url          = {https://doi.org/10.5281/zenodo.20729217}
-}`;
-            triggerDownload(bibtexContent, 'AREs_Citation.bib');
+            triggerDownload(CITATION_DATA.bibtex, 'AREs_Citation.bib');
         }
 
-        // Generator RIS Resmi dengan Parameter Lembaga Penerbit & DOI (Mendeley Ready)
         function downloadRIS() {
-            const risContent = `TY  - COMP
-AU  - Wibowo, Dandi Setio
-TI  - AREs: An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping (v1.0.0)
-PY  - 2026
-PB  - Zenodo
-DO  - 10.5281/zenodo.20729217
-UR  - https://doi.org/10.5281/zenodo.20729217
-ER  - `;
-            triggerDownload(risContent, 'AREs_Citation.ris');
+            triggerDownload(CITATION_DATA.ris, 'AREs_Citation.ris');
         }
 
-        // ── REGISTRASI SERVICE WORKER (PWA) ──
+        // ── SERVICE WORKER & PWA INSTALL ──
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Service Worker PWA berhasil didaftarkan!', reg))
-                    .catch(err => console.error('Pendaftaran Service Worker gagal:', err));
+                    .then(reg => console.log('Service Worker PWA aktif:', reg))
+                    .catch(err => console.error('Gagal mendaftarkan SW:', err));
             });
         }
 
-        // ── MEKANISME PWA AUTO-INSTALL ──
         let deferredPrompt;
         const installBtn = document.getElementById('installPwaBtn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            installBtn.style.display = 'flex';
+            if (installBtn) installBtn.style.display = 'flex';
         });
 
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                installBtn.style.display = 'none';
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to the install prompt: ${outcome}`);
-                deferredPrompt = null;
-            }
-        });
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    installBtn.style.display = 'none';
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`User install outcome: ${outcome}`);
+                    deferredPrompt = null;
+                }
+            });
+        }
 
         window.addEventListener('appinstalled', () => {
-            installBtn.style.display = 'none';
+            if (installBtn) installBtn.style.display = 'none';
             deferredPrompt = null;
-            console.log('PWA AREs sukses diinstal!');
+            showToast('AREs berhasil diinstal!');
         });
     </script>
 
-    <!-- ══ DEEP SEA PARTICLE CANVAS ══ -->
+    <!-- ── DEEP SEA PARTICLE CANVAS ── -->
     <script>
     (function() {
         const canvas = document.getElementById('deepSeaCanvas');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
-        let W, H, particles = [], jellies = [];
+        let W, H, particles = [];
 
         function resize() {
             W = canvas.width  = window.innerWidth;
@@ -774,77 +1356,43 @@ ER  - `;
         window.addEventListener('resize', resize);
         resize();
 
-        // Floating dust/mote particles
-        for (let i = 0; i < 90; i++) {
+        for (let i = 0; i < 75; i++) {
             particles.push({
                 x: Math.random() * W,
                 y: Math.random() * H,
-                r: Math.random() * 1.8 + 0.3,
+                r: Math.random() * 1.5 + 0.3,
                 vx: (Math.random() - 0.5) * 0.15,
-                vy: -(Math.random() * 0.25 + 0.05),
-                alpha: Math.random() * 0.4 + 0.05,
-                color: Math.random() > 0.5 ? '100,200,255' : '77,232,196'
-            });
-        }
-
-        // Bioluminescent jellyfish blobs (Sudah dinonaktifkan pancaran glow-nya)
-        for (let i = 0; i < 5; i++) {
-            jellies.push({
-                x: Math.random() * W,
-                y: H * 0.5 + Math.random() * H * 0.5,
-                r: Math.random() * 40 + 25,
-                vy: -(Math.random() * 0.18 + 0.04),
-                phase: Math.random() * Math.PI * 2,
-                hue: Math.random() > 0.5 ? '0,180,140' : '0,140,220'
+                vy: -(Math.random() * 0.2 + 0.05),
+                alpha: Math.random() * 0.35 + 0.05,
+                color: Math.random() > 0.5 ? '56,189,248' : '45,212,191'
             });
         }
 
         function draw() {
             ctx.clearRect(0, 0, W, H);
-
-            // Particles
             particles.forEach(p => {
-                p.x += p.vx + Math.sin(Date.now() * 0.0003 + p.y * 0.01) * 0.08;
+                p.x += p.vx + Math.sin(Date.now() * 0.0003 + p.y * 0.01) * 0.06;
                 p.y += p.vy;
                 if (p.y < -5) { p.y = H + 5; p.x = Math.random() * W; }
                 if (p.x < -5) p.x = W + 5;
                 if (p.x > W + 5) p.x = -5;
 
-                const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 2.5);
+                const grd = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 2);
                 grd.addColorStop(0, `rgba(${p.color},${p.alpha})`);
                 grd.addColorStop(1, `rgba(${p.color},0)`);
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r * 2.5, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, p.r * 2, 0, Math.PI * 2);
                 ctx.fillStyle = grd;
                 ctx.fill();
             });
-
-            // Jellies (animasi tetap berjalan, namun intensitas cahaya diturunkan signifikan)
-            const t = Date.now() * 0.001;
-            jellies.forEach(j => {
-                j.y += j.vy;
-                j.phase += 0.012;
-                if (j.y < -j.r * 3) { j.y = H + j.r; j.x = Math.random() * W; }
-                const pulse = Math.sin(j.phase) * 0.25 + 0.75;
-                const alpha = 0.015 * pulse; /* Alpha diturunkan agar lebih redup/bukan glowing effect */
-                const grd = ctx.createRadialGradient(j.x, j.y, 0, j.x, j.y, j.r * 2.5);
-                grd.addColorStop(0, `rgba(${j.hue},${alpha * 2})`);
-                grd.addColorStop(0.5, `rgba(${j.hue},${alpha})`);
-                grd.addColorStop(1, `rgba(${j.hue},0)`);
-                ctx.beginPath();
-                ctx.arc(j.x, j.y, j.r * 2.5 * pulse, 0, Math.PI * 2);
-                ctx.fillStyle = grd;
-                ctx.fill();
-            });
-
             requestAnimationFrame(draw);
         }
 
-        // Respect reduced motion
         if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             draw();
         }
     })();
     </script>
+    <script src="js/i18n.js"></script>
 </body>
 </html>
