@@ -1,11 +1,12 @@
 
+```markdown
 # Aquaculture Research Ecosystem (AREs)
 
 > An Integrated Progressive Web Application for Aquaculture Data Management, Statistical Computing, Molecular Analytics, and Spatial Mapping — running entirely in your browser with zero server dependencies.
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-blue?style=flat-square)](https://dandisw.github.io/Aquaculture-Research-Ecosystem/)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20729217.svg)](https://doi.org/10.5281/zenodo.20729217)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+[![License: All Rights Reserved](https://img.shields.io/badge/License-All%20Rights%20Reserved-red?style=flat-square)](#license)
 [![PWA Ready](https://img.shields.io/badge/PWA-Offline%20Ready-orange?style=flat-square)](https://dandisw.github.io/Aquaculture-Research-Ecosystem/)
 
 ---
@@ -31,12 +32,13 @@
 - [Validation Benchmarks](#validation-benchmarks)
 - [Citation](#citation)
 - [Author](#author)
+- [License & Copyright](#license--copyright)
 
 ---
 
 ## Overview
 
-**AREs (Aquaculture Research Ecosystem)** is an open-source, client-side scientific computing platform designed specifically for the multidimensional needs of aquaculture, marine biotechnology, and fisheries researchers. 
+**AREs (Aquaculture Research Ecosystem)** is a client-side scientific computing platform designed specifically for the multidimensional needs of aquaculture, marine biotechnology, and fisheries researchers. 
 
 By integrating laboratory informatics, validated inferential statistics, molecular bioinformatics, and multivariate ecology into a single Progressive Web Application (PWA), AREs eliminates the need for expensive commercial software licenses and fragmented workflows. 
 
@@ -191,13 +193,14 @@ Simply open the platform in any modern web browser (Chrome, Firefox, Edge, Safar
 2. Click the **Install** icon (⊕) in the browser address bar, or select **"Add to Home Screen"** from your mobile browser menu.
 3. AREs will install as a standalone application capable of running completely offline.
 
-### Option 3: Self-Hosting
+### Option 3: Local Execution
 
 ```bash
-git clone https://github.com/dandisw/Aquaculture-Research-Ecosystem.git
+git clone [https://github.com/dandisw/Aquaculture-Research-Ecosystem.git](https://github.com/dandisw/Aquaculture-Research-Ecosystem.git)
 cd Aquaculture-Research-Ecosystem
 python3 -m http.server 8000
 # Open http://localhost:8000 in your browser
+
 ```
 
 ---
@@ -229,15 +232,17 @@ If you use AREs in your research, thesis, or publications, please cite the softw
   year         = {2026},
   publisher    = {Zenodo},
   doi          = {10.5281/zenodo.20729217},
-  url          = {https://doi.org/10.5281/zenodo.20729217}
+  url          = {[https://doi.org/10.5281/zenodo.20729217](https://doi.org/10.5281/zenodo.20729217)}
 }
+
 ```
 
 ---
 
 ## Author
 
-**Dandi Setio Wibowo**  
+**Dandi Setio Wibowo**
+
 Faculty of Fisheries and Marine Sciences (FPIK), Universitas Jenderal Soedirman, Purwokerto, Indonesia
 
 * GitHub: [@dandisw](https://github.com/dandisw)
@@ -246,6 +251,12 @@ Faculty of Fisheries and Marine Sciences (FPIK), Universitas Jenderal Soedirman,
 
 ---
 
-## License
+## License & Copyright
 
-This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute this software for academic and commercial purposes, provided the original copyright notice is included.
+**Copyright (c) 2026 Dandi Setio Wibowo. All rights reserved.**
+
+This project, including all source code, algorithms, visual designs, and documentation, is proprietary software protected under international copyright laws. Unauthorized copying, distribution, modification, reverse engineering, or commercial exploitation of any part of this repository without explicit prior written consent from the author is strictly prohibited.
+
+```
+
+```
